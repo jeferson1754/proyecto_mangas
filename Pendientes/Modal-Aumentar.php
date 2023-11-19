@@ -27,7 +27,7 @@
         <input type="hidden" name="nombre" value="<?php echo $mostrar[$fila1]; ?>">
         <input type="hidden" name="capitulos" value="<?php echo $mostrar[$fila3]; ?>">
         <input type="hidden" name="fecha" value="<?php echo $mostrar[$fila10]; ?>">
-
+        <input type="hidden" name="cantidad" value="<?php echo $mostrar[$titulo3]; ?>">
 
 
         <div class="modal-body div1" id="cont_modal">
