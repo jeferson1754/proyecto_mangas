@@ -19,6 +19,11 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
     <title><?php echo ucfirst($tabla) ?>
     </title>
 </head>
+<script>
+    function filtrarTabla4() {
+        document.getElementById("estado").submit();
+    }
+</script>
 
 <body>
 
@@ -40,8 +45,8 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
             <button class="btn btn-outline-info" type="button" onclick="vistos()" name="marcar-vistos"> Marcar Vistos </button>
         </form>
         <div class="class-control" id="myDIV" style="display:none;">
-            <form action="" method="GET">
-                <select name="estado" class="form-control" style="width:auto;">
+            <form id="estado" action="" method="GET">
+                <select name="estado" class="form-control" style="width:auto;" onchange="filtrarTabla4()">
                     <option value="">Seleccione Todos:</option>
                     <?php
                     $query = $conexion->query("SELECT DISTINCT t.Lista FROM tachiyomi t INNER JOIN lista o ON t.Lista = o.Nombre ORDER BY o.ID ASC;");
@@ -52,9 +57,6 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
                 </select>
                 <input type="hidden" name="accion" value="Filtro1">
                 <br>
-
-                <button class="btn btn-outline-info" type="submit" name="filtrar"> <b>Filtrar </b> </button>
-                <button class="btn btn-outline-info" type="submit" name="borrar"> <b>Borrar </b> </button>
             </form>
         </div>
         <div class="class-control" id="myDIV2" style="display:none;">
@@ -79,12 +81,16 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
                 $where = "WHERE $fila1 LIKE '%$busqueda%' ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
             }
             $estado = "Busqueda";
-        } else if (isset($_GET['filtrar'])) {
-            if (isset($_GET['estado'])) {
-                $estado   = $_REQUEST['estado'];
-                $where = "WHERE $fila6='$estado' ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
-                $accion1 = $_REQUEST['accion'];
+        } else if (isset($_GET['estado'])) {
+
+            $estado   = $_REQUEST['estado'];
+            if (!empty($estado)) {
+
+                $where = "WHERE $fila5 > 0 ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
             }
+
+            $where = "WHERE $fila6='$estado' ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
+            $accion1 = $_REQUEST['accion'];
         } else if (isset($_GET['sin-actividad'])) {
             $estado = "Sin Actividad Reciente";
             $where = " WHERE $fila11 < DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND $fila5=0 ORDER BY `$tabla`.`Faltantes`,`$tabla`.`Fecha_Cambio1` ASC limit 100";
