@@ -281,9 +281,11 @@ if (isset($_POST['Finalizados'])) {
             foreach ($resultados as $fila) {
                 $columna1 = $fila['Diferencia'];
                 $columna2 = $fila['Fecha'];
+                $columna3 = $fila['Dia'];
+
 
                 // Consulta SQL de inserción en la nueva tabla
-                $insertQuery = "INSERT INTO $tabla9 ($fila15,$fila12,$titulo4) VALUES('$iden','$columna1', '$columna2')";
+                $insertQuery = "INSERT INTO $tabla9 ($fila15,$fila12,$titulo4,$fila18)  VALUES ('$iden','$columna1', '$columna2', '$columna3')";
 
                 echo $fila['Diferencia'];
                 echo "<br>";
