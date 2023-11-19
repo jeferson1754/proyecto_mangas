@@ -52,6 +52,8 @@ $fila14 = "ID_Eliminado";
 $fila15 = "ID_Manga";
 $fila16 = "Modulo";
 
+$fila17 = "Hora_Cambio";
+$fila18 = "Dia";
 
 $titulo1 = "Estado del Link";
 $titulo2 = "Fecha de Ultima Actualizacion";
