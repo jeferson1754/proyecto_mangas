@@ -8,11 +8,15 @@ include 'bd.php';
 $idRegistros      = $_REQUEST['id'];
 $fecha_nueva      = $_REQUEST['fecha_antigua'];
 $fecha_vieja      = $_REQUEST['fecha_actual'];
-$ID_Manga         = $_REQUEST['id_manga'];
 $link             = $_REQUEST['link'];
+$ID_Manga         = $_REQUEST['ID_Manga'];
 
 $fecha1 = new DateTime($_REQUEST['fecha_antigua']); // Primera fecha
 $fecha2 = new DateTime($_REQUEST['fecha_actual']); // Segunda fecha (fecha actual)
+
+date_default_timezone_set('America/Santiago');
+$horaActual = date('H:i:s'); // Formato HH:MM:SS (24 horas)
+echo "La hora actual en Santiago es: $horaActual<br>";
 
 // Establecer la hora a 0:00:00
 $fecha1->setTime(0, 0, 0);
@@ -36,7 +40,7 @@ $diferencia2 = $fechaInicio->diff($fechaFin);
 echo "<br>";
 
 $dias2 = $diferencia2->days;
-echo "Dias :".$dias2;
+echo "Dias :" . $dias2;
 echo "<br>";
 
 
@@ -48,14 +52,36 @@ echo $fecha_vieja;
 echo "<br>";
 echo $link;
 echo "<br>";
-echo "Fecha Nuevo Capitulo : ".$fecha1Formateada;
+echo "Fecha Nuevo Capitulo : " . $fecha1Formateada;
 echo "<br>";
-echo "Fecha Ultimo Capitulo : ".$fecha2Formateada;
+echo "Fecha Ultimo Capitulo : " . $fecha2Formateada;
 echo "<br>";
-echo "Diferencia".$dias;
+echo "Diferencia" . $dias;
 echo "<br>";
 
-if($fecha_nueva=="00-00-0000 00:00:00" OR $fecha_nueva==""){
+// Convierte la fecha a un timestamp
+$timestamp = strtotime(str_replace('-', '/', $fecha2Formateada));
+
+// Array asociativo para traducir nombres de días
+$diasSemana = array(
+    'Monday'    => 'Lunes',
+    'Tuesday'   => 'Martes',
+    'Wednesday' => 'Miercoles',
+    'Thursday'  => 'Jueves',
+    'Friday'    => 'Viernes',
+    'Saturday'  => 'Sabado',
+    'Sunday'    => 'Domingo'
+);
+
+// Obtiene el nombre del día en español
+$nombreDia = date('l', $timestamp);
+$nombreDiaEspañol = $diasSemana[$nombreDia];
+
+
+echo $nombreDiaEspañol;
+echo "<br>";
+
+if ($fecha_nueva == "00-00-0000 00:00:00" or $fecha_nueva == "") {
 
     echo "Fecha 0";
     echo '<script>
@@ -68,8 +94,7 @@ if($fecha_nueva=="00-00-0000 00:00:00" OR $fecha_nueva==""){
             window.location = "' . $link . '"; 
         });
     </script>';
-
-}else if($dias=="0"){
+} else if ($dias == "0") {
 
     echo "Diferencias 0";
     echo '<script>
@@ -82,11 +107,10 @@ if($fecha_nueva=="00-00-0000 00:00:00" OR $fecha_nueva==""){
             window.location = "' . $link . '"; 
         });
     </script>';
-
-}else{
+} else {
 
     try {
-        $sql = "UPDATE `$tabla7` SET $fila12='$dias2',$titulo4='$fecha_vieja' WHERE $fila7='$idRegistros';";
+        $sql = "UPDATE `$tabla7` SET $fila12='$dias2',$titulo4='$fecha_vieja',Dia='$nombreDiaEspañol'  WHERE $fila7='$idRegistros';";
         $resultado = mysqli_query($conexion, $sql);
         echo $sql;
     } catch (PDOException $e) {
@@ -104,7 +128,4 @@ if($fecha_nueva=="00-00-0000 00:00:00" OR $fecha_nueva==""){
             window.location = "' . $link . '"; 
         });
     </script>';
-
 }
-
-

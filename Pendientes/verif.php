@@ -16,9 +16,8 @@ if (isset($_REQUEST["checkbox"])) {
     echo "Verificado_Verdadero";
     echo "<br>";
     echo $checkbox;
-
-}else{
-    $checkbox ="NO";
+} else {
+    $checkbox = "NO";
     echo "Verificado_Falso";
     echo "<br>";
     echo $checkbox;
@@ -26,6 +25,8 @@ if (isset($_REQUEST["checkbox"])) {
 
 echo "<br>";
 echo $ID_Manga;
+echo "<br>";
+echo $link;
 echo "<br>";
 
 try {
@@ -38,12 +39,12 @@ try {
     echo $sql;
 }
 
- echo '<script>
-        Swal.fire({
-        icon: "success",
-        title: "Manga:' . $nombre . ' - Verificado Exitosamente",
-        confirmButtonText: "OK"
-        }).then(function() {
-            window.location = "' . $link . '"; 
-        });
-    </script>';
+echo '<script>
+Swal.fire({
+icon: "success",
+title: "Manga Pendiente:' . $nombre . ' - Verificado Exitosamente",
+confirmButtonText: "OK"
+}).then(function() {
+    window.location = "' . $link . '"; 
+});
+</script>';

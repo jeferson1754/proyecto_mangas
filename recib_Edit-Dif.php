@@ -18,8 +18,6 @@ date_default_timezone_set('America/Santiago');
 $horaActual = date('H:i:s'); // Formato HH:MM:SS (24 horas)
 echo "La hora actual en Santiago es: $horaActual<br>";
 
-
-
 // Establecer la hora a 0:00:00
 $fecha1->setTime(0, 0, 0);
 $fecha2->setTime(0, 0, 0);
@@ -82,7 +80,6 @@ $nombreDiaEspañol = $diasSemana[$nombreDia];
 
 echo $nombreDiaEspañol;
 echo "<br>";
-
 
 if ($fecha_nueva == "00-00-0000 00:00:00" or $fecha_nueva == "") {
 

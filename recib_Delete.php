@@ -10,10 +10,11 @@ $idRegistros      = $_REQUEST['id'];
 $nombre           = $_REQUEST['name'];
 $link             = $_REQUEST['link'];
 
+
+$Tabla = ucfirst($tabla);
+$Tabla4 = ucfirst($tabla4);
 if (isset($_POST['Finalizados'])) {
     //Agranda la primera letra de la varible
-    $Tabla = ucfirst($tabla);
-    $Tabla4 = ucfirst($tabla4);
 
     $sql = ("SELECT * FROM $tabla WHERE $fila7='$idRegistros';");
     $sql2 = ("SELECT * FROM $tabla4 where $fila9='$idRegistros';");

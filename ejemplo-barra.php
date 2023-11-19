@@ -19,8 +19,6 @@
     $hora_actual = date('H:i:s');
     require 'bd.php';
 
-
-
     if (isset($_GET['variable'])) {
         $variable = urldecode($_GET['variable']);
         //echo "La variable recibida es: " . $variable;
@@ -276,7 +274,7 @@
         <canvas id="myChart"></canvas>
     </div>
     <div class="tabla" style="width:50%; margin: 0 auto;">
-        <table id="example" class="display">
+        <table id="example" class="display" style="borderColor:black;">
             <thead>
                 <tr>
                     <th style="text-align: center;">Fecha</th>

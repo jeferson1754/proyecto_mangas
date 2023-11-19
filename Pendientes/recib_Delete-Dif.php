@@ -9,7 +9,7 @@ $idRegistros      = $_REQUEST['id'];
 $diferencia       = $_REQUEST['dif'];
 $fecha            = $_REQUEST['fecha'];
 $link             = $_REQUEST['link'];
-$ID_Manga         = $_REQUEST['ID_Manga'];
+$ID_Manga         = $_REQUEST['ID_Pendientes'];
 
 echo $link;
 echo "<br>";
