@@ -18,6 +18,7 @@ $estado      = $_REQUEST['fila13'];
 $link        = $_REQUEST['link'];
 $fecha_nueva = $_REQUEST['fila10'];
 $fecha_ultima = $_REQUEST['fila11'];
+$cantidad    = $_REQUEST['cantidad'];
 
 if (isset($_REQUEST["Anime"])) {
     $checkbox    = $_REQUEST['Anime'];
@@ -65,6 +66,10 @@ echo "Fecha Ultimo Capitulo : " . $fecha_ultima;
 echo "<br>";
 echo "Fecha Nuevo Capitulo : " . $fecha_nueva;
 echo "<br>";
+echo $cantidad;
+echo "<br>";
+$nueva_cantidad = $cantidad + 1;
+echo $nueva_cantidad;
 $Tabla = ucfirst($tabla);
 $Tabla4 = ucfirst($tabla4);
 
@@ -80,6 +85,28 @@ echo "<br>";
 echo "$dato1 existe en $tabla";
 echo "<br>";
 
+// Convierte la fecha a un timestamp
+$timestamp = strtotime(str_replace('-', '/', $fecha_nueva));
+
+// Array asociativo para traducir nombres de días
+$diasSemana = array(
+    'Monday'    => 'Lunes',
+    'Tuesday'   => 'Martes',
+    'Wednesday' => 'Miercoles',
+    'Thursday'  => 'Jueves',
+    'Friday'    => 'Viernes',
+    'Saturday'  => 'Sabado',
+    'Sunday'    => 'Domingo'
+);
+
+// Obtiene el nombre del día en español
+$nombreDia = date('l', $timestamp);
+$nombreDiaEspañol = $diasSemana[$nombreDia];
+
+
+echo $nombreDiaEspañol;
+echo "<br>";
+
 if ($fecha_antigua == $fecha_nueva) {
     echo "Las ultimas dos fechas son iguales";
 } else {
@@ -88,7 +115,9 @@ if ($fecha_antigua == $fecha_nueva) {
 
     //Hace el ingreso de datos en diferencias
     try {
-        $sql = "INSERT INTO $tabla7 (`$fila9`, `$fila12`,`$titulo4`) VALUES ('" . $idRegistros . "', '" . $dias . "', '" . $fecha_now . "');";
+
+        $sql = "INSERT INTO $tabla7 (`$fila9`, `$fila12`,`$titulo4`,`Dia`) VALUES
+        ('" . $idRegistros . "', '" . $dias . "', '" . $fecha_now . "','" . $nombreDiaEspañol . "');";
         $resultado = mysqli_query($conexion, $sql);
         echo $sql;
     } catch (PDOException $e) {
@@ -96,9 +125,46 @@ if ($fecha_antigua == $fecha_nueva) {
         echo "<br>";
         echo $sql;
     }
+    if ($nueva_cantidad % 5 == 0) {
+        echo "El número $nueva_cantidad es múltiplo de 5.<br>";
+
+        try {
+            $sql2 = "UPDATE $tabla SET $ver='NO' where $fila7='$idRegistros';";
+            $resultado = mysqli_query($conexion, $sql2);
+            echo $sql2 . "<br>";
+        } catch (PDOException $e) {
+            echo $e;
+            echo "<br>";
+            echo $sql2;
+        }
+    } else {
+        echo "El número $nueva_cantidad no es múltiplo de 5.<br>";
+    }
 }
 echo "<br>";
 
+echo $cantidad;
+echo "<br>";
+
+if ($cantidad <= 0) {
+    echo "igual a cero:" . $cantidad;
+    echo "<br>";
+    //Hace el ingreso de datos en diferencias
+    try {
+
+        $sql = "INSERT INTO $tabla7 (`$fila9`, `$fila12`,`$titulo4`,`Dia`) VALUES
+        ('" . $idRegistros . "', '" . $dias . "', '" . $fecha_now . "','" . $nombreDiaEspañol . "');";
+        $resultado = mysqli_query($conexion, $sql);
+        echo $sql;
+    } catch (PDOException $e) {
+        echo $e;
+        echo "<br>";
+        echo $sql;
+    }
+} else {
+    echo "mayor a cero:" . $cantidad;
+}
+echo "<br>";
 
 //Hace la actualizacion en mangas
 try {
@@ -112,7 +178,8 @@ try {
     `$fila13`='" . $estado . "',
     `$fila10`='" . $fecha_nueva . "',
     `$fila11`='" . $fecha_ultima . "',
-    `Anime`='" . $checkbox . "'
+    `Anime`='" . $checkbox . "',
+    `$fila17`=NOW()
     WHERE `$fila7`='" . $idRegistros . "'";
     $resultado = mysqli_query($conexion, $sql);
     echo $sql;

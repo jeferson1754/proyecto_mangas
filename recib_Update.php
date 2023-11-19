@@ -132,7 +132,7 @@ if ($fecha_antigua == $fecha_nueva) {
     try {
 
         $sql = "INSERT INTO $tabla7 (`$fila9`, `$fila12`,`$titulo4`,`Dia`) VALUES
-        ('" . $idRegistros . "', '" . $dias . "', '" . $nueva_fecha . "','" . $nombreDiaEspañol . "');";
+        ('" . $idRegistros . "', '" . $dias . "', '" . $fecha_now . "','" . $nombreDiaEspañol . "');";
         $resultado = mysqli_query($conexion, $sql);
         echo $sql;
     } catch (PDOException $e) {
@@ -168,7 +168,7 @@ if ($cantidad <= 0) {
     try {
 
         $sql = "INSERT INTO $tabla7 (`$fila9`, `$fila12`,`$titulo4`,`Dia`) VALUES
-        ('" . $idRegistros . "', '" . $dias . "', '" . $nueva_fecha . "','" . $nombreDiaEspañol . "');";
+        ('" . $idRegistros . "', '" . $dias . "', '" . $fecha_now . "','" . $nombreDiaEspañol . "');";
         $resultado = mysqli_query($conexion, $sql);
         echo $sql;
     } catch (PDOException $e) {

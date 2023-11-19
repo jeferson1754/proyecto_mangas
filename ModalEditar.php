@@ -24,7 +24,6 @@
 
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
         <input type="hidden" name="cantidad" value="<?php echo $mostrar[$titulo3]; ?>">
-        <input type="hidden" name="cantidad" value="<?php echo $mostrar[$titulo3]; ?>">
         <style>
           textarea {
             width: 460px;
