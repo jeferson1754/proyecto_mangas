@@ -15,7 +15,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
     <script src="https://kit.fontawesome.com/8846655159.js" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css?<?php echo time(); ?>">
     <title><?php echo ucfirst($tabla) ?>
     </title>
 </head>
@@ -31,18 +31,18 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
     <div class="col-sm">
         <!--- Formulario para registrar Cliente --->
         <form action="" method="GET">
-            <button type="button" class="btn btn-info " data-toggle="modal" data-target="#new">
+            <button type="button" class="btn btn-info mostrar" data-toggle="modal" data-target="#new">
                 Nuevo <?php echo ucfirst($tabla); ?>
             </button>
-            <button type="button" class="btn btn-info " onclick="myFunction2()">
+            <button type="button" class="btn btn-info mostrar" onclick="myFunction2()">
                 Busqueda
             </button>
-            <button type="button" class="btn btn-info " onclick="myFunction()">
+            <button type="button" class="btn btn-info ocultar" onclick="myFunction()">
                 Filtrar por Lista
             </button>
 
-            <button class="btn btn-outline-info" type="submit" name="sin-actividad"> Sin Actividad </button>
-            <button class="btn btn-outline-info" type="button" onclick="vistos()" name="marcar-vistos"> Marcar Vistos </button>
+            <button class="btn btn-outline-info ocultar" type="submit" name="sin-actividad"> Sin Actividad </button>
+            <button class="btn btn-outline-info mostrar" type="button" onclick="vistos()" name="marcar-vistos"> Marcar Vistos </button>
         </form>
         <div class="class-control" id="myDIV" style="display:none;">
             <form id="estado" action="" method="GET">
