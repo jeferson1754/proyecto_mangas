@@ -130,7 +130,7 @@ if ($fecha_antigua == $fecha_nueva) {
 
         try {
             $sql2 = "UPDATE $tabla SET $ver='NO' where $fila7='$idRegistros';";
-            //$resultado = mysqli_query($conexion, $sql2);
+            $resultado = mysqli_query($conexion, $sql2);
             echo $sql2 . "<br>";
         } catch (PDOException $e) {
             echo $e;
