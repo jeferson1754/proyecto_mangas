@@ -22,7 +22,7 @@ while ($rows = mysqli_fetch_array($dia)) {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/style.css?<?php echo time(); ?>">
     <title><?php echo ucfirst($tabla) ?>
     </title>
 </head>
@@ -35,24 +35,24 @@ while ($rows = mysqli_fetch_array($dia)) {
         <!--- Formulario para registrar Cliente --->
 
         <form action="" method="GET">
-            <button class="btn btn-outline-info" type="submit" name="enviar"> <b>HOY </b> </button>
-            <button class="btn btn-outline-info" type="submit" name="borrar"> <b>Borrar </b> </button>
+            <button class="btn btn-outline-info mostrar" type="submit" name="enviar"> <b>HOY </b> </button>
+            <button class="btn btn-outline-info mostrar" type="submit" name="borrar"> <b>Borrar </b> </button>
             <input type="hidden" name="accion" value="HOY">
 
 
-            <button type="button" class="btn btn-info " data-toggle="modal" data-target="#new">
+            <button type="button" class="btn btn-info ocultar" data-toggle="modal" data-target="#new">
                 Nuevo <?php echo ucfirst($tabla); ?>
             </button>
 
-            <button type="button" class="btn btn-info " onclick="myFunction()">
+            <button type="button" class="btn btn-info ocultar" onclick="myFunction()">
                 Filtrar
             </button>
 
-            <button type="button" class="btn btn-info " onclick="myFunction2()">
+            <button type="button" class="btn btn-info mostrar" onclick="myFunction2()">
                 Busqueda
             </button>
-            <button class="btn btn-outline-info" type="submit" name="link"> <b>Sin Link </b> </button>
-            <button type="button" class="btn btn-info " onclick="window.location.href = './horario.php'">Horario</button>
+            <button class="btn btn-outline-info ocultar" type="submit" name="link"> <b>Sin Link </b> </button>
+            <button type="button" class="btn btn-info  mostrar" onclick="window.location.href = './horario.php'">Horario</button>
         </form>
         <div class="class-control" id="myDIV" style="display:none;">
             <form action="" method="GET">
