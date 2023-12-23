@@ -167,6 +167,7 @@ if (isset($_POST['Finalizados'])) {
         $dato13 = $mostrar[$fila13];
         $dato17 = $mostrar[$fila17];
         $verif = $mostrar[$ver];
+        $anime = $mostrar["Anime"];
     }
 
     $sql1      = ("SELECT * FROM $tabla8 where $fila1='$dato1';");
@@ -198,12 +199,13 @@ if (isset($_POST['Finalizados'])) {
     echo "<br>";
     echo $verif;
     echo "<br>";
+    echo $anime . "<br>";
 
     if (mysqli_num_rows($consulta1) == 0) {
 
         try {
-            $sql = "INSERT INTO `$tabla8`(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila5`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$ver`,`$fila17`) VALUES
-            ( '" . $dato1 . "','" . $dato2 . "','" . $dato3 . "','" . $dato4 . "','" . $dato5 . "','" . $dato6 . "','" . $dato8 . "','" . $dato10 . "','" . $dato11 . "','" . $dato13 . "','" . $verif . "','" . $dato17 . "')";
+            $sql = "INSERT INTO `$tabla8`(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila5`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$ver`,`$fila17`,`Anime`) VALUES
+            ( '" . $dato1 . "','" . $dato2 . "','" . $dato3 . "','" . $dato4 . "','" . $dato5 . "','" . $dato6 . "','" . $dato8 . "','" . $dato10 . "','" . $dato11 . "','" . $dato13 . "','" . $verif . "','" . $dato17 . "','" . $anime . "')";
             $resultado = mysqli_query($conexion, $sql);
             echo $sql;
             echo "<br>";
