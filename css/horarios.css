@@ -34,14 +34,12 @@ tr:hover td {
 
 .auto-style3 {
     width: 96px;
-    background-color: #E9BCAC;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 32px
 }
 
 .auto-style4 {
     text-align: center;
-    width: 151px;
     font-size: 16px
 }
 
@@ -127,4 +125,73 @@ tr:hover td {
 
 .auto-style16 {
     height: 1257px;
+}
+
+.contenedor-flex {
+    display: flex;
+    justify-content: center;
+    font-size: large;
+}
+
+.base {
+    border: 1px solid #ddd;
+    width: 25%;
+    text-align: center;
+
+}
+
+header {
+    font-weight: bold;
+    font-size: 25px;
+    border: 1px solid #ddd;
+    height: 50px;
+
+    /* Flexbox para centrar tanto horizontal como verticalmente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.borde {
+    border: 1px solid #ddd;
+    height: 60px;
+
+    /* Flexbox para centrar tanto horizontal como verticalmente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.borde:hover {
+    background-color: #369681 !important;
+    color: white !important;
+}
+
+.Lunes {
+    background-color: #E9BCAC;
+}
+
+.Martes {
+    background-color: #B9CDD9;
+}
+
+.Miercoles {
+    background-color: #EBC6C8;
+}
+
+.Jueves {
+    background-color: #E4B1C2;
+}
+
+.Viernes {
+    background-color: #BFD5FD;
+}
+
+.Sabado {
+    background-color: #75E7FD;
+}
+
+.Domingo {
+    background-color: #E1FDD1;
 }

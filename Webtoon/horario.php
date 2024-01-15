@@ -11,7 +11,7 @@ require 'bd.php';
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
-    <link rel="stylesheet" href="../css/horarios.css">
+    <link rel=" stylesheet" href="../css/horarios.css?v=<?php echo time(); ?>">
     <title>Horario Webtoon
     </title>
 </head>
@@ -115,193 +115,35 @@ require 'bd.php';
                 echo "Error en la consulta";
             }
 
+            $dias = array('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo');
 
-            //Lunes
-            $LunesResultados = mysqli_fetch_all($resultados['Lunes'], MYSQLI_ASSOC);
-            $LunesResultados2 = mysqli_fetch_all($resultados2['Lunes'], MYSQLI_ASSOC);
+            foreach ($dias as $dia) {
+                $resultadosDia = mysqli_fetch_all($resultados[$dia], MYSQLI_ASSOC);
+                $resultadosDia2 = mysqli_fetch_all($resultados2[$dia], MYSQLI_ASSOC);
 
-            // Verificar si hay resultados
-            if (!empty($LunesResultados) && !empty($LunesResultados2)) {
-                // Iterar sobre los resultados
-                foreach ($LunesResultados2 as $mostrar2) {
+                // Verificar si hay resultados
+                if (!empty($resultadosDia) && !empty($resultadosDia2)) {
+                    // Iterar sobre los resultados
+                    foreach ($resultadosDia2 as $mostrar2) {
             ?>
-                    <tr>
-                        <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" class="auto-style3">
-                            <div class="auto-style8"><?php echo $mostrar2['Dias Emision'] ?></div>
-                        </td>
-                    <?php
-                }
+                        <tr>
+                            <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" class="auto-style3 <?php echo $dia ?>">
+                                <div class="auto-style8"><?php echo $mostrar2['Dias Emision'] ?></div>
+                            </td>
+                        <?php
+                    }
 
-                // Iterar sobre los resultados
-                foreach ($LunesResultados as $mostrar) {
-                    ?>
-                        <td><?php echo $mostrar['Nombre'] ?></td>
-                    </tr>
-                <?php
-                }
-            } //Fin Lunes
-
-            //Martes
-
-
-            $MartesResultados = mysqli_fetch_all($resultados['Martes'], MYSQLI_ASSOC);
-            $MartesResultados2 = mysqli_fetch_all($resultados2['Martes'], MYSQLI_ASSOC);
-
-            // Verificar si hay resultados
-            if (!empty($MartesResultados) && !empty($MartesResultados2)) {
-                // Iterar sobre los resultados
-                foreach ($MartesResultados2 as $mostrar2) {
-                ?>
-                    <tr>
-                        <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" class="auto-style9" style="background-color: #B9CDD9">
-                            <div class="auto-style8"><?php echo $mostrar2['Dias Emision'] ?></div>
-                        </td>
-                    <?php
-                }
-
-                // Iterar sobre los resultados
-                foreach ($MartesResultados as $mostrar) {
-                    ?>
-                        <td><?php echo $mostrar['Nombre'] ?></td>
-                    </tr>
+                    // Iterar sobre los resultados
+                    foreach ($resultadosDia as $mostrar) {
+                        ?>
+                            <td><?php echo $mostrar['Nombre'] ?></td>
+                        </tr>
             <?php
-                }
-            } //Fin Martes
-
-            ?>
-
-
-            <?php
-
-            //Miercoles
-            $MiercolesResultados = mysqli_fetch_all($resultados['Miercoles'], MYSQLI_ASSOC);
-            $MiercolesResultados2 = mysqli_fetch_all($resultados2['Miercoles'], MYSQLI_ASSOC);
-
-            // Verificar si hay resultados
-            if (!empty($MiercolesResultados) && !empty($MiercolesResultados2)) {
-                // Iterar sobre los resultados
-                foreach ($MiercolesResultados2 as $mostrar2) {
-            ?>
-                    <tr>
-                        <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" class="auto-style3" style="background-color: #EBC6C8">
-                            <div class="auto-style8"><?php echo $mostrar2['Dias Emision'] ?></div>
-                        </td>
-                    <?php
-                }
-
-                // Iterar sobre los resultados
-                foreach ($MiercolesResultados as $mostrar) {
-                    ?>
-                        <td><?php echo $mostrar['Nombre'] ?></td>
-                    </tr>
-                <?php
-                }
-            } //Fin Miercoles
-
-            //Jueves
-            $JuevesResultados = mysqli_fetch_all($resultados['Jueves'], MYSQLI_ASSOC);
-            $JuevesResultados2 = mysqli_fetch_all($resultados2['Jueves'], MYSQLI_ASSOC);
-
-            // Verificar si hay resultados
-            if (!empty($JuevesResultados) && !empty($JuevesResultados2)) {
-                // Iterar sobre los resultados
-                foreach ($JuevesResultados2 as $mostrar2) {
-                ?>
-                    <tr>
-                        <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" class="auto-style3" style="background-color: #E4B1C2">
-                            <div class="auto-style8"><?php echo $mostrar2['Dias Emision'] ?></div>
-                        </td>
-                    <?php
-                }
-
-                // Iterar sobre los resultados
-                foreach ($JuevesResultados as $mostrar) {
-                    ?>
-                        <td><?php echo $mostrar['Nombre'] ?></td>
-                    </tr>
-                <?php
-                }
-            }  //Fin Jueves
-
-
-            //Viernes
-            $ViernesResultados = mysqli_fetch_all($resultados['Viernes'], MYSQLI_ASSOC);
-            $ViernesResultados2 = mysqli_fetch_all($resultados2['Viernes'], MYSQLI_ASSOC);
-
-            // Verificar si hay resultados
-            if (!empty($ViernesResultados) && !empty($ViernesResultados2)) {
-                // Iterar sobre los resultados
-                foreach ($ViernesResultados2 as $mostrar2) {
-                ?>
-                    <tr>
-                        <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" class="auto-style3" style="background-color: #BFD5FD">
-                            <div class="auto-style8"><?php echo $mostrar2['Dias Emision'] ?></div>
-                        </td>
-                    <?php
-                }
-
-                // Iterar sobre los resultados
-                foreach ($ViernesResultados as $mostrar) {
-                    ?>
-                        <td><?php echo $mostrar['Nombre'] ?></td>
-                    </tr>
-                <?php
-                }
-            } //Fin Viernes
-
-            //Sabado
-            $SabadoResultados = mysqli_fetch_all($resultados['Sabado'], MYSQLI_ASSOC);
-            $SabadoResultados2 = mysqli_fetch_all($resultados2['Sabado'], MYSQLI_ASSOC);
-
-            // Verificar si hay resultados
-            if (!empty($SabadoResultados) && !empty($SabadoResultados2)) {
-                // Iterar sobre los resultados
-                foreach ($SabadoResultados2 as $mostrar2) {
-                ?>
-                    <tr>
-                        <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" class="auto-style3" style="background-color: #75E7FD">
-                            <div class="auto-style8"><?php echo $mostrar2['Dias Emision'] ?></div>
-                        </td>
-                    <?php
-                }
-
-                // Iterar sobre los resultados
-                foreach ($SabadoResultados as $mostrar) {
-                    ?>
-                        <td><?php echo $mostrar['Nombre'] ?></td>
-                    </tr>
-                <?php
-                }
+                    }
+                } // Fin del día
             }
-
-            //Fin Sabado
-
-            //Domingo
-            $domingoResultados = mysqli_fetch_all($resultados['Domingo'], MYSQLI_ASSOC);
-            $domingoResultados2 = mysqli_fetch_all($resultados2['Domingo'], MYSQLI_ASSOC);
-
-            // Verificar si hay resultados
-            if (!empty($domingoResultados) && !empty($domingoResultados2)) {
-                // Iterar sobre los resultados
-                foreach ($domingoResultados2 as $mostrar2) {
-                ?>
-                    <tr>
-                        <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" class="auto-style3" style="background-color: #E1FDD1">
-                            <div class="auto-style8"><?php echo $mostrar2['Dias Emision'] ?></div>
-                        </td>
-                    <?php
-                }
-
-                // Iterar sobre los resultados
-                foreach ($domingoResultados as $mostrar) {
-                    ?>
-                        <td><?php echo $mostrar['Nombre'] ?></td>
-                    </tr>
-            <?php
-                }
-            }
-
             ?>
+
 
 
         </table>
