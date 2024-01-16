@@ -1,6 +1,7 @@
 .main-container {
     max-width: 600%;
     margin: 30px 20px;
+    display: none;
 }
 
 table {
@@ -113,6 +114,7 @@ tr:hover td {
 .auto-style14 {
     display: inline-block;
     margin-right: 5px;
+    margin-top: 20px;
     /* Ajusta el valor según sea necesario */
 }
 
@@ -131,6 +133,7 @@ tr:hover td {
     display: flex;
     justify-content: center;
     font-size: large;
+    margin: 0 20px;
 }
 
 .base {
@@ -194,4 +197,14 @@ header {
 
 .Domingo {
     background-color: #E1FDD1;
+}
+
+@media screen and (max-width: 800px) {
+    .main-container {
+        display: inline;
+    }
+
+    .contenedor-flex {
+        display: none;
+    }
 }

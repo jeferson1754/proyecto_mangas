@@ -1,8 +1,16 @@
 <?php
-
 require 'bd.php';
 
+// Obtener la última temporada y año
+$num_query = "SELECT * FROM `num_horario` ORDER BY `num_horario`.`Num` DESC LIMIT 1";
+$num_result = mysqli_query($conexion, $num_query);
+
+while ($mostrar = mysqli_fetch_array($num_result)) {
+    $temp = strtoupper($mostrar['Temporada']);
+    $ano = $mostrar['Ano'];
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,46 +18,23 @@ require 'bd.php';
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css?v=<?php echo time(); ?>">
     <link rel=" stylesheet" href="../css/horarios.css?v=<?php echo time(); ?>">
-    <title>Horario Webtoon
-    </title>
+    <title>Horario Webtoon</title>
+
 </head>
 
 <body>
 
-    <?php
-    include('../menu.php');
-
-    // Obtener el último registro de num_horario
-    $query = "SELECT Temporada, Ano FROM num_horario ORDER BY Num DESC LIMIT 1";
-    $resultado = mysqli_query($conexion, $query);
-
-    // Verificar si hay resultados
-    if ($mostrar = mysqli_fetch_assoc($resultado)) {
-        // Obtener los valores
-        $temp = $mostrar['Temporada'];
-        $ano = $mostrar['Ano'];
-
-        // Convertir a mayúsculas
-        $mayusculas = strtoupper($temp);
-
-        // Puedes utilizar $mayusculas y $ano según tus necesidades
-    } else {
-        // Manejar errores si es necesario
-        echo "No se encontraron resultados";
-    }
-
-    // Liberar memoria del resultado
-    mysqli_free_result($resultado);
-
-    ?>
+    <?php include('../menu.php'); ?>
 
     <div class="col-sm">
-
-        <!--- Formulario para registrar Cliente --->
-        <div class="auto-style12" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 22px; font-weight: bold;"><?php echo $ano . " " . $mayusculas; ?></div>
-        <div class="auto-style11"><span style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 62px; ">HORARIO DE WEBTOON</span></div>
+        <div class="auto-style12" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 22px; font-weight: bold;">
+            <?php echo $ano . " " . $temp; ?>
+        </div>
+        <div class="auto-style11"><span style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 62px; ">
+                <span>HORARIO DE WEBTOON</span>
+        </div>
     </div>
 
     <div class="main-container">
@@ -115,8 +100,6 @@ require 'bd.php';
                 echo "Error en la consulta";
             }
 
-            $dias = array('Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo');
-
             foreach ($dias as $dia) {
                 $resultadosDia = mysqli_fetch_all($resultados[$dia], MYSQLI_ASSOC);
                 $resultadosDia2 = mysqli_fetch_all($resultados2[$dia], MYSQLI_ASSOC);
@@ -142,12 +125,57 @@ require 'bd.php';
                     }
                 } // Fin del día
             }
+
+            foreach ($resultados as $resultado) {
+                mysqli_free_result($resultado);
+            }
+
+            foreach ($resultados2 as $resultado) {
+                mysqli_free_result($resultado);
+            }
             ?>
-
-
 
         </table>
     </div>
+
+    <div class="contenedor-flex">
+        <?php
+
+        // Inicializar el array para almacenar los resultados
+        $resultados = [];
+
+        // Consultas y resultados
+        foreach ($dias as $dia) {
+            $consulta = "SELECT Nombre, `Dias Emision` FROM `webtoon` WHERE Estado='Emision' AND `Dias Emision`='$dia' ORDER BY LENGTH(Nombre) DESC";
+            $resultado = mysqli_query($conexion, $consulta);
+
+            // Verificar si hay resultados
+            if ($resultado) {
+                // Guardar los resultados en el array
+                $resultados[$dia] = $resultado;
+            } else {
+                // Manejar errores si es necesario
+                echo "Error en la consulta para $dia";
+            }
+        }
+
+        foreach ($dias as $dia) {
+            $resultadosDia = mysqli_fetch_all($resultados[$dia], MYSQLI_ASSOC);
+
+            if (!empty($resultadosDia)) {
+                echo "<article class='base'>";
+                echo "<header class='$dia'>$dia</header>";
+
+                foreach ($resultadosDia as $mostrar) {
+                    echo "<div class='borde'>" . $mostrar['Nombre'] . "</div>";
+                }
+
+                echo "</article>";
+            }
+        }
+        ?>
+    </div>
+
     <div style="text-align: center;">
         <h2 class="auto-style14">Total Webtoon Semana : <?php echo $final_webtoon ?> </h2>
     </div>
@@ -155,15 +183,6 @@ require 'bd.php';
     <br>
 </body>
 <?php
-
-foreach ($resultados as $resultado) {
-    mysqli_free_result($resultado);
-}
-
-foreach ($resultados2 as $resultado) {
-    mysqli_free_result($resultado);
-}
-
 $conexion = null;
 ?>
 
