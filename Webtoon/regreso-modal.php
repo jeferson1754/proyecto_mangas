@@ -10,7 +10,7 @@ if (isset($_GET['borrar'])) {
    $lista = $estado;
    $valor = $estado;
 } else if (isset($_GET['buscar'])) {
-   $link = "./?busqueda=$busqueda&buscar=";
+   $link = "./?busqueda_webtoon=$busqueda&buscar=";
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";

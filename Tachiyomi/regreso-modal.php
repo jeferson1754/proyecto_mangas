@@ -1,9 +1,9 @@
 <?php
 if (isset($_GET['borrar'])) {
-    $link = "./?busqueda=&borrar=";
+    $link = "./?busqueda_tachi=&borrar=";
     echo "<input type='hidden' name='link' value='$link'>";
  }else if (isset($_GET['buscar'])) {
-    $link = "./?busqueda=$busqueda&buscar=&accion=Busqueda";
+    $link = "./?busqueda_tachi=$busqueda&buscar=&accion=Busqueda";
     echo "<input type='hidden' name='link' value='$link'>";
 }else if (isset($_GET['filtrar'])) {
     $link = "./?estado=$estado&accion=Filtro1&filtrar=";

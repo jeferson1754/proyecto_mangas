@@ -1,11 +1,11 @@
 <?php
 if (isset($_GET['borrar'])) {
-    $link = "./?busqueda=&borrar=";
+    $link = "./?busqueda_pendientes_manga=&borrar=";
     echo "<input type='hidden' name='link' value='$link'>";
     $lista="Seleccione";
     $valor="";
  }else if (isset($_GET['buscar'])) {
-    $link = "./?busqueda=$busqueda&buscar=&accion=Busqueda";
+    $link = "./?busqueda_pendientes_manga=$busqueda&buscar=&accion=Busqueda";
     echo "<input type='hidden' name='link' value='$link'>";
     $lista="Seleccione";
     $valor="";
