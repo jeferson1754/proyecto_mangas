@@ -153,7 +153,7 @@ if (!isset($_COOKIE["consulta_realizada"])) {
 
         <div class="class-control" id="myDIV2" style="display:none;">
             <form action="" method="GET">
-                <input class="form-control" type="text" name="busqueda" style="width:auto;">
+                <input class="form-control" type="text" name="busqueda_manga" style="width:auto;">
 
                 <button class="btn btn-outline-info" type="submit" name="buscar"> <b>Buscar </b> </button>
                 <button class="btn btn-outline-info" type="submit" name="borrar"> <b>Borrar </b> </button>
@@ -209,10 +209,10 @@ if (!isset($_COOKIE["consulta_realizada"])) {
             $capi = "1";
             $conteo = " : " . $totalRegistros;
         } else if (isset($_GET['buscar'])) {
-            if (isset($_GET['busqueda'])) {
+            if (isset($_GET['busqueda_manga'])) {
 
 
-                $busqueda   = $_REQUEST['busqueda'];
+                $busqueda   = $_REQUEST['busqueda_manga'];
                 $where = "WHERE $fila1 LIKE '%$busqueda%' $order limit 10";
                 $accion1 = $_REQUEST['accion'];
                 $capi = "1";

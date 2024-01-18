@@ -67,7 +67,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
 
         <div class="class-control" id="myDIV2" style="display:none;">
             <form action="" method="GET">
-                <input class="form-control" type="text" name="busqueda" style="width:auto;">
+                <input class="form-control" type="text" name="busqueda_pendientes_manga" style="width:auto;">
 
                 <button class="btn btn-outline-info" type="submit" name="buscar"> <b>Buscar </b> </button>
                 <button class="btn btn-outline-info" type="submit" name="borrar"> <b>Borrar </b> </button>
@@ -102,10 +102,9 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
             $estado = "Pendientes";
             $conteo = " : " . $totalRegistros;
         } else if (isset($_GET['buscar'])) {
-            if (isset($_GET['busqueda'])) {
+            if (isset($_GET['busqueda_pendientes_manga'])) {
 
-
-                $busqueda   = $_REQUEST['busqueda'];
+                $busqueda   = $_REQUEST['busqueda_pendientes_manga'];
                 $where = "WHERE $fila1 LIKE '%$busqueda%' ORDER BY `$tabla`.`Fecha_Cambio1` DESC limit 100";
                 $accion1 = $_REQUEST['accion'];
                 $sql2 = "SELECT COUNT(*) AS total_registros from $tabla $where";

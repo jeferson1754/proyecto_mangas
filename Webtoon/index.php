@@ -74,7 +74,7 @@ while ($rows = mysqli_fetch_array($dia)) {
         </div>
         <div class="class-control" id="myDIV2" style="display:none;">
             <form action="" method="GET">
-                <input class="form-control" type="text" name="busqueda" style="width:auto;">
+                <input class="form-control" type="text" name="busqueda_webtoon" style="width:auto;">
 
                 <button class="btn btn-outline-info" type="submit" name="buscar"> <b>Buscar </b> </button>
                 <button class="btn btn-outline-info" type="submit" name="borrar"> <b>Borrar </b> </button>
@@ -154,8 +154,8 @@ while ($rows = mysqli_fetch_array($dia)) {
                 $where = "WHERE $fila8='$estado' ORDER BY `$tabla`.`$fila7` DESC  limit 100";
             }
         } else if (isset($_GET['buscar'])) {
-            if (isset($_GET['busqueda'])) {
-                $busqueda   = $_REQUEST['busqueda'];
+            if (isset($_GET['busqueda_webtoon'])) {
+                $busqueda   = $_REQUEST['busqueda_webtoon'];
 
 
                 $where = "WHERE $fila1 LIKE '%$busqueda%' ORDER BY `$tabla`.`$fila7` DESC  limit 100";

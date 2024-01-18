@@ -61,7 +61,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
         </div>
         <div class="class-control" id="myDIV2" style="display:none;">
             <form action="" method="GET">
-                <input class="form-control" type="text" name="busqueda" style="width:auto;">
+                <input class="form-control" type="text" name="busqueda_tachi" style="width:auto;">
 
                 <button class="btn btn-outline-info" type="submit" name="buscar"> <b>Buscar </b> </button>
                 <button class="btn btn-outline-info" type="submit" name="borrar"> <b>Borrar </b> </button>
@@ -76,8 +76,8 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
             $where = "WHERE $fila5 > 0 ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
             $estado = "Tachiyomi";
         } else if (isset($_GET['buscar'])) {
-            if (isset($_GET['busqueda'])) {
-                $busqueda   = $_REQUEST['busqueda'];
+            if (isset($_GET['busqueda_tachi'])) {
+                $busqueda   = $_REQUEST['busqueda_tachi'];
                 $where = "WHERE $fila1 LIKE '%$busqueda%' ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
             }
             $estado = "Busqueda";
