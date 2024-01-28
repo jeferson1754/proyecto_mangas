@@ -69,7 +69,7 @@ if (mysqli_num_rows($consulta) == 0) {
 
 
     try {
-        $sql = "INSERT INTO $tabla(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$ver`,`Anime`) VALUES( '" . $dato1 . "','" . $dato2 . "','" . $dato3 . "','" . $dato4 . "','" . $dato6 . "','" . $dato8 . "','" . $fecha_nueva . "','" . $fecha_ultima . "','" . $estado . "','NO','" . $checkbox . "')";
+        $sql = "INSERT INTO $tabla(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$ver`,`Anime`,`$fila17`) VALUES( '" . $dato1 . "','" . $dato2 . "','" . $dato3 . "','" . $dato4 . "','" . $dato6 . "','" . $dato8 . "','" . $fecha_nueva . "','" . $fecha_ultima . "','" . $estado . "','NO','" . $checkbox . "',NOW())";
         $resultado = mysqli_query($conexion, $sql);
         echo $sql;
         echo "<br>";

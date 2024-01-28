@@ -5,20 +5,6 @@ include 'upa.php';
 $fecha_actual = date('Y-m-d');
 $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
 
-/*
-// Verificar si la cookie "consulta_realizada" está establecida
-if (!isset($_COOKIE["consulta_realizada"])) {
-    // Si la cookie no está establecida, realizar la consulta SQL
-    // Aquí debes agregar tu lógica para realizar la consulta
-    $sql = "UPDATE `webtoon` SET `Capitulos Totales`=`Capitulos Totales`+1 WHERE `Dias Emision`='$day' and Estado='Emision';";
-    $resultado = mysqli_query($conexion, $sql);
-
-    $sql2 = "UPDATE `webtoon` SET `Faltantes`=`Capitulos Totales`-`Capitulos Vistos`;";
-    $resultado2 = mysqli_query($conexion, $sql2);
-    // Después de realizar la consulta, establece una cookie que expire en 24 horas
-    setcookie("consulta_realizada", "si", time() + 86400); // 86400 segundos en un día
-}
-*/
 ?>
 <!DOCTYPE html>
 <html lang="en">

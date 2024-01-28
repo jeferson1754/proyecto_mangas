@@ -28,10 +28,9 @@
 
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Fecha de Registro</label>
-            <input type="datetime" id="fecha_actual" name="fecha_actual" class="form-control" value="<?php echo $mostrar['Fecha']; ?>">
-            <?php //echo $fecha_actual; 
-            ?>
+            <input type="datetime-local" id="fecha_actual" name="fecha_actual" class="form-control" value="<?php echo $mostrar['Fecha']; ?>">
           </div>
+
 
 
           <?php

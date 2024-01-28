@@ -41,7 +41,6 @@
     } else {
         $diaMasRepetido = "Indefinido";
         $cantidadRepeticiones = "0";
-        echo "No se encontraron resultados.";
     }
 
     while ($fila1 = mysqli_fetch_assoc($resultado1)) {
