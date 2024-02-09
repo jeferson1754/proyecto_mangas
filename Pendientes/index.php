@@ -14,8 +14,8 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <script src="https://kit.fontawesome.com/8846655159.js" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
     <link rel="stylesheet" type="text/css" href="../css/checkbox.css">
     <title><?php echo $titulo7; ?>
     </title>
@@ -316,7 +316,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
 
 
                         <td>
-                            <a href="./?busqueda=<?php echo urlencode($mostrar[$fila1]); ?>&buscar=&accion=Busqueda" target="_blanck">
+                            <a href="./?busqueda_pendientes_manga=<?php echo urlencode($mostrar[$fila1]); ?>&buscar=&accion=Busqueda" target="_blanck">
                                 <button type="button" class="btn btn-info">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>
@@ -349,8 +349,8 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 
-        <script src="./js/popper.min.js"></script>
-        <script src="./js/bootstrap.min.js"></script>
+        <script src="../js/popper.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             $(document).ready(function() {
                 $('#example').DataTable({

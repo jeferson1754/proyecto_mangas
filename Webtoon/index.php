@@ -87,62 +87,31 @@ while ($rows = mysqli_fetch_array($dia)) {
 
         $busqueda = "";
 
-        if ($day == "Monday") {
+        // Mapeo de días de la semana en inglés a español
+        $dias_semana = array(
+            "Monday" => "Lunes",
+            "Tuesday" => "Martes",
+            "Wednesday" => "Miércoles",
+            "Thursday" => "Jueves",
+            "Friday" => "Viernes",
+            "Saturday" => "Sábado",
+            "Sunday" => "Domingo"
+        );
 
-            $week = "Lunes";
-        } else if ($day == "Tuesday") {
-
-            $week = "Martes";
-
-            //$where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'AND $fila8 ='Emision'";
-        } else if ($day == "Wednesday") {
-
-            $week = "Miercoles";
-
-            //$where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'AND $fila8 ='Emision'";
-        } else if ($day == "Thursday") {
-
-            $week = "Jueves";
-
-            //$where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'AND $fila8 ='Emision'";
-        } else if ($day == "Friday") {
-
-            $week = "Viernes";
-
-            //$where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'AND $fila8 ='Emision'";
-        } else if ($day == "Saturday") {
-
-            $week = "Sabado";
-
-            //$where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'AND $fila8 ='Emision'";
-        } else if ($day == "Sunday") {
-
-            $week = "Domingo";
-
-            //$where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'AND $fila8 ='Emision'";
+        // Verifica si el día está presente en el array y establece el equivalente en español
+        if (array_key_exists($day, $dias_semana)) {
+            $week = $dias_semana[$day];
         } else {
-            echo $day;
+            // Mensaje de error si el día no se encuentra en el array
+            echo "Día no válido: " . $day;
         }
+
         //echo $week;
         $where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'AND $fila8 ='Emision' ORDER BY `$tabla`.`$fila7` DESC limit 100;";
 
         if (isset($_GET['enviar'])) {
 
-            if ($week == "Lunes") {
-                $where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'";
-            } else if ($week == "Martes") {
-                $where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'";
-            } else if ($week == "Miercoles") {
-                $where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'";
-            } else if ($week == "Jueves") {
-                $where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'";
-            } else if ($week == "Viernes") {
-                $where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'";
-            } else if ($week == "Sabado") {
-                $where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'";
-            } else if ($week == "Domingo") {
-                $where = "WHERE `$tabla`.`$fila6` LIKE'%" . $week . "%'";
-            }
+            $where = "WHERE `$tabla`.`$fila6` LIKE '%" . $week . "%'";
         } else if (isset($_GET['borrar'])) {
             $busqueda = "";
 
@@ -156,7 +125,6 @@ while ($rows = mysqli_fetch_array($dia)) {
         } else if (isset($_GET['buscar'])) {
             if (isset($_GET['busqueda_webtoon'])) {
                 $busqueda   = $_REQUEST['busqueda_webtoon'];
-
 
                 $where = "WHERE $fila1 LIKE '%$busqueda%' ORDER BY `$tabla`.`$fila7` DESC  limit 100";
             }
@@ -228,8 +196,8 @@ while ($rows = mysqli_fetch_array($dia)) {
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 
-        <script src="./js/popper.min.js"></script>
-        <script src="./js/bootstrap.min.js"></script>
+        <script src="../js/popper.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             $(document).ready(function() {
                 $('#example').DataTable({

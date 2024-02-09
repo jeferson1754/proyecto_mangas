@@ -110,7 +110,7 @@ while ($mostrar = mysqli_fetch_array($num_result)) {
                     foreach ($resultadosDia2 as $mostrar2) {
             ?>
                         <tr>
-                            <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" class="auto-style3 <?php echo $dia ?>">
+                            <td rowspan="<?php echo $mostrar2['COUNT(`Dias Emision`)'] ?>" claszz="auto-style3 <?php echo $dia ?>">
                                 <div class="auto-style8"><?php echo $mostrar2['Dias Emision'] ?></div>
                             </td>
                         <?php

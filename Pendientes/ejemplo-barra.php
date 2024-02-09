@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <script src="https://kit.fontawesome.com/8846655159.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
 </head>
 
 <body>
@@ -383,8 +383,8 @@
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="./js/popper.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
 
     <?php
     // Consulta SQL para obtener los datos del gráfico
