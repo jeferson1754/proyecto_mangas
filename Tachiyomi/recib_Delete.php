@@ -12,7 +12,6 @@ $lista       = $_REQUEST['lista'];
 $link        = $_REQUEST['link'];
 
 if (isset($_POST['Tachiyomi'])) {
-
     if ($lista == "Sin Lista") {
         echo "Manga sin Lista <br>";
         echo '<script>
@@ -29,42 +28,37 @@ if (isset($_POST['Tachiyomi'])) {
         try {
             $sql = "DELETE FROM `$tabla` WHERE $fila7='$idRegistros';";
             $resultado = mysqli_query($conexion, $sql);
-            echo $sql;
-            echo "<br>";
+            echo $sql . "<br>";
+
+            echo '<script>
+            Swal.fire({
+                icon: "success",
+                title: "Elimando registro de ' . $nombre . ' en ' . $tabla . '",
+                confirmButtonText: "OK"
+            }).then(function() {
+                window.location = "' . $link . '"; 
+            });
+            </script>';
         } catch (PDOException $e) {
-            echo $sql;
-            echo "<br>";
+            echo $sql . "<br>";
             echo $e;
         }
-
-        echo '<script>
-        Swal.fire({
-            icon: "success",
-            title: "Elimando registro de ' . $nombre . ' en ' . $tabla . '",
-            confirmButtonText: "OK"
-        }).then(function() {
-            window.location = "' . $link . '"; 
-        });
-        </script>';
     }
 } else if (isset($_POST['Pendientes'])) {
 
-    $sql      = ("SELECT * FROM $tabla2 where $fila7='$idManga';");
-    echo $sql;
-    echo "<br>";
+    $sql = "SELECT * FROM `$tabla2` WHERE `$fila7`='$idManga';";
+    echo $sql . "<br>";
     $consulta = mysqli_query($conexion, $sql);
 
-    $query  = ("SELECT * FROM $tabla7 where $fila9='$idManga';");
-    echo $query;
-    echo "<br>";
-    $resultado3  = mysqli_query($conexion, $query);
+    $query = "SELECT * FROM `$tabla7` WHERE `$fila9`='$idManga';";
+    echo $query . "<br>";
+    $resultado3 = mysqli_query($conexion, $query);
 
-    //Agranda la primera letra de la varible
+    // Agranda la primera letra de la variable
     $Tabla = ucfirst($tabla);
     $Tabla2 = ucfirst($tabla2);
 
-    while ($mostrar = mysqli_fetch_array($consulta)) {
-
+    if ($mostrar = mysqli_fetch_array($consulta)) {
         $dato1 = $mostrar[$fila1];
         $dato2 = $mostrar[$fila2];
         $dato3 = $mostrar[$fila3];
@@ -77,134 +71,97 @@ if (isset($_POST['Tachiyomi'])) {
         $dato12 = $mostrar[$fila12];
     }
 
-    $sql1      = ("SELECT * FROM $tabla8 where $fila1='$dato1';");
+    $sql1 = "SELECT * FROM `$tabla8` WHERE `$fila1`='$dato1';";
     $consulta1 = mysqli_query($conexion, $sql1);
-    echo $sql1;
-    echo "<br>";
+    echo $sql1 . "<br>";
 
-    echo $dato1;
-    echo "<br>";
-    echo $dato2;
-    echo "<br>";
-    echo $dato3;
-    echo "<br>";
-    echo $dato4;
-    echo "<br>";
-    echo $dato5;
-    echo "<br>";
-    echo $dato6;
-    echo "<br>";
-    echo $dato8;
-    echo "<br>";
-    echo $dato10;
-    echo "<br>";
-    echo $dato11;
-    echo "<br>";
-    echo $dato12;
-    echo "<br>";
+    echo $dato1 . "<br>";
+    echo $dato2 . "<br>";
+    echo $dato3 . "<br>";
+    echo $dato4 . "<br>";
+    echo $dato5 . "<br>";
+    echo $dato6 . "<br>";
+    echo $dato8 . "<br>";
+    echo $dato10 . "<br>";
+    echo $dato11 . "<br>";
+    echo $dato12 . "<br>";
+
 
 
     if (mysqli_num_rows($consulta1) == 0) {
 
         try {
             $sql = "INSERT INTO `$tabla8`(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila5`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila12`,`$ver`) VALUES
-            ( '" . $dato1 . "','" . $dato2 . "','" . $dato3 . "','" . $dato4 . "','" . $dato5 . "','" . $dato6 . "','" . $dato8 . "','" . $dato10 . "','" . $dato11 . "','" . $dato12 . "','NO')";
+            ('$dato1','$dato2','$dato3','$dato4','$dato5','$dato6','$dato8','$dato10','$dato11','$dato12','NO')";
             $resultado = mysqli_query($conexion, $sql);
-            echo $sql;
-            echo "<br>";
+            echo $sql . "<br>";
         } catch (PDOException $e) {
-            echo $e;
-            echo "<br>";
-            echo $sql;
+            echo $e . "<br>";
+            echo $sql . "<br>";
         }
 
         try {
             $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "UPDATE $tabla8 SET `$fila5`= (`$fila4`-`$fila3`)";
+            $sql = "UPDATE `$tabla8` SET `$fila5`= (`$fila4`-`$fila3`)";
             $conn->exec($sql);
-            echo $sql;
-            echo "<br>";
+            echo $sql . "<br>";
         } catch (PDOException $e) {
             $conn = null;
-            echo $e;
-            echo "<br>";
-            echo $sql;
+            echo $e . "<br>";
+            echo $sql . "<br>";
         }
 
-        try {
-            $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "DELETE FROM `$tabla` WHERE $fila7='$idRegistros';";
-            $conn->exec($sql);
-            echo $sql;
-            echo "<br>";
-        } catch (PDOException $e) {
-            $conn = null;
-            echo $e;
-            echo "<br>";
-            echo $sql;
+        $deleteQueries = [
+            "DELETE FROM `$tabla` WHERE `$fila7`='$idRegistros';",
+            "DELETE FROM `$tabla2` WHERE `$fila7`='$idManga';"
+        ];
+
+        foreach ($deleteQueries as $deleteQuery) {
+            try {
+                $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
+                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $conn->exec($deleteQuery);
+                echo $deleteQuery . "<br>";
+            } catch (PDOException $e) {
+                $conn = null;
+                echo $e . "<br>";
+                echo $deleteQuery . "<br>";
+            }
         }
 
-        try {
-            $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "DELETE FROM `$tabla2` WHERE $fila7='$idManga';";
-            $conn->exec($sql);
-            echo $sql;
-            echo "<br>";
-        } catch (PDOException $e) {
-            $conn = null;
-            echo $e;
-            echo "<br>";
-            echo $sql;
-        }
 
         // Verificar si hay resultados
         if (mysqli_num_rows($resultado3) > 0) {
-            // Arreglo para almacenar los resultados
-            $resultados = array();
-
-            // Recorrer los resultados y guardarlos en el arreglo
-            while ($fila = mysqli_fetch_assoc($resultado3)) {
-                $resultados[] = $fila;
-            }
-
-            //Busca el id de la manga recien insertado
-            $consulta1 = "SELECT * FROM `$tabla8` where Nombre='$dato1'";
+            // Buscar el ID de la manga recién insertado
+            $consulta1 = "SELECT * FROM `$tabla8` WHERE Nombre = '$dato1'";
             $resultado1 = mysqli_query($conexion, $consulta1);
-            echo $consulta1;
-            echo "<br>";
+            $fila1 = mysqli_fetch_assoc($resultado1);
+            $iden = $fila1['ID'];
 
-            while ($fila1 = mysqli_fetch_assoc($resultado1)) {
-                $iden = $fila1['ID'];
-            }
+            // Preparar la consulta de inserción en la nueva tabla
+            $insertQuery = "INSERT INTO $tabla9 ($fila15, $fila13, $titulo4) VALUES ";
 
-            echo "ID :" . $iden;
-            echo "<br>";
+            // Arreglo para almacenar los valores de inserción
+            $valores = array();
 
-            // Insertar los resultados en otra tabla
-            foreach ($resultados as $fila) {
+            // Recorrer los resultados y guardar los valores de inserción en el arreglo
+            while ($fila = mysqli_fetch_assoc($resultado3)) {
                 $columna1 = $fila['Diferencia'];
                 $columna2 = $fila['Fecha'];
-
-                // Consulta SQL de inserción en la nueva tabla
-                $insertQuery = "INSERT INTO $tabla9 ($fila15,$fila13,$titulo4) VALUES('$iden','$columna1', '$columna2')";
-                /*
-                echo $fila['Diferencia'];
-                echo "<br>";
-                echo $fila['Fecha'];
-                echo "<br>";
-                echo $insertQuery;
-                echo "<br>";
-                */
-                // Ejecutar la consulta de inserción
-                $resultado2 = mysqli_query($conexion, $insertQuery);
+                $valores[] = "('$iden', '$columna1', '$columna2')";
             }
+
+            // Combinar los valores de inserción en una cadena
+            $insertQuery .= implode(",", $valores);
+
+            // Ejecutar la consulta de inserción
+            $resultado2 = mysqli_query($conexion, $insertQuery);
 
             echo "Datos insertados correctamente en la nueva tabla.";
             echo "<br>";
 
+            // Intentar eliminar los registros de la tabla $tabla7
             try {
                 $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
                 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -220,7 +177,6 @@ if (isset($_POST['Tachiyomi'])) {
         } else {
             echo "No se encontraron resultados.";
         }
-
         // Liberar memoria
         mysqli_free_result($resultado3);
 

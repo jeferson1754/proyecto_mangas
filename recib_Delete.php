@@ -6,409 +6,181 @@
 <?php
 include 'bd.php';
 
-$idRegistros      = $_REQUEST['id'];
-$nombre           = $_REQUEST['name'];
-$link             = $_REQUEST['link'];
+$idRegistros = $_REQUEST['id'];
+$nombre = $_REQUEST['name'];
+$link = $_REQUEST['link'];
 
+$query = "SELECT * FROM `$tabla7` WHERE `$fila9`='$idRegistros';";
+$resultado3 = mysqli_query($conexion, $query);
 
-$Tabla = ucfirst($tabla);
-$Tabla4 = ucfirst($tabla4);
+// Mapeo de días de la semana en inglés a español
+$dias_semana = array(
+    "Monday" => "Lunes",
+    "Tuesday" => "Martes",
+    "Wednesday" => "Miércoles",
+    "Thursday" => "Jueves",
+    "Friday" => "Viernes",
+    "Saturday" => "Sábado",
+    "Sunday" => "Domingo"
+);
+
 if (isset($_POST['Finalizados'])) {
-    //Agranda la primera letra de la varible
-
-    $sql = ("SELECT * FROM $tabla WHERE $fila7='$idRegistros';");
-    $sql2 = ("SELECT * FROM $tabla4 where $fila9='$idRegistros';");
-
-    $consulta1    = mysqli_query($conexion, $sql2);
-    $consulta      = mysqli_query($conexion, $sql);
-
-    //Busca el fecha de la ultima actualizacion en mangas
-    $sql3 = ("SELECT * FROM $tabla where $fila7='$idRegistros';");
-    $consulta2 = mysqli_query($conexion, $sql3);
-
-    //Saca la ultima fecha registrada
-    while ($mostrar = mysqli_fetch_array($consulta2)) {
-
-        $dato1 = $mostrar[$fila1];
-        $dato2 = $mostrar[$fila2];
-        $dato3 = $mostrar[$fila3];
-        $dato4 = $mostrar[$fila4];
-        $dato5 = $mostrar[$fila5];
-        $dato6 = $mostrar[$fila6];
-        $dato8 = $mostrar[$fila8];
-        $dato10 = $mostrar[$fila10];
-        $dato11 = $mostrar[$fila11];
-        $dato13 = $mostrar[$fila13];
+    // Verifica si el día actual está presente en el array y establece el equivalente en español
+    if (array_key_exists($day, $dias_semana)) {
+        $week = $dias_semana[$day];
     }
 
-    echo $dato1;
-    echo "<br>";
-    echo $dato2;
-    echo "<br>";
-    echo $dato3;
-    echo "<br>";
-    echo $dato4;
-    echo "<br>";
-    echo $dato5;
-    echo "<br>";
-    echo $dato6;
-    echo "<br>";
-    echo $dato8;
-    echo "<br>";
-    echo $dato10;
-    echo "<br>";
-    echo $dato11;
-    echo "<br>";
-    echo $dato13;
-    echo "<br>";
-    echo $idRegistros;
-    echo "<br>";
-
-    if ($dato5 == 0) {
-        echo "El manga no tiene capitulos faltantes";
-        echo "<br>";
-        //Hace la actualizacion en mangas
-        try {
-            $sql = "INSERT INTO `$tabla5`(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila5`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$fila14`,`$fila16`) VALUES
-            ('" . $dato1 . "','" . $dato2 . "','" . $dato3 . "','" . $dato4 . "','" . $dato5 . "','" . $dato6 . "','Finalizado','" . $dato10 . "','" . $dato11 . "','" . $dato13 . "','"               . $idRegistros . "','manga')";
-            $resultado = mysqli_query($conexion, $sql);
-            echo $sql;
-            echo "<br>";
-        } catch (PDOException $e) {
-            echo $e;
-            echo "<br>";
-            echo $sql;
-        }
-
-        try {
-            $sql = "DELETE FROM `$tabla` WHERE $fila7='$idRegistros';";
-            $resultado = mysqli_query($conexion, $sql);
-            echo $sql;
-        } catch (PDOException $e) {
-            echo $e;
-            echo "<br>";
-            echo $sql;
-        }
-        echo '<script>
-            Swal.fire({
-                icon: "success",
-                title: "Eliminando ' . $nombre . ' de ' . $Tabla . ' y insertando en Finalizados",
-                confirmButtonText: "OK"
-            }).then(function() {
-                window.location = "' . $link . '"; 
-            });
-        </script>';
-
-        if (mysqli_num_rows($consulta1) > 0) {
-            echo "<br>";
-            echo "Existe en $tabla4 y en $tabla";
-            echo "<br>";
-            //Actualiza los datos requeridos en tachiyomi
-
-            try {
-                $sql = "DELETE FROM `$tabla4` WHERE $fila9='$idRegistros';";
-                $resultado = mysqli_query($conexion, $sql);
-                echo $sql;
-            } catch (PDOException $e) {
-                echo $e;
-                echo "<br>";
-                echo $sql;
-            }
-
-            echo '<script>
-            Swal.fire({
-                icon: "success",
-                title: "Eliminando ' . $nombre . ' de ' . $Tabla . ' y ' . $Tabla4 . '  e insertando en Finalizados",
-                confirmButtonText: "OK"
-            }).then(function() {
-                window.location = "' . $link . '"; 
-            });
-            </script>';
-        }
-    } else {
-        echo "El manga tiene capitulos faltantes";
-        echo '<script>
-            Swal.fire({
-                icon: "error",
-                title: "' . $nombre . ' tiene Capitulos Faltantes ",
-                confirmButtonText: "OK"
-            }).then(function() {
-                window.location = "' . $link . '"; 
-            }); 
-        </script>';
-    }
-} else if (isset($_POST['Pendientes'])) {
-
-    $sql      = ("SELECT * FROM $tabla where $fila7='$idRegistros';");
-    echo $sql;
-    echo "<br>";
+    // Consulta para verificar si la manga tiene capítulos faltantes
+    $sql = "SELECT * FROM $tabla WHERE $fila7 = '$idRegistros'";
     $consulta = mysqli_query($conexion, $sql);
+    $resultado = mysqli_fetch_array($consulta);
 
-    $query  = ("SELECT * FROM $tabla7 where $fila9='$idRegistros';");
-    echo $query;
-    echo "<br>";
-    $resultado3  = mysqli_query($conexion, $query);
+    if ($resultado[$fila5] == 0) {
+        // Si no hay capítulos faltantes, mueve la manga a la tabla de finalizados
+        $sql = "INSERT INTO `$tabla5`(`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila5`, `$fila6`, `$fila8`, `$fila10`, `$fila11`, `$fila13`, `$fila14`, `$fila16`)
+SELECT `$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila5`, `$fila6`, 'Finalizado', `$fila10`, `$fila11`, `$fila13`, `$idRegistros`, 'manga'
+FROM `$tabla` WHERE $fila7 = '$idRegistros'";
+        mysqli_query($conexion, $sql);
 
-    //Agranda la primera letra de la varible
-    $Tabla = ucfirst($tabla);
-    $Tabla2 = ucfirst($tabla2);
+        // Elimina la manga de la tabla original
+        $sql = "DELETE FROM `$tabla` WHERE $fila7 = '$idRegistros'";
+        mysqli_query($conexion, $sql);
 
-    while ($mostrar = mysqli_fetch_array($consulta)) {
-
-        $dato1 = $mostrar[$fila1];
-        $dato2 = $mostrar[$fila2];
-        $dato3 = $mostrar[$fila3];
-        $dato4 = $mostrar[$fila4];
-        $dato5 = $mostrar[$fila5];
-        $dato6 = $mostrar[$fila6];
-        $dato8 = $mostrar[$fila8];
-        $dato10 = $mostrar[$fila10];
-        $dato11 = $mostrar[$fila11];
-        $dato13 = $mostrar[$fila13];
-        $dato17 = $mostrar[$fila17];
-        $verif = $mostrar[$ver];
-        $anime = $mostrar["Anime"];
-    }
-
-    $sql1      = ("SELECT * FROM $tabla8 where $fila1='$dato1';");
-    $consulta1 = mysqli_query($conexion, $sql1);
-    echo $sql1;
-    echo "<br>";
-
-    echo $dato1;
-    echo "<br>";
-    echo $dato2;
-    echo "<br>";
-    echo $dato3;
-    echo "<br>";
-    echo $dato4;
-    echo "<br>";
-    echo $dato5;
-    echo "<br>";
-    echo $dato6;
-    echo "<br>";
-    echo $dato8;
-    echo "<br>";
-    echo $dato10;
-    echo "<br>";
-    echo $dato11;
-    echo "<br>";
-    echo $dato13;
-    echo "<br>";
-    echo $dato17;
-    echo "<br>";
-    echo $verif;
-    echo "<br>";
-    echo $anime . "<br>";
-
-    if (mysqli_num_rows($consulta1) == 0) {
-
-        try {
-            $sql = "INSERT INTO `$tabla8`(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila5`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$ver`,`$fila17`,`Anime`) VALUES
-            ( '" . $dato1 . "','" . $dato2 . "','" . $dato3 . "','" . $dato4 . "','" . $dato5 . "','" . $dato6 . "','" . $dato8 . "','" . $dato10 . "','" . $dato11 . "','" . $dato13 . "','" . $verif . "','" . $dato17 . "','" . $anime . "')";
-            $resultado = mysqli_query($conexion, $sql);
-            echo $sql;
-            echo "<br>";
-        } catch (PDOException $e) {
-            echo $e;
-            echo "<br>";
-            echo $sql;
-        }
-
-        try {
-            $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "UPDATE $tabla8 SET `$fila5`= (`$fila4`-`$fila3`)";
-            $conn->exec($sql);
-            echo $sql;
-            echo "<br>";
-        } catch (PDOException $e) {
-            $conn = null;
-            echo $e;
-            echo "<br>";
-            echo $sql;
-        }
-
-        try {
-            $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "DELETE FROM `$tabla` WHERE $fila7='$idRegistros';";
-            $conn->exec($sql);
-            echo $sql;
-            echo "<br>";
-        } catch (PDOException $e) {
-            $conn = null;
-            echo $e;
-            echo "<br>";
-            echo $sql;
-        }
-
-        try {
-            $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "DELETE FROM `$tabla4` WHERE $fila9='$idRegistros';";
-            $conn->exec($sql);
-            echo $sql;
-            echo "<br>";
-        } catch (PDOException $e) {
-            $conn = null;
-            echo $e;
-            echo "<br>";
-            echo $sql;
-        }
-
-        // Verificar si hay resultados
-        if (mysqli_num_rows($resultado3) > 0) {
-            // Arreglo para almacenar los resultados
-            $resultados = array();
-
-            // Recorrer los resultados y guardarlos en el arreglo
-            while ($fila = mysqli_fetch_assoc($resultado3)) {
-                $resultados[] = $fila;
-            }
-
-            //Busca el id de la manga recien insertado
-            $consulta1 = "SELECT * FROM `$tabla8` where Nombre='$dato1'";
-            $resultado1 = mysqli_query($conexion, $consulta1);
-            echo $consulta1;
-            echo "<br>";
-
-            while ($fila1 = mysqli_fetch_assoc($resultado1)) {
-                $iden = $fila1['ID'];
-            }
-
-            echo "ID :" . $iden;
-            echo "<br>";
-
-            // Insertar los resultados en otra tabla
-            foreach ($resultados as $fila) {
-                $columna1 = $fila['Diferencia'];
-                $columna2 = $fila['Fecha'];
-                $columna3 = $fila['Dia'];
-
-
-                // Consulta SQL de inserción en la nueva tabla
-                $insertQuery = "INSERT INTO $tabla9 ($fila15,$fila12,$titulo4,$fila18)  VALUES ('$iden','$columna1', '$columna2', '$columna3')";
-
-                echo $fila['Diferencia'];
-                echo "<br>";
-                echo $fila['Fecha'];
-                echo "<br>";
-                echo $insertQuery;
-                echo "<br>";
-
-                // Ejecutar la consulta de inserción
-                $resultado2 = mysqli_query($conexion, $insertQuery);
-            }
-
-            echo "Datos insertados correctamente en la nueva tabla.";
-            echo "<br>";
-
-            try {
-                $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $sql = "DELETE FROM `$tabla7` WHERE $fila9='$idRegistros';";
-                $conn->exec($sql);
-                echo $sql;
-            } catch (PDOException $e) {
-                $conn = null;
-                echo $e;
-                echo "<br>";
-                echo $sql;
-            }
-        } else {
-            echo "No se encontraron resultados.";
-        }
-
-        // Liberar memoria
-        mysqli_free_result($resultado3);
-
+        // Mensaje de éxito
         echo '<script>
-            Swal.fire({
+    Swal.fire({
         icon: "success",
-        title: "Elimando registro de ' . $nombre . ' en ' . $Tabla . ' y insertando en ' . $titulo7 . '",
+        title: "Eliminando ' . $nombre . ' de ' . ucfirst($tabla) . ' y insertando en Finalizados",
         confirmButtonText: "OK"
-        }).then(function() {
-            window.location = "' . $link . '"; 
-        });
-        </script>';
-        echo "<br>";
-        $sql2      = ("UPDATE $tabla8 SET Cantidad = ( SELECT COUNT(*) AS cantidad_productos FROM $tabla9 WHERE $tabla8.$fila7 = $tabla9.$fila15) ;");
-        echo $sql2;
-        $consulta = mysqli_query($conexion, $sql2);
+    }).then(function() {
+        window.location = "' . $link . '";
+    });
+</script>';
     } else {
-
-        try {
-            $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "DELETE FROM `$tabla` WHERE $fila7='$idRegistros';";
-            $conn->exec($sql);
-            echo $sql;
-            echo "<br>";
-        } catch (PDOException $e) {
-            $conn = null;
-            echo $e;
-            echo "<br>";
-            echo $sql;
-        }
-
-        try {
-            $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "DELETE FROM `$tabla4` WHERE $fila9='$idRegistros';";
-            $conn->exec($sql);
-            echo $sql;
-        } catch (PDOException $e) {
-            $conn = null;
-            echo $e;
-            echo "<br>";
-            echo $sql;
-        }
-
+        // Mensaje de error si hay capítulos faltantes
         echo '<script>
-            Swal.fire({
-            icon: "success",
-            title: "Elimando registro de ' . $nombre . ' en ' . $Tabla . '",
-            confirmButtonText: "OK"
-            }).then(function() {
-                window.location = "' . $link . '"; 
-            });
-        </script>';
+    Swal.fire({
+        icon: "error",
+        title: "' . $nombre . ' tiene Capitulos Faltantes",
+        confirmButtonText: "OK"
+    }).then(function() {
+        window.location = "' . $link . '";
+    });
+</script>';
     }
+} elseif (isset($_POST['Pendientes'])) {
+    // Consulta para obtener información de la manga
+    $sql = "SELECT * FROM $tabla WHERE $fila7 = '$idRegistros'";
+    $consulta = mysqli_query($conexion, $sql);
+    $resultado = mysqli_fetch_array($consulta);
+
+    // Consulta para verificar si ya existe la manga en la tabla de tachiyomi
+    $sql = "SELECT * FROM $tabla4 WHERE $fila9 = '$idRegistros'";
+    $consulta_tachiyomi = mysqli_query($conexion, $sql);
+
+    // Si no existe la manga en la tabla de tachiyomi, la inserta
+    if (mysqli_num_rows($consulta_tachiyomi) == 0) {
+
+        $sql = "INSERT INTO `$tabla8`(`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila5`, `$fila6`, `$fila8`, `$fila10`, `$fila11`, `$fila13`,`$titulo3`, `$ver`, `$fila17`, `Anime`)
+        VALUES ('" . $resultado[$fila1] . "', '" . $resultado[$fila2] . "', '" . $resultado[$fila3] . "', '" . $resultado[$fila4] . "', '" . $resultado[$fila5] . "', '" . $resultado[$fila6] . "', '" . $resultado[$fila8] . "', '" . $resultado[$fila10] . "', '" . $resultado[$fila11] . "', '" . $resultado[$fila13] . "', '" . $resultado[$titulo3] . "', '" . $resultado[$ver] . "', '" . $resultado[$fila17] . "', '" . $resultado['Anime'] . "')";
+        mysqli_query($conexion, $sql);
+
+
+        // Actualiza la cantidad de capítulos faltantes en la manga
+        $sql = "UPDATE `$tabla8` SET `$fila5` = (`$fila4` - `$fila3`)";
+        mysqli_query($conexion, $sql);
+
+        // Elimina la manga de la tabla original y de la tabla de tachiyomi
+        $sql = "DELETE FROM `$tabla` WHERE $fila7 = '$idRegistros'";
+        mysqli_query($conexion, $sql);
+
+        // Mensaje de éxito
+        echo '<script>
+    Swal.fire({
+        icon: "success",
+        title: "Eliminando registro de ' . $nombre . ' en ' . ucfirst($tabla) . ' e insertando en Pendientes",
+        confirmButtonText: "OK"
+    }).then(function() {
+        window.location = "' . $link . '";
+    });
+</script>';
+    } else {
+        $sql = "INSERT INTO `$tabla8`(`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila5`, `$fila6`, `$fila8`, `$fila10`, `$fila11`, `$fila13`,`$titulo3`, `$ver`, `$fila17`, `Anime`)
+        VALUES ('" . $resultado[$fila1] . "', '" . $resultado[$fila2] . "', '" . $resultado[$fila3] . "', '" . $resultado[$fila4] . "',
+        '" . $resultado[$fila5] . "', '" . $resultado[$fila6] . "', '" . $resultado[$fila8] . "', '" . $resultado[$fila10] . "',
+        '" . $resultado[$fila11] . "', '" . $resultado[$fila13] . "', '" . $resultado[$titulo3] . "', '" . $resultado[$ver] . "', '" . $resultado[$fila17] . "', '" . $resultado['Anime'] . "')";
+        mysqli_query($conexion, $sql);
+
+        // Actualiza la cantidad de capítulos faltantes en la pendientes
+        $sql = "UPDATE `$tabla8` SET `$fila5` = (`$fila4` - `$fila3`)";
+        mysqli_query($conexion, $sql);
+
+        // Si la manga ya existe en la tabla de tachiyomi, simplemente la elimina de las tablas originales
+        $sql = "DELETE FROM `$tabla` WHERE $fila7 = '$idRegistros'";
+        mysqli_query($conexion, $sql);
+
+        $sql = "DELETE FROM `$tabla4` WHERE $fila9 = '$idRegistros'";
+        mysqli_query($conexion, $sql);
+
+        // Mensaje de éxito
+        echo '<script>
+    Swal.fire({
+        icon: "success",
+        title: "Eliminando registro de ' . $nombre . ' en ' . ucfirst($tabla) . ' y ' . ucfirst($tabla4) . ' e insertando en Pendientes",
+        confirmButtonText: "OK"
+    }).then(function() {
+        window.location = "' . $link . '";
+    });
+</script>';
+    }
+
+    // Verificar si hay resultados
+    if (mysqli_num_rows($resultado3) > 0) {
+        // Buscar el ID de la manga recién insertado
+        $consulta1 = "SELECT * FROM `$tabla8` WHERE Nombre = '$nombre'";
+        $resultado1 = mysqli_query($conexion, $consulta1);
+        $fila1 = mysqli_fetch_assoc($resultado1);
+        $iden = $fila1['ID'];
+
+        // Preparar la consulta de inserción en la nueva tabla
+        $insertQuery = "INSERT INTO $tabla9 ($fila15, $fila12, $titulo4) VALUES ";
+
+        // Arreglo para almacenar los valores de inserción
+        $valores = array();
+
+        // Recorrer los resultados y guardar los valores de inserción en el arreglo
+        while ($fila = mysqli_fetch_assoc($resultado3)) {
+            $columna1 = $fila['Diferencia'];
+            $columna2 = $fila['Fecha'];
+            $valores[] = "('$iden', '$columna1', '$columna2')";
+        }
+
+        // Combinar los valores de inserción en una cadena
+        $insertQuery .= implode(",", $valores);
+
+        // Ejecutar la consulta de inserción
+        $resultado2 = mysqli_query($conexion, $insertQuery);
+
+        // Intentar eliminar los registros de la tabla $tabla7
+        try {
+            $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $sql = "DELETE FROM `$tabla7` WHERE $fila9='$idRegistros';";
+            $conn->exec($sql);
+        } catch (PDOException $e) {
+            $conn = null;
+            echo $e;
+            echo "<br>";
+            echo $sql;
+        }
+    } else {
+        echo "No se encontraron resultados.";
+    }
+    // Liberar memoria
+    mysqli_free_result($resultado3);
 }
 
-echo "<br>";
-
-//Hace la actualizacion general de faltantes de mangas
-try {
-    $sql = "UPDATE $tabla SET `$fila5`= (`$fila4`-`$fila3`);";
-    $resultado = mysqli_query($conexion, $sql);
-    echo $sql;
-} catch (PDOException $e) {
-    echo $e;
-    echo "<br>";
-    echo $sql;
-}
-
-echo "<br>";
-
-//Hace la actualizacion general de faltantes de tachiyomi
-try {
-    $sql = "UPDATE $tabla4 SET `$fila5`= (`$fila4`-`$fila3`);";
-    $resultado = mysqli_query($conexion, $sql);
-    echo $sql;
-} catch (PDOException $e) {
-    echo $e;
-    echo "<br>";
-    echo $sql;
-}
-
-echo "<br>";
-
-//Hace una actualizacion general de las cantidad de diferencias con el ID Manga
-$sql3 = ("UPDATE manga SET Cantidad = ( SELECT COUNT(*) AS cantidad_productos FROM diferencias WHERE manga.ID = diferencias.ID_Manga) ;");
-echo $sql3;
-$consulta3 = mysqli_query($conexion, $sql3);
-echo "<br>";
-echo $link;
-echo "<br>";
+// Liberar memoria
+mysqli_free_result($consulta);
+mysqli_free_result($consulta_tachiyomi);
+?>
