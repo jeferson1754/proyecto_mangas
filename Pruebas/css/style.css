@@ -1,0 +1,119 @@
+.deudores {
+  display: flex;
+  justify-content: space-around;
+  /* Distribuye los elementos de manera uniforme en el eje x */
+  flex-wrap: wrap;
+  /* Permite que los elementos se envuelvan a una nueva línea cuando no hay espacio suficiente */
+  padding: 20px;
+  /* Agrega un espacio alrededor de los elementos */
+}
+
+
+.persona-container {
+  text-align: center;
+  border: 2px solid #ccc;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  min-width: 30%;
+  /* Puedes ajustar el ancho según tus preferencias */
+  margin: 10px;
+  text-transform: capitalize;
+  box-sizing: border-box;
+  /* Espaciado entre los elementos */
+}
+
+
+.nombre-persona {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+
+/* Quitar el subrayado del enlace */
+a {
+  text-decoration: none !important;
+  color: black !important;
+}
+
+.contenido a {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f4f4;
+
+}
+
+
+@media (max-width: 600px) {
+
+  .deudores {
+    width: 100%;
+  }
+
+  .persona-container {
+    width: 100%;
+  }
+}
+
+.info-container {
+  display: none;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 18px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  /* Sombra para el contenedor */
+}
+
+.info-container.active {
+  display: block;
+  width: 100%;
+  /* Ajusta el ancho según tus necesidades */
+  height: auto;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  /* Espacio inferior entre el formulario y otros elementos */
+}
+
+.search-form input[type="search"] {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 300px;
+  /* Ancho del campo de búsqueda */
+  margin-right: 5px;
+  /* Espacio derecho entre el campo de búsqueda y el botón */
+}
+
+.search-form button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  /* Color de fondo del botón */
+  color: #fff;
+  /* Color del texto del botón */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-form button:hover {
+  background-color: #0056b3;
+  /* Cambio de color de fondo al pasar el mouse sobre el botón */
+}
+
+/* Estilos para el icono de lupa */
+.search-form button i {
+  font-size: 16px;
+}
