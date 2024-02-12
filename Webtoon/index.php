@@ -115,7 +115,7 @@ while ($rows = mysqli_fetch_array($dia)) {
         } else if (isset($_GET['borrar'])) {
             $busqueda = "";
 
-            $where = "ORDER BY `$tabla`.`$fila7` DESC limit 100;";
+            $where = "WHERE `$tabla`.`$fila5`>0;";
         } else if (isset($_GET['filtrar'])) {
             if (isset($_GET['estado'])) {
                 $estado   = $_REQUEST['estado'];
