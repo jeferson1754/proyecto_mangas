@@ -6,6 +6,16 @@
 <?php
 include 'bd.php';
 
+$sql = ("select Date_FORMAT(DATE_SUB(NOW(),INTERVAL 5 HOUR),'%W');");
+
+$dia      = mysqli_query($conexion, $sql);
+
+while ($rows = mysqli_fetch_array($dia)) {
+
+    $day = $rows[0];
+    // echo $day;
+}
+
 $idRegistros = $_REQUEST['id'];
 $nombre = $_REQUEST['name'];
 $link = $_REQUEST['link'];
@@ -31,42 +41,71 @@ if (isset($_POST['Finalizados'])) {
     }
 
     // Consulta para verificar si la manga tiene capítulos faltantes
-    $sql = "SELECT * FROM $tabla WHERE $fila7 = '$idRegistros'";
-    $consulta = mysqli_query($conexion, $sql);
-    $resultado = mysqli_fetch_array($consulta);
+    $sql = "SELECT * FROM $tabla WHERE $fila7 = ?";
+    $consulta = $conexion->prepare($sql);
+    $consulta->bind_param("i", $idRegistros);
+    $consulta->execute();
+    $resultado = $consulta->get_result();
 
-    if ($resultado[$fila5] == 0) {
-        // Si no hay capítulos faltantes, mueve la manga a la tabla de finalizados
-        $sql = "INSERT INTO `$tabla5`(`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila5`, `$fila6`, `$fila8`, `$fila10`, `$fila11`, `$fila13`, `$fila14`, `$fila16`)
-SELECT `$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila5`, `$fila6`, 'Finalizado', `$fila10`, `$fila11`, `$fila13`, `$idRegistros`, 'manga'
-FROM `$tabla` WHERE $fila7 = '$idRegistros'";
-        mysqli_query($conexion, $sql);
+    if ($mostrar = $resultado->fetch_assoc()) {
+        // Recuperar datos si hay resultados
+        $dato1 = $mostrar[$fila1];
+        $dato2 = $mostrar[$fila2];
+        $dato3 = $mostrar[$fila3];
+        $dato4 = $mostrar[$fila4];
+        $dato5 = $mostrar[$fila5];
+        $dato6 = $mostrar[$fila6];
+        $dato8 = $mostrar[$fila8];
+        $dato10 = $mostrar[$fila10];
+        $dato11 = $mostrar[$fila11];
+        $dato13 = $mostrar[$fila13];
 
-        // Elimina la manga de la tabla original
-        $sql = "DELETE FROM `$tabla` WHERE $fila7 = '$idRegistros'";
-        mysqli_query($conexion, $sql);
+        // Comprobar si hay capítulos faltantes
+        if ($mostrar[$fila5] == 0) {
+            // Si no hay capítulos faltantes, mueve la manga a la tabla de finalizados
+            try {
+                $sql = "INSERT INTO `finalizados_manga`(`Nombre`, `Link`, `Capitulos Vistos`, `Capitulos Totales`, `Faltantes`, `Estado`, `Lista`, `Estado_Link`, `Fecha_Cambio1`, `Fecha_Cambio2`, `ID_Eliminado`, `Modulo`) VALUES
+                ( '" . $dato1 . "','" . $dato2 . "','" . $dato3 . "','" . $dato4 . "','" . $dato5 . "','Finalizado','" . $dato6 . "','" . $dato13 . "','" . $dato10 . "','" . $dato11 . "','" . $idRegistros . "', 'Manga')";
+                $resultado = mysqli_query($conexion, $sql);
+                echo $sql;
+                echo "<br>";
+            } catch (PDOException $e) {
+                echo $e;
+                echo "<br>";
+                echo $sql;
+            }
 
-        // Mensaje de éxito
-        echo '<script>
-    Swal.fire({
-        icon: "success",
-        title: "Eliminando ' . $nombre . ' de ' . ucfirst($tabla) . ' y insertando en Finalizados",
-        confirmButtonText: "OK"
-    }).then(function() {
-        window.location = "' . $link . '";
-    });
-</script>';
+            // Elimina la manga de la tabla original
+            $sql_delete = "DELETE FROM `$tabla` WHERE $fila7 = ?";
+            $stmt_delete = $conexion->prepare($sql_delete);
+            $stmt_delete->bind_param("i", $idRegistros);
+            $stmt_delete->execute();
+
+            // Mensaje de éxito
+            echo '<script>
+            Swal.fire({
+                icon: "success",
+                title: "Eliminando ' . $nombre . ' de ' . ucfirst($tabla) . ' y insertando en Finalizados",
+                confirmButtonText: "OK"
+            }).then(function() {
+                window.location = "' . $link . '";
+            });
+        </script>';
+        } else {
+            // Mensaje de error si hay capítulos faltantes
+            echo '<script>
+            Swal.fire({
+                icon: "error",
+                title: "' . $nombre . ' tiene Capítulos Faltantes",
+                confirmButtonText: "OK"
+            }).then(function() {
+                window.location = "' . $link . '";
+            });
+        </script>';
+        }
     } else {
-        // Mensaje de error si hay capítulos faltantes
-        echo '<script>
-    Swal.fire({
-        icon: "error",
-        title: "' . $nombre . ' tiene Capitulos Faltantes",
-        confirmButtonText: "OK"
-    }).then(function() {
-        window.location = "' . $link . '";
-    });
-</script>';
+        // No se encontraron resultados
+        echo "No se encontraron resultados para el ID: $idRegistros";
     }
 } elseif (isset($_POST['Pendientes'])) {
     // Consulta para obtener información de la manga
