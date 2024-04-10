@@ -60,7 +60,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
             <button type="button" class="btn btn-outline-info mostrar" onclick="myFunction4()">
                 Filtrar Capitulos
             </button>
-            <button type="button" class="btn btn-info ocultar" onclick="myFunction5()">
+            <button type="button" class="btn btn-info mostrar" onclick="myFunction5()">
                 Filtrar por Estado
             </button>
             <button type="button" class="btn btn-info mostrar" onclick="myFunction2()">
@@ -73,7 +73,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
             <button class="btn btn-outline-info ocultar" type="submit" name="sin-fechas"> Sin Revision </button>
             <button class="btn btn-outline-info ocultar" type="submit" name="sin-actividad"> Sin Actividad</button>
             <button class="btn btn-outline-info mostrar" type="submit" name="mayor-actividad"> Mayor Actividad</button>
-            <button class="btn btn-outline-info mostrar" type="submit" name="anime"> Tiene Anime</button>
+            <button class="btn btn-outline-info ocultar" type="submit" name="anime"> Tiene Anime</button>
         </form>
         <div class="class-control" id="myDIV" style="display:none;">
             <form id="listas" action="" method="GET">
