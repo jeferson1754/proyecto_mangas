@@ -22,16 +22,4 @@ $sql5 = "UPDATE $tabla2 SET `$fila5`= (`$fila4`-`$fila3`);";
 $resultado5 = mysqli_query($conexion, $sql5);
 //echo $sql5;
 
-
-echo '<script>
-    Swal.fire({
-        title: "Exito!",
-        text: "Se actualizaron los mangas con 3 capitulos o menos.",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 2500
-    }).then(function() {
-        window.location = "index.php";
-    });
-    </script>';
-echo "<br>";
+header('location: index.php');

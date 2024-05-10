@@ -219,10 +219,10 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
 
                         Swal.fire({
                             title: 'Mensaje importante',
-                            text: 'Serás redirigido en 5 segundos...',
+                            text: 'Serás redirigido en 3 segundos...',
                             icon: 'warning',
                             showConfirmButton: false, // Oculta los botones
-                            timer: 5000, // Tiempo en milisegundos (5 segundos en este caso)
+                            timer: 3000, // Tiempo en milisegundos (5 segundos en este caso)
                             timerProgressBar: true,
                             allowOutsideClick: false,
                             onBeforeOpen: () => {
