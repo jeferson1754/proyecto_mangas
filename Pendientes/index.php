@@ -32,23 +32,23 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
     <div class="col-sm">
         <!--- Formulario para registrar Cliente --->
         <form action="" method="GET">
-            <button type="button" class="btn btn-info " data-toggle="modal" data-target="#new">
+            <button type="button" class="btn btn-info ocultar" data-toggle="modal" data-target="#new">
                 Nuevo <?php echo ucfirst($titulo7); ?>
             </button>
-            <button type="button" class="btn btn-info " onclick="myFunction5()">
+            <button type="button" class="btn btn-info ocultar" onclick="myFunction5()">
                 Filtrar por Estado
             </button>
-            <button type="button" class="btn btn-info" onclick="myFunction2()">
+            <button type="button" class="btn btn-info mostrar" onclick="myFunction2()">
                 Busqueda
             </button>
 
 
 
-            <button class="btn btn-outline-info" type="submit" name="linkeado"> Sin Link </button>
-            <button class="btn btn-outline-info" type="submit" name="sin-fechas"> Sin Revision </button>
-            <button class="btn btn-outline-info" type="submit" name="sin-actividad"> Sin Actividad</button>
-            <button class="btn btn-outline-info" type="submit" name="mayor-actividad"> Mayor Actividad</button>
-            <button class="btn btn-outline-info" type="submit" name="anime"> Tiene Anime</button>
+            <button class="btn btn-outline-info ocultar" type="submit" name="linkeado"> Sin Link </button>
+            <button class="btn btn-outline-info ocultar" type="submit" name="sin-fechas"> Sin Revision </button>
+            <button class="btn btn-outline-info mostrar" type="submit" name="sin-actividad"> Sin Actividad</button>
+            <button class="btn btn-outline-info mostrar" type="submit" name="mayor-actividad"> Mayor Actividad</button>
+            <button class="btn btn-outline-info ocultar" type="submit" name="anime"> Tiene Anime</button>
         </form>
         <div class="class-control" id="myDIV5" style="display:none;">
             <form id="estado" action="" method="GET">
