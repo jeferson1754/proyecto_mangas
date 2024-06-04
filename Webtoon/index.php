@@ -52,6 +52,7 @@ while ($rows = mysqli_fetch_array($dia)) {
                 Busqueda
             </button>
             <button class="btn btn-outline-info ocultar" type="submit" name="link"> <b>Sin Link </b> </button>
+            <button class="btn btn-outline-info mostrar" type="button" onclick="vistos()" name="marcar-vistos"> Marcar Vistos </button>
             <button type="button" class="btn btn-info  mostrar" onclick="window.location.href = './horario.php'">Horario</button>
         </form>
         <div class="class-control" id="myDIV" style="display:none;">
@@ -234,6 +235,47 @@ while ($rows = mysqli_fetch_array($dia)) {
                 );
 
             });
+
+            function vistos() {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Consulta!',
+                    text: '¿Desea marcar como vistos todos los webtoon del Dia <?php echo $week; ?>?',
+                    showCancelButton: true,
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "SI",
+                    cancelButtonText: "NO"
+
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        Swal.fire({
+                            title: 'Mensaje importante',
+                            text: 'Serás redirigido en 3 segundos...',
+                            icon: 'warning',
+                            showConfirmButton: false, // Oculta los botones
+                            timer: 3000, // Tiempo en milisegundos (5 segundos en este caso)
+                            timerProgressBar: true,
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                Swal.showLoading();
+                            },
+                            onClose: () => {
+                                // Redirige a otra página después de que termine el temporizador
+                                window.location.href = 'marcar_webtoon.php';
+                            }
+                        });
+
+                        // Redirige a otra página después de 5 segundos incluso si el usuario no cierra la alerta
+                        setTimeout(() => {
+                            window.location.href = 'marcar_webtoon.php';
+                        }, 5000);
+                        //window.location = "vistos.php";
+                    }
+                })
+
+
+            }
 
             function myFunction() {
                 var x = document.getElementById("myDIV");
