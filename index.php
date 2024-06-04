@@ -126,7 +126,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
                 <select name="estado" class="form-control" style="width:auto;" onchange="filtrarTabla4()">
                     <option value="">Seleccione Estado:</option>
                     <?php
-                    $query = $conexion->query("SELECT DISTINCT $fila8 FROM $tabla;");
+                    $query = $conexion->query("SELECT DISTINCT $fila8 FROM `$tabla` WHERE $fila5>0;");
                     while ($valores = mysqli_fetch_array($query)) {
                         echo '<option value="' . $valores[$fila8] . '">' . $valores[$fila8] . '</option>';
                     }
@@ -299,7 +299,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
             $conteo = " : " . $totalRegistros;
         } else if (isset($_GET['sin-actividad'])) {
 
-            $where = " WHERE $fila10 < DATE_SUB(CURDATE(), INTERVAL 36 MONTH) AND $fila5=0 ORDER BY `manga`.`Faltantes`ASC, `manga`.`Fecha_Cambio1` ASC limit 10;";
+            $where = " WHERE $fila10 < DATE_SUB(CURDATE(), INTERVAL 36 MONTH) AND $fila5=0 ORDER BY `manga`.`Faltantes`ASC, `manga`.`Fecha_Cambio1` ASC;";
             $capi = "1";
 
             $sql2 = "SELECT COUNT(*) AS total_registros from $tabla $where";
@@ -320,7 +320,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
             $capi = "1";
             $estado = "Mayor Actividad Reciente";
             $conteo = " ";
-            $totalRegistros="30";
+            $totalRegistros = "30";
         } else if (isset($_GET['capitulos'])) {
             $caps   = $_REQUEST['capitulos'];
             $estado = "Capitulos: " . $caps;
