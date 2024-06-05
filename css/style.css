@@ -70,7 +70,15 @@ a:visited {
     text-align: center;
 }
 
+.iframeFechas {
+    height: 200px;
+}
 
+.fa-solid,
+.fa-triangle-exclamation {
+    font-size: 30px;
+    color: red;
+}
 
 
 @media screen and (max-width: 600px) {
@@ -136,8 +144,12 @@ a:visited {
         font-size: 1.8rem;
     }
 
-    h1{
+    h1 {
         margin-top: 20px;
+    }
+
+    .iframeFechas {
+        height: 300px;
     }
 
 }
