@@ -15,7 +15,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
     <script src="https://kit.fontawesome.com/8846655159.js" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" type="text/css" href="../css/checkbox.css">
     <title><?php echo $titulo7; ?>
     </title>
