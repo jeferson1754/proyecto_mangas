@@ -181,6 +181,11 @@ while ($mostrar = mysqli_fetch_array($num_result)) {
     </div>
     <br>
     <br>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
 </body>
 <?php
 $conexion = null;
