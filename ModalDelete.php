@@ -15,8 +15,8 @@
           text-align: center;
         }
       </style>
-            <form method="POST" action="recib_Delete.php">
-<?php include('regreso-modal.php');  ?>
+      <form method="POST" action="recib_Delete.php">
+        <?php include('regreso-modal.php');  ?>
 
 
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
@@ -34,11 +34,11 @@
             <?php echo $mostrar[$fila6]; ?>
           </h2>
         </div>
-             <div class="modal-footer" style="display: flex;justify-content: center;">
+        <div class="modal-footer" style="display: flex;justify-content: center;">
           <button type="submit" name="Pendientes" class="btn btn-warning">
-          <i class="fa-solid fa-delete-left"></i> Borrar de Manga, Mover a Pendientes</button>
+            <i class="fa-solid fa-delete-left"></i> Borrar de Manga, Mover a Pendientes</button>
           <button type="submit" name="Finalizados" class="btn btn-danger">
-          <i class="fa-solid fa-trash"></i> Borrar de Mangas, Mover a Finalizados</button>
+            <i class="fa-solid fa-trash"></i> Borrar de Mangas, Mover a Finalizados</button>
         </div>
       </form>
 

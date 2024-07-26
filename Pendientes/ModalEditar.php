@@ -87,90 +87,53 @@
             </select>
           </div>
 
-          <style>
-            .inline-input {
-              display: inline-block;
-              width: 54%;
-            }
-
-            .inline-boton {
-              display: inline-block;
-              width: 45%;
-            }
-
-            .boton {
-              font-family: Arial, Helvetica, sans-serif;
-              font-weight: bold;
-              color: white;
-              background-color: #171717;
-              padding: 0.6em;
-              border: none;
-              border-radius: .6rem;
-              position: relative;
-              cursor: pointer;
-              overflow: hidden;
-            }
-
-            .boton span:not(:nth-child(6)) {
-              position: absolute;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%, -50%);
-              height: 70px;
-              width: 70px;
-              background-color: #0c66ed;
-              border-radius: 50%;
-              transition: .6s ease;
-            }
-
-            .boton span:nth-child(6) {
-              position: relative;
-            }
-
-            .boton span:nth-child(1) {
-              transform: translate(-3.3em, -4em);
-            }
-
-            .boton span:nth-child(2) {
-              transform: translate(-6em, 1.3em);
-            }
-
-            .boton span:nth-child(3) {
-              transform: translate(-.2em, 1.8em);
-            }
-
-            .boton span:nth-child(4) {
-              transform: translate(3.5em, 1.4em);
-            }
-
-            .boton span:nth-child(5) {
-              transform: translate(3.5em, -3.8em);
-            }
-
-            .boton:hover span:not(:nth-child(6)) {
-              transform: translate(-50%, -50%) scale(4);
-              transition: 1.5s ease;
-            }
-          </style>
-
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label"><?php echo $titulo2 ?></label><br>
-            <input type="date" id="date1-<?php echo $mostrar['ID']; ?>" name="fila10" class="inline-input form-control" value="<?php echo $mostrar[$fila10]; ?>">
-
-            <button type="button" class="inline-boton boton cambiar-fecha" data-id="<?php echo $mostrar['ID']; ?>">
-              <span class="circle1"></span>
-              <span class="circle2"></span>
-              <span class="circle3"></span>
-              <span class="circle4"></span>
-              <span class="circle5"></span>
-              <span class="text">Intercambiar Fechas</span>
-            </button>
+          <iframe id="iframeFechas-<?php echo $mostrar[$fila7]; ?>" src="fechas.php?variable=<?php echo urlencode($mostrar[$fila7]); ?>" width="100%" class="iframeFechas" frameborder="0"></iframe>
+          <div id="error-<?php echo $mostrar[$fila7]; ?>" class="text-center" style="align-items:center;color: red;display: none;margin-bottom:20px;
+    line-height: 25px;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span class="error-mensaje" id="error-mensaje-<?php echo $mostrar[$fila7]; ?>">
+            </span>
           </div>
+          <input type="hidden" name="fila10" id="fechaActual-<?php echo $mostrar[$fila7]; ?>">
+          <input type="hidden" name="fila11" id="fechaDestino-<?php echo $mostrar[$fila7]; ?>">
 
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label"><?php echo $titulo5 ?></label>
-            <input type="date" id="date2-<?php echo $mostrar['ID']; ?>" name="fila11" class="form-control" value="<?php echo $mostrar[$fila11]; ?>" max="<?php echo $mostrar[$fila10]; ?>">
-          </div>
+
+          <script>
+            document.getElementById('mi-formulario-<?php echo $mostrar[$fila7]; ?>').addEventListener('submit', function(event) {
+              var iframe = document.getElementById('iframeFechas-<?php echo $mostrar[$fila7]; ?>');
+              var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+
+              // Obtener todos los elementos input en el iframe que contienen fechas
+              var fechaInput1 = iframeDocument.querySelector('[id^="date1-"]');
+              var fechaInput2 = iframeDocument.querySelector('[id^="date2-"]');
+
+
+              var error = document.getElementById('error-<?php echo $mostrar[$fila7]; ?>');
+              var errorMensaje = document.getElementById('error-mensaje-<?php echo $mostrar[$fila7]; ?>');
+
+              // Verificar si las fechas son iguales
+              if (fechaInput1.value === fechaInput2.value) {
+                errorMensaje.textContent = 'Las fechas no pueden ser iguales.'; // Mensaje de error
+                error.style.display = 'flex'; // Mostrar el mensaje de error
+                event.preventDefault(); // Evitar el envío del formulario
+                return;
+              } else if (fechaInput1.value < fechaInput2.value) {
+                errorMensaje.textContent = 'La Ultima Fecha no puede ser menor a la Penultima Fecha.'; // Mensaje de error
+                error.style.display = 'flex'; // Mostrar el mensaje de error
+                event.preventDefault(); // Evitar el envío del formulario
+                return;
+              }
+
+              // Ocultar el mensaje de error si estaba visible
+              error.style.display = 'none';
+
+              // Pasar los valores a los inputs ocultos del formulario
+              document.getElementById('fechaActual-<?php echo $mostrar[$fila7]; ?>').value = fechaInput1.value;
+              document.getElementById('fechaDestino-<?php echo $mostrar[$fila7]; ?>').value = fechaInput2.value;
+
+            });
+          </script>
+
 
 
           <div class="form-group">
@@ -205,35 +168,5 @@
   </div>
 </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var buttons = document.getElementsByClassName('cambiar-fecha');
-
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i].addEventListener('click', function(event) {
-        event.preventDefault();
-
-        // Obtener la fecha actual en formato "yyyy-MM-dd"
-        var fechaActual = new Date();
-        var dia = ('0' + fechaActual.getDate()).slice(-2);
-        var mes = ('0' + (fechaActual.getMonth() + 1)).slice(-2);
-        var anio = fechaActual.getFullYear();
-        var fechaActualFormatted = anio + '-' + mes + '-' + dia;
-
-
-        // Obtener el id del registro asociado al botón
-        var id = this.getAttribute('data-id');
-
-        // Obtener los valores actuales de "date1" y "date2" para el registro correspondiente
-        var fechaInput1 = document.getElementById('date1-' + id);
-        var fechaInput2 = document.getElementById('date2-' + id);
-
-        // Intercambiar los valores de "date1" y "date2" para el registro correspondiente
-        fechaInput2.value = fechaInput1.value;
-      });
-
-    }
-  });
-</script>
 
 <!---fin ventana Update --->
