@@ -10,7 +10,7 @@
         </button>
       </div>
 
-      <form method="POST" action="recib_Update.php" id="mi-formulario">
+      <form method="POST" action="recib_Update.php" id="mi-formulario-<?php echo $mostrar[$fila7]; ?>">
         <?php
         include('regreso-modal.php');
 
