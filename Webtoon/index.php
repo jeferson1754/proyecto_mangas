@@ -1,6 +1,7 @@
 <?php
 
 require 'bd.php';
+require '../upa copy.php';
 
 $sql = ("select Date_FORMAT(DATE_SUB(NOW(),INTERVAL 5 HOUR),'%W');");
 
