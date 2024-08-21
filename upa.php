@@ -1,28 +1,47 @@
-
 <?php
 
 date_default_timezone_set('America/Santiago');
 
 $max_queries_per_hour = 1;
 
-$current_time = date("Y-m-d H:i:s", time());
+$current_time = date("Y-m-d H:i:s");
+$Hoy = date("Y-m-d");
 
 // Consultamos el número de consultas realizadas en la última hora
-$query = "SELECT COUNT(*) AS num_queries FROM actualizaciones_webtoon WHERE Fecha > DATE_SUB(NOW(), INTERVAL 1 DAY)";
-$result = mysqli_query($conexion, $query);
+$query = "
+ SELECT 
+    COUNT(*) AS num_queries, 
+    MAX(Fecha) AS ultima_actualizacion 
+FROM 
+    actualizaciones_webtoon 
+WHERE 
+    Fecha > DATE_SUB(NOW(), INTERVAL 13 HOUR);
+;
+";
 
-// Si la consulta falla, lanzamos un error
+$result = mysqli_query($conexion, $query);
 if (!$result) {
     die("La consulta falló: " . mysqli_error($conexion));
 }
 
 $row = mysqli_fetch_assoc($result);
-$num_queries_last_hour = $row["num_queries"];
+$num_queries_last_hour = $row['num_queries'];
+$ultima_actualizacion = $row['ultima_actualizacion'];
 
-// Liberamos el resultado de la consulta
 mysqli_free_result($result);
 
-$sql1 = ("SELECT CONCAT( CASE WEEKDAY(CURDATE()) 
+// Formatear la fecha y hora de la última actualización a "HH:MM"
+if ($ultima_actualizacion) {
+    $datetime = new DateTime($ultima_actualizacion);
+    $formatted_time = $datetime->format('H:i');
+    $new_time = $datetime->format('Y-m-d');
+} else {
+    $formatted_time = "No disponible"; // Manejo de caso donde no haya actualizaciones
+    $new_time = "";
+}
+
+// Obtenemos el día actual
+$sql1 = "SELECT CONCAT( CASE WEEKDAY(CURDATE()) 
     WHEN 0 THEN 'Lunes' 
     WHEN 1 THEN 'Martes' 
     WHEN 2 THEN 'Miercoles' 
@@ -31,45 +50,36 @@ $sql1 = ("SELECT CONCAT( CASE WEEKDAY(CURDATE())
     WHEN 5 THEN 'Sabado' 
     WHEN 6 THEN 'Domingo' 
     END ) 
-    AS DiaActual;");
+    AS DiaActual;";
+$date = mysqli_query($conexion, $sql1);
+$day = mysqli_fetch_assoc($date)['DiaActual'];
+mysqli_free_result($date);
 
-$date      = mysqli_query($conexion, $sql1);
-
-while ($rows = mysqli_fetch_array($date)) {
-
-    $day = $rows[0];
-    //echo $day . "<br>";
-}
-
-$consulta = "SELECT COUNT(*) FROM webtoon WHERE `Dias Emision`='$day' and Estado='Emision';";
+// Consultamos el número de webtoons en emisión para el día actual
+$consulta = "SELECT COUNT(*) AS count FROM `webtoon` WHERE `Dias Emision`LIKE '%$day%' AND Estado='Emision'";
 $result = mysqli_query($conexion, $consulta);
-//echo $consulta;
-
-while ($rows = mysqli_fetch_array($result)) {
-
-    $count = $rows[0];
-    //echo $count . "<br>";
-}
-/*
-echo $num_queries_last_hour."<br>";
-echo $max_queries_per_hour."<br>";
-*/
+$count = mysqli_fetch_assoc($result)['count'];
+mysqli_free_result($result);
 
 // Si se han superado las consultas permitidas, lanzamos un error
-if ($count >= 1) {
+if ($count >= 1 && $num_queries_last_hour < $max_queries_per_hour) {
+    $query = "INSERT INTO actualizaciones_webtoon (Fecha) VALUES ('$current_time')";
+    mysqli_query($conexion, $query);
 
+    $sql = "UPDATE `webtoon` SET `Capitulos Totales` = `Capitulos Totales` + 1 WHERE `Dias Emision`LIKE '%$day%' AND Estado='Emision'";
+    mysqli_query($conexion, $sql);
 
-    if ($num_queries_last_hour < $max_queries_per_hour) {
-        $query = "INSERT INTO actualizaciones_webtoon (Fecha) VALUES ('$current_time')";
-        $result = mysqli_query($conexion, $query);
-
-        $sql = "UPDATE webtoon SET Capitulos Totales=Capitulos Totales+1 WHERE Dias Emision='$day' and Estado='Emision';";
-        $resultado = mysqli_query($conexion, $sql);
-        //echo "Bien";
-
-        $sql2 = "UPDATE webtoon SET Faltantes=Capitulos Totales-Capitulos Vistos;";
-        $resultado2 = mysqli_query($conexion, $sql2);
-    } else {
-    }
-} else {
+    $sql2 = "UPDATE `webtoon` SET `Faltantes` = `Capitulos Totales` - `Capitulos Vistos`";
+    mysqli_query($conexion, $sql2);
 }
+
+if ($new_time == $Hoy) {
+    $text = "Hoy se actualizo a las " . $formatted_time;
+    $estatus = "activo";
+} else {
+    $text = "No se actualizo " . $ultima_actualizacion;
+    $estatus = "finalizado";
+}
+
+
+?>
