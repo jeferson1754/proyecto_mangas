@@ -27,10 +27,10 @@
     $resultado1 = mysqli_query($conexion, $consulta1);
     //echo $consulta1;
 
-    // Consulta SQL para encontrar el día más repetido para el ID_Manga 96
-    $sql = "SELECT Dia, COUNT(*) AS Cantidad FROM `$tabla7` WHERE $fila9 =$variable GROUP BY Dia ORDER BY Cantidad DESC LIMIT 1";
-    $result = $conexion->query($sql);
+    // Consulta SQL para encontrar el día más repetido para el ID_Manga
+    $sql = "SELECT Dia, COUNT(*) AS Cantidad, (SELECT AVG(Diferencia) FROM `$tabla7` WHERE $fila9  = $variable) AS PromedioGeneral FROM `$tabla7` WHERE $fila9  = $variable GROUP BY Dia ORDER BY Cantidad DESC LIMIT 1;";
     //echo $sql;
+    $result = $conexion->query($sql);
 
     // Verificar si se obtuvieron resultados
     if ($result->num_rows > 0) {
@@ -40,9 +40,22 @@
         // Almacenar el día más repetido y su cantidad en variables PHP
         $diaMasRepetido = $row["Dia"];
         $cantidadRepeticiones = $row["Cantidad"];
+        $promedio = $row["PromedioGeneral"];
+        $promedioRedondeado = round($promedio);
     } else {
-        $diaMasRepetido = "Indefinido";
-        $cantidadRepeticiones = "0";
+        echo "No se encontraron resultados.";
+    }
+
+    if ($promedioRedondeado <= 7) {
+        $frecuencia = "Semanal";
+    } else if ($promedioRedondeado > 7 && $promedioRedondeado <= 15) {
+        $frecuencia = "Quincenal";
+    } else if ($promedioRedondeado > 15 && $promedioRedondeado <= 30) {
+        $frecuencia = "Mensual";
+    } else if ($promedioRedondeado > 30 && $promedioRedondeado <= 90) {
+        $frecuencia = "Trimestral";
+    } else {
+        $frecuencia = "Indefinido";
     }
 
     while ($fila1 = mysqli_fetch_assoc($resultado1)) {
@@ -56,7 +69,7 @@
     </a>
     <!-- Crear un lienzo para el gráfico -->
 
-    <?php echo "<h3>Dia:$diaMasRepetido- Cantidad:$cantidadRepeticiones</h3>"; ?>
+    <?php echo "<h3>Dia:$diaMasRepetido - Cantidad:$cantidadRepeticiones - Frecuencia:$frecuencia</h3>"; ?>
 
     <div class="grafico">
         <canvas id="myChart"></canvas>
