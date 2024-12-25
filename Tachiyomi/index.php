@@ -69,16 +69,18 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
         </div>
         <?php
 
-        $where = "WHERE $fila5 > 0 ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
+        $order = "ORDER BY `$tabla`.`Faltantes`,`$tabla`.`Fecha_Cambio1` ASC limit 100";
+        $where = "WHERE $fila5 > 0 $order";
+
 
         if (isset($_GET['borrar'])) {
             $busqueda = "";
-            $where = "WHERE $fila5 > 0 ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
+            $where = "WHERE $fila5 > 0 $order";
             $estado = "Tachiyomi";
         } else if (isset($_GET['buscar'])) {
             if (isset($_GET['busqueda_tachi'])) {
                 $busqueda   = $_REQUEST['busqueda_tachi'];
-                $where = "WHERE $fila1 LIKE '%$busqueda%' ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
+                $where = "WHERE $fila1 LIKE '%$busqueda%' $order";
             }
             $estado = "Busqueda";
         } else if (isset($_GET['estado'])) {
@@ -86,14 +88,14 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
             $estado   = $_REQUEST['estado'];
             if (!empty($estado)) {
 
-                $where = "WHERE $fila5 > 0 ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
+                $where = "WHERE $fila5 > 0 $order0";
             }
 
-            $where = "WHERE $fila6='$estado' ORDER BY `tachiyomi`.`Faltantes` ASC limit 100";
+            $where = "WHERE $fila6='$estado' $order";
             $accion1 = $_REQUEST['accion'];
         } else if (isset($_GET['sin-actividad'])) {
             $estado = "Sin Actividad Reciente";
-            $where = " WHERE $fila11 < DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND $fila5=0 ORDER BY `$tabla`.`Faltantes`,`$tabla`.`Fecha_Cambio1` ASC limit 100";
+            $where = " WHERE $fila11 < DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND $fila5=0 $order";
         } else {
             $estado = "Tachiyomi";
         }
