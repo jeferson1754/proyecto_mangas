@@ -15,7 +15,7 @@ $query = "
 FROM 
     actualizaciones_webtoon 
 WHERE 
-    Fecha > DATE_SUB(NOW(), INTERVAL 13 HOUR);
+    Fecha LIKE '%$Hoy%'
 ;
 ";
 
@@ -40,23 +40,21 @@ if ($ultima_actualizacion) {
     $new_time = "";
 }
 
-// Obtenemos el día actual
-$sql1 = "SELECT CONCAT( CASE WEEKDAY(CURDATE()) 
-    WHEN 0 THEN 'Lunes' 
-    WHEN 1 THEN 'Martes' 
-    WHEN 2 THEN 'Miercoles' 
-    WHEN 3 THEN 'Jueves' 
-    WHEN 4 THEN 'Viernes' 
-    WHEN 5 THEN 'Sabado' 
-    WHEN 6 THEN 'Domingo' 
-    END ) 
-    AS DiaActual;";
-$date = mysqli_query($conexion, $sql1);
-$day = mysqli_fetch_assoc($date)['DiaActual'];
-mysqli_free_result($date);
+$days = [
+    "domingo",    // 0
+    "lunes",      // 1
+    "martes",     // 2
+    "miércoles",  // 3
+    "jueves",     // 4
+    "viernes",    // 5
+    "sábado"      // 6
+];
+
+$dayIndex = date("w"); // Obtiene el índice del día (0 para domingo, 6 para sábado)
+$day = ucfirst($days[$dayIndex]); // Obtiene el nombre del día en español con la primera letra en mayúscula
 
 // Consultamos el número de webtoons en emisión para el día actual
-$consulta = "SELECT COUNT(*) AS count FROM `webtoon` WHERE `Dias Emision`LIKE '%$day%' AND Estado='Emision'";
+$consulta = "SELECT COUNT(*) AS count FROM `webtoon` WHERE `Dias Emision` LIKE '%$day%' AND Estado='Emision'";
 $result = mysqli_query($conexion, $consulta);
 $count = mysqli_fetch_assoc($result)['count'];
 mysqli_free_result($result);
@@ -80,6 +78,3 @@ if ($new_time == $Hoy) {
     $text = "No se actualizo " . $ultima_actualizacion;
     $estatus = "finalizado";
 }
-
-
-?>
