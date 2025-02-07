@@ -2,10 +2,24 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Required meta tags -->
+
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--<link href="./css/bootstrap.min.css" rel="stylesheet">-->
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+
+    <!--fontawesome-->
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
+
+    <!--This is used for search icon. Instead putting icon manually it is loaded from fontawesome-->
+
 </head>
 <style>
 
@@ -18,7 +32,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active"> <a class="nav-link" href="/Manga/">Mangas</a> </li>
             </ul>
-             <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item active"> <a class="nav-link" href="/Manga/Tachiyomi/">Tachiyomi</a> </li>
             </ul>
             <ul class="navbar-nav mr-auto">
@@ -33,8 +47,8 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active"> <a class="nav-link" href="/Manga/listas.php/">Listas</a> </li>
             </ul>
-             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active"> <a class="nav-link" href="/Anime%202.0/">Anime</a> </li>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active"> <a class="nav-link" href="/Anime/">Anime</a> </li>
             </ul>
         </div>
     </nav>

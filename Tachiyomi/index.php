@@ -9,293 +9,276 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-    <script src="https://kit.fontawesome.com/8846655159.js" crossorigin="anonymous"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../css/style.css?<?php echo time(); ?>">
-    <title><?php echo ucfirst($tabla) ?>
-    </title>
+    <title>Tachiyomi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="../css/style new.css?v=<?php echo time(); ?>">
+
 </head>
-<script>
-    function filtrarTabla4() {
-        document.getElementById("estado").submit();
-    }
-</script>
+
 
 <body>
 
     <?php include('../menu.php'); ?>
-    <div class="col-sm">
-        <!--- Formulario para registrar Cliente --->
-        <form action="" method="GET">
-            <button type="button" class="btn btn-info mostrar" data-toggle="modal" data-target="#new">
-                Nuevo <?php echo ucfirst($tabla); ?>
-            </button>
-            <button type="button" class="btn btn-info mostrar" onclick="myFunction2()">
-                Busqueda
-            </button>
-            <button type="button" class="btn btn-info ocultar" onclick="myFunction()">
-                Filtrar por Lista
-            </button>
 
-            <button class="btn btn-outline-info ocultar" type="submit" name="sin-actividad"> Sin Actividad </button>
-            <button class="btn btn-outline-info mostrar" type="button" onclick="vistos()" name="marcar-vistos"> Marcar Vistos </button>
-        </form>
-        <div class="class-control" id="myDIV" style="display:none;">
-            <form id="estado" action="" method="GET">
-                <select name="estado" class="form-control" style="width:auto;" onchange="filtrarTabla4()">
-                    <option value="">Seleccione Todos:</option>
-                    <?php
-                    $query = $conexion->query("SELECT DISTINCT t.Lista FROM tachiyomi t INNER JOIN lista o ON t.Lista = o.Nombre ORDER BY o.ID ASC;");
-                    while ($valores = mysqli_fetch_array($query)) {
-                        echo '<option value="' . $valores[$fila6] . '">' . $valores[$fila6] . '</option>';
-                    }
-                    ?>
-                </select>
-                <input type="hidden" name="accion" value="Filtro1">
-                <br>
+    <div class="main-container">
+        <!--- Formulario para registrar Cliente --->
+        <div class="actions-panel button-group">
+            <!--- Formulario para registrar Cliente --->
+            <form action="" method="GET" class="d-flex gap-2 flex-wrap">
+
+                <button type="button" class="btn btn-primary btn-custom" data-bs-toggle="modal" data-bs-target="#new">
+                    <i class="fas fa-plus"></i> Nuevo Tachiyomi
+                </button>
+
+                <button type="button" class="btn btn-info btn-custom" onclick="toggleFilter('typeFilter')">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+
+                <button type="button" class="btn btn-info btn-custom" onclick="toggleFilter('searchFilter')">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+
+                <button class="btn btn-custom btn-warning" style="color:white" type="submit" name="sin-actividad">
+                    <i class="fas fa-pause-circle"></i> Sin Actividad
+                </button>
+
+                <button class="btn btn-info btn-custom" type="button" onclick="vistos()" name="marcar-vistos">
+                    <i class="far fa-check-square"></i>
+                    Marcar Vistos
+                </button>
+
+                <button class="btn btn-custom btn-secondary" type="submit" name="borrar">
+                    <i class="fas fa-eraser"></i>
+                    <span>Borrar Filtros</span>
+                </button>
+
             </form>
         </div>
-        <div class="class-control" id="myDIV2" style="display:none;">
-            <form action="" method="GET">
-                <input class="form-control" type="text" name="busqueda_tachi" style="width:auto;">
-
-                <button class="btn btn-outline-info" type="submit" name="buscar"> <b>Buscar </b> </button>
-                <button class="btn btn-outline-info" type="submit" name="borrar"> <b>Borrar </b> </button>
+        <div class="filter-section" id="typeFilter" style="display:none;">
+            <form action="" method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <select name="listas" class="form-select" style="max-width: 100% !important;">
+                        <option value="">Seleccione Todos:</option>
+                        <?php
+                        $query = $conexion->query("SELECT DISTINCT t.Lista FROM tachiyomi t INNER JOIN lista o ON t.Lista = o.Nombre ORDER BY o.ID ASC;");
+                        while ($valores = mysqli_fetch_array($query)) {
+                            echo '<option value="' . $valores[$fila6] . '">' . $valores[$fila6] . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary" type="submit" name="filtrar">
+                        <i class="fas fa-check"></i> Aplicar Filtro
+                    </button>
+                    <button class="btn btn-secondary" type="submit" name="borrar">
+                        <i class="fas fa-times"></i> Borrar
+                    </button>
+                </div>
+                <input type="hidden" name="accion" value="Filtro">
+            </form>
+        </div>
+        <div class="filter-section" id="searchFilter" style="display:none;">
+            <form action="" method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="busqueda_tachi" placeholder="Nombre del Manga...">
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary" type="submit" name="buscar">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                    <button class="btn btn-secondary" type="submit" name="borrar">
+                        <i class="fas fa-times"></i> Limpiar
+                    </button>
+                </div>
             </form>
         </div>
         <?php
 
-        $order = "ORDER BY `$tabla`.`Faltantes`,`$tabla`.`Fecha_Cambio1` ASC limit 100";
-        $where = "WHERE $fila5 > 0 $order";
+        include('ModalCrear.php');
 
+        $order = "ORDER BY `$tabla`.`Faltantes`,`$tabla`.`Fecha_Cambio1` ASC limit 100";
+
+        $busqueda = isset($_GET['busqueda_tachi']) ? mysqli_real_escape_string($conexion, $_GET['busqueda_tachi']) : '';
+        $listas = isset($_GET['listas']) ? mysqli_real_escape_string($conexion, $_GET['listas']) : '';
 
         if (isset($_GET['borrar'])) {
-            $busqueda = "";
             $where = "WHERE $fila5 > 0 $order";
             $estado = "Tachiyomi";
-        } else if (isset($_GET['buscar'])) {
-            if (isset($_GET['busqueda_tachi'])) {
-                $busqueda   = $_REQUEST['busqueda_tachi'];
-                $where = "WHERE $fila1 LIKE '%$busqueda%' $order";
-            }
+        } else if (isset($_GET['busqueda_tachi'])) {
+
+            $where = "WHERE $fila1 LIKE '%$busqueda%' $order";
             $estado = "Busqueda";
-        } else if (isset($_GET['estado'])) {
+        } else if (isset($_GET['filtrar'])) {
 
-            $estado   = $_REQUEST['estado'];
-            if (!empty($estado)) {
-
-                $where = "WHERE $fila5 > 0 $order0";
-            }
-
-            $where = "WHERE $fila6='$estado' $order";
-            $accion1 = $_REQUEST['accion'];
+            $where = "WHERE $fila6='$listas' $order";
+            $estado = "Filtro";
         } else if (isset($_GET['sin-actividad'])) {
-            $estado = "Sin Actividad Reciente";
+
             $where = " WHERE $fila11 < DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND $fila5=0 $order";
+            $estado = "Sin Actividad Reciente";
         } else {
+            $where = "WHERE $fila5 > 0 $order";
             $estado = "Tachiyomi";
         }
 
         ?>
 
-        <?php include('ModalCrear.php');  ?>
+        <h1 class="text-center text-primary fw-bold">
+            <?php echo ucfirst($estado) ?>
+        </h1>
+        <div class="content-card">
+            <div class="table-container table-responsive">
+                <table id="example" class="table custom-table">
+                    <thead>
+                        <tr>
+                            <th><?php echo $fila7 ?></th>
+                            <th><?php echo $fila1 ?></th>
+                            <th><?php echo $fila3 ?></th>
+                            <th><?php echo $fila4 ?></th>
+                            <th><?php echo $fila5 ?></th>
+                            <th><?php echo $fila6 ?></th>
+                            <th><?php echo $titulo4 ?></th>
 
-    </div>
-    <h1><?php echo $estado ?></h1>
+                            <th style="text-align: center;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $sql1 = "SELECT * FROM $tabla $where";
 
-    <div class="main-container">
-        <table id="example" class="display" style="width:100%">
-            <thead>
-                <tr>
-                    <th class="normal"><?php echo $fila7 ?></th>
-                    <th style="max-width:310px;"><?php echo $fila1 ?></th>
-                    <th class="normal"><?php echo $fila3 ?></th>
-                    <th class="normal"><?php echo $fila4 ?></th>
-                    <th class="normal"><?php echo $fila5 ?></th>
-                    <th><?php echo $fila6 ?></th>
-                    <th><?php echo $titulo4 ?></th>
-
-
-
-                    <th style="text-align: center;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $sql1 = "SELECT * FROM $tabla $where";
-
-                $result = mysqli_query($conexion, $sql1);
-                //echo $sql1;
-                while ($mostrar = mysqli_fetch_array($result)) {
-                    $name2 = $mostrar[$fila1];
-                ?>
-                    <tr>
-                        <td class="normal"><?php echo $mostrar[$fila7] ?></td>
-                        <td><a href="<?php echo $mostrar[$fila2] ?>" title="<?php echo $mostrar[$fila10] ?>" target="_blanck"><?php echo $mostrar[$fila1] ?></a></td>
-                        <td class="normal"><?php echo $mostrar[$fila3] ?></td>
-                        <td class="normal"><?php echo $mostrar[$fila4] ?></td>
-                        <td class="normal"><?php echo $mostrar[$fila5] ?></td>
-                        <td><?php echo $mostrar[$fila6] ?></td>
-                        <td><?php echo $mostrar[$fila11] ?></td>
-                        <td>
-                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#caps<?php echo $mostrar[$fila7]; ?>">
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#aumentar<?php echo $mostrar[$fila7]; ?>">
-                                <i class="fa fa-plus-square-o" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edit<?php echo $mostrar[$fila7]; ?>">
-                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete<?php echo $mostrar[$fila7]; ?>">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <?php include('ModalEditar.php'); ?>
-                    <?php include('Modal-Aumentar.php'); ?>
-                    <?php include('Modal-Caps.php'); ?>
-                    <?php include('ModalDelete.php'); ?>
-                <?php
-                }
-                ?>
-            </tbody>
-        </table>
-        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-        <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-
-        <script src="../js/popper.min.js"></script>
-        <script src="../js/bootstrap.min.js"></script>
-
-        <script>
-            $(document).ready(function() {
-                $('#example').DataTable({
-                        order: [],
-                        language: {
-                            processing: "Tratamiento en curso...",
-                            search: "Buscar:",
-                            lengthMenu: "Filtro de _MENU_ <?php echo ucfirst($tabla) ?>",
-                            info: "Mostrando <?php echo $tabla ?> del _START_ al _END_ de un total de _TOTAL_ <?php echo $tabla ?>",
-                            infoEmpty: "No existen registros",
-                            infoFiltered: "(filtrado de _MAX_ <?php echo $tabla ?> en total)",
-                            infoPostFix: "",
-                            loadingRecords: "Cargando elementos...",
-                            zeroRecords: "No se encontraron los datos de tu busqueda..",
-                            emptyTable: "No hay ningun registro en la tabla",
-                            paginate: {
-                                first: "Primero",
-                                previous: "Anterior",
-                                next: "Siguiente",
-                                last: "Ultimo"
-                            },
-                            aria: {
-                                sortAscending: ": Active para odernar en modo ascendente",
-                                sortDescending: ": Active para ordenar en modo descendente  ",
-                            }
+                        $result = mysqli_query($conexion, $sql1);
+                        //echo $sql1;
+                        while ($mostrar = mysqli_fetch_array($result)) {
+                            $name2 = $mostrar[$fila1];
+                        ?>
+                            <tr>
+                                <td class="fw-500"><?php echo $mostrar[$fila7] ?></td>
+                                <td><a href="<?php echo $mostrar[$fila2] ?>" title="<?php echo $mostrar[$fila10] ?>" target="_blanck" style="text-decoration: none;"><?php echo $mostrar[$fila1] ?></a></td>
+                                <td class="fw-500"><?php echo $mostrar[$fila3] ?></td>
+                                <td class="fw-500"><?php echo $mostrar[$fila4] ?></td>
+                                <td class="fw-500"><?php echo $mostrar[$fila5] ?></td>
+                                <td><?php echo $mostrar[$fila6] ?></td>
+                                <td><?php echo $mostrar[$fila11] ?></td>
+                                <td data-label="Acciones">
+                                    <div class="action-buttons">
+                                        <button type="button"
+                                            class="action-button bg-info"
+                                            data-toggle="modal"
+                                            data-target="#caps<?php echo $mostrar[$fila7]; ?>"
+                                            aria-label="Aprobar">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                        <button type="button"
+                                            class="action-button btn-success"
+                                            data-toggle="modal"
+                                            data-target="#aumentar<?php echo $mostrar[$fila7]; ?>"
+                                            aria-label="Editar">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <button type="button"
+                                            class="action-button bg-primary"
+                                            data-tooltip="Editar"
+                                            data-toggle="modal"
+                                            data-target="#edit<?php echo $mostrar[$fila7]; ?>"
+                                            aria-label="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button"
+                                            class="action-button bg-danger"
+                                            data-tooltip="Eliminar"
+                                            data-toggle="modal"
+                                            data-target="#delete<?php echo $mostrar[$fila7]; ?>"
+                                            aria-label="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php include('ModalEditar.php'); ?>
+                            <?php include('Modal-Aumentar.php'); ?>
+                            <?php include('Modal-Caps.php'); ?>
+                            <?php include('ModalDelete.php'); ?>
+                        <?php
                         }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                    }
-
-
-                );
-
-            });
-
-            function vistos() {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Consulta!',
-                    text: '¿Desea marcar como vistos todos los mangas que tengan 3 capitulos o menos?',
-                    showCancelButton: true,
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: "SI",
-                    cancelButtonText: "NO"
-
-                }).then((result) => {
-                    if (result.isConfirmed) {
-
-                        Swal.fire({
-                            title: 'Mensaje importante',
-                            text: 'Serás redirigido en 3 segundos...',
-                            icon: 'warning',
-                            showConfirmButton: false, // Oculta los botones
-                            timer: 3000, // Tiempo en milisegundos (5 segundos en este caso)
-                            timerProgressBar: true,
-                            allowOutsideClick: false,
-                            onBeforeOpen: () => {
-                                Swal.showLoading();
-                            },
-                            onClose: () => {
-                                // Redirige a otra página después de que termine el temporizador
-                                window.location.href = 'marcar.php';
-                            }
-                        });
-
-                        // Redirige a otra página después de 5 segundos incluso si el usuario no cierra la alerta
-                        setTimeout(() => {
-                            window.location.href = 'marcar.php';
-                        }, 5000);
-                        //window.location = "vistos.php";
-                    }
-                })
-
-
-            }
-
-            /*
-            Swal.fire({
-                title: 'Mensaje importante',
-                text: 'Serás redirigido en 5 segundos...',
-                icon: 'warning',
-                showConfirmButton: false, // Oculta los botones
-                timer: 5000, // Tiempo en milisegundos (5 segundos en este caso)
-                timerProgressBar: true,
-                allowOutsideClick: false,
-                onBeforeOpen: () => {
-                    Swal.showLoading();
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
                 },
-                onClose: () => {
-                    // Redirige a otra página después de que termine el temporizador
-                    window.location.href = 'otra_pagina.html';
-                }
+                order: [],
+                responsive: true,
+                pageLength: 10,
+                dom: '<"top"f>rt<"bottom"lip><"clear">'
             });
+        });
 
-            // Redirige a otra página después de 5 segundos incluso si el usuario no cierra la alerta
-            setTimeout(() => {
-                window.location.href = 'otra_pagina.html';
-            }, 5000);
-            */
+        function toggleFilter(filterId) {
+            const filter = document.getElementById(filterId);
+            filter.style.display = filter.style.display === 'none' ? 'block' : 'none';
+        }
 
-            function myFunction2() {
-                var x = document.getElementById("myDIV2");
-                if (x.style.display === "none") {
-                    x.style.display = "block";
-                } else {
-                    x.style.display = "none";
+
+        function vistos() {
+            Swal.fire({
+                icon: 'info',
+                title: 'Consulta!',
+                text: '¿Desea marcar como vistos todos los mangas que tengan 3 capitulos o menos?',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonText: "SI",
+                cancelButtonText: "NO"
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    Swal.fire({
+                        title: 'Mensaje importante',
+                        text: 'Serás redirigido en 3 segundos...',
+                        icon: 'warning',
+                        showConfirmButton: false, // Oculta los botones
+                        timer: 3000, // Tiempo en milisegundos (5 segundos en este caso)
+                        timerProgressBar: true,
+                        allowOutsideClick: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading();
+                        },
+                        onClose: () => {
+                            // Redirige a otra página después de que termine el temporizador
+                            window.location.href = 'marcar.php';
+                        }
+                    });
+
+                    // Redirige a otra página después de 5 segundos incluso si el usuario no cierra la alerta
+                    setTimeout(() => {
+                        window.location.href = 'marcar.php';
+                    }, 5000);
+                    //window.location = "vistos.php";
                 }
-            }
+            })
 
-            function myFunction() {
-                var x = document.getElementById("myDIV");
-                if (x.style.display === "none") {
-                    x.style.display = "block";
-                } else {
-                    x.style.display = "none";
-                }
-            }
 
-            function actualizarValorMunicipioInm() {
-                let municipio = document.getElementById("municipio").value;
-                //Se actualiza en municipio inm
-                document.getElementById("municipio_inm").value = municipio;
-            }
-            $('#select-backed-zelect').zelect()
-        </script>
+        }
+    </script>
 </body>
 
 </html>

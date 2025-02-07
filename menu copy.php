@@ -34,7 +34,7 @@
                 <li class="nav-item active"> <a class="nav-link" href="http://inventarioncc.infinityfreeapp.com/Manga/listas.php/">Listas</a> </li>
             </ul>
              <ul class="navbar-nav mr-auto">
-                <li class="nav-item active"> <a class="nav-link" href="http://inventarioncc.infinityfreeapp.com/Anime%202.0/">Anime</a> </li>
+                <li class="nav-item active"> <a class="nav-link" href="http://inventarioncc.infinityfreeapp.com/Anime/">Anime</a> </li>
             </ul>
         </div>
     </nav>
