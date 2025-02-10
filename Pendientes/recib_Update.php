@@ -5,7 +5,27 @@
 
 <?php
 include 'bd.php';
+function alerta($alertTitle, $alertText, $alertType, $redireccion)
+{
+
+    echo '
+ <script>
+        Swal.fire({
+            title: "' . $alertTitle . '",
+            text: "' . $alertText . '",
+            html: "' . $alertText . '",
+            icon: "' . $alertType . '",
+            showCancelButton: false,
+            confirmButtonText: "OK",
+            closeOnConfirm: false
+        }).then(function() {
+          ' . $redireccion . '  ; // Redirigir a la página principal
+        });
+    </script>';
+}
+
 $hora_actual = date('H:i:s');
+
 
 $idRegistros = $_REQUEST['id'];
 $dato1       = $_REQUEST['fila1'];
@@ -20,21 +40,11 @@ $fecha_nueva = $_REQUEST['fila10'];
 $fecha_ultima = $_REQUEST['fila11'];
 $cantidad    = $_REQUEST['cantidad'];
 
-if (isset($_REQUEST["Anime"])) {
-    $checkbox    = $_REQUEST['Anime'];
-    // Hacer algo con $checkbox1Value
-    echo "Anime_Verdadero<br>";
-    echo $checkbox . "<br>";
-} else {
-    $checkbox = "NO";
-    echo "Anime_Falso<br>";
-    echo $checkbox . "<br>";
-}
+$checkbox = $_REQUEST["Anime"] ?? "NO";
+echo ($checkbox === "SI") ? "Anime_Verdadero<br>$checkbox<br>" : "Anime_Falso<br>$checkbox<br>";
 
-//Verificacion de Estado del Link
-if ($dato2 == "") {
-    $estado = "Faltante";
-}
+// Verificación de Estado del Link
+$estado = empty($dato2) ? "Faltante" : $estado;
 
 //Agranda la primera letra de la varible
 $Tabla = ucfirst($tabla);
@@ -74,10 +84,7 @@ $Tabla = ucfirst($tabla);
 $Tabla4 = ucfirst($tabla4);
 
 //Hacer la resta de dias
-$fechaInicio = new DateTime($fecha_nueva);
-$fechaFin = new DateTime($fecha_ultima);
-$diferencia = $fechaInicio->diff($fechaFin);
-$dias = $diferencia->days;
+$dias = calcularDiferenciaDias($fecha_nueva, $fecha_ultima);
 echo "Dias :" . $dias;
 echo "<br>";
 echo $estado;
@@ -88,23 +95,8 @@ echo "<br>";
 // Convierte la fecha a un timestamp
 $timestamp = strtotime(str_replace('-', '/', $fecha_nueva));
 
-// Array asociativo para traducir nombres de días
-$diasSemana = array(
-    'Monday'    => 'Lunes',
-    'Tuesday'   => 'Martes',
-    'Wednesday' => 'Miercoles',
-    'Thursday'  => 'Jueves',
-    'Friday'    => 'Viernes',
-    'Saturday'  => 'Sabado',
-    'Sunday'    => 'Domingo'
-);
+$nombreDiaEspañol = obtenerDiaSemana($fecha_nueva); // Salida: 
 
-// Obtiene el nombre del día en español
-$nombreDia = date('l', $timestamp);
-$nombreDiaEspañol = $diasSemana[$nombreDia];
-
-
-echo $nombreDiaEspañol;
 echo "<br>";
 
 if ($fecha_antigua == $fecha_nueva) {
@@ -166,6 +158,42 @@ if ($cantidad <= 0) {
 }
 echo "<br>";
 
+try {
+    $sql = "UPDATE $tabla SET `$fila5`= (`$fila4`-`$fila3`);";
+    $resultado = mysqli_query($conexion, $sql);
+    echo $sql;
+} catch (PDOException $e) {
+    echo $e;
+    echo "<br>";
+    echo $sql;
+}
+
+//Hace una actualizacion general de las cantidad de diferencias con el ID Manga
+$sql3 = ("UPDATE $tabla SET Cantidad = ( SELECT COUNT(*) AS cantidad_productos FROM $tabla7 WHERE $tabla.ID = $tabla7.$fila9) ;");
+echo $sql3;
+$consulta3 = mysqli_query($conexion, $sql3);
+echo "<br>";
+echo $link;
+echo "<br>";
+
+try {
+    // Verificar si el nombre ya existe en la tabla
+    $sql_check = "SELECT COUNT(*) AS count FROM nombres_pendientes WHERE `$fila9` = '$idRegistros' AND `Nombre` = '$dato1'";
+    $result_check = mysqli_query($conexion, $sql_check);
+    $row = mysqli_fetch_assoc($result_check);
+
+    if ($row['count'] == 0) { // Si no existe, insertar
+        $sql = "INSERT INTO nombres_pendientes (`$fila9`, `Nombre`) VALUES ('$idRegistros', '$dato1')";
+        $resultado = mysqli_query($conexion, $sql);
+        echo "Registro insertado: " . $sql;
+    } else {
+        echo "El nombre ya existe en la tabla.";
+    }
+} catch (PDOException $e) {
+    $conn = null;
+    echo "Error: " . $e->getMessage();
+}
+
 //Hace la actualizacion en mangas
 try {
     $sql = "UPDATE $tabla SET 
@@ -187,46 +215,23 @@ try {
     echo $e;
     echo "<br>";
     echo $sql;
-    echo '<script>
-    Swal.fire({
-        icon: "error",
-        title: "Registro de ' . $dato1 . ' Existe en  ' . $titulo7 . '",
-        confirmButtonText: "OK"
-    }).then(function() {
-         window.location = "' . $link . '"; 
-    });
-    </script>';
+
+
+    $alertTitle = '¡Registro No Existe!';
+    $alertText = 'Registro de ' . $dato1 . ' No Existe en  ' . $titulo7 . '';
+    $alertType = 'error';
+    $redireccion = "window.location='$link'";
+
+    alerta($alertTitle, $alertText, $alertType, $redireccion);
+    die();
 }
 
-echo "<br>";
 
-//Hace la actualizacion general de faltantes de mangas
-try {
-    $sql = "UPDATE $tabla SET `$fila5`= (`$fila4`-`$fila3`);";
-    $resultado = mysqli_query($conexion, $sql);
-    echo $sql;
-} catch (PDOException $e) {
-    echo $e;
-    echo "<br>";
-    echo $sql;
-}
 
-echo "<br>";
+$alertTitle = '¡Registro Actualizado!';
+$alertText = 'Actualizando ' . $dato1 . ' en ' . $titulo7 . '';
+$alertType = 'success';
+$redireccion = "window.location='$link'";
 
-//Hace una actualizacion general de las cantidad de diferencias con el ID Manga
-$sql3 = ("UPDATE $tabla SET Cantidad = ( SELECT COUNT(*) AS cantidad_productos FROM $tabla7 WHERE $tabla.ID = $tabla7.$fila9) ;");
-echo $sql3;
-$consulta3 = mysqli_query($conexion, $sql3);
-echo "<br>";
-echo $link;
-echo "<br>";
-
-echo '<script>
-        Swal.fire({
-            icon: "success",
-            title: "Actualizando ' . $dato1 . ' en ' . $titulo7 . '",
-            confirmButtonText: "OK"
-        }).then(function() {
-            window.location = "' . $link . '"; 
-        });
-    </script>';
+alerta($alertTitle, $alertText, $alertType, $redireccion);
+die();

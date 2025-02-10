@@ -15,30 +15,26 @@
           text-align: center;
         }
       </style>
-            <form method="POST" action="recib_Delete.php">
-<?php include('regreso-modal.php');  ?>
+      <form method="POST" action="recib_Delete.php">
+        <?php include('regreso-modal.php');  ?>
 
 
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
         <input type="hidden" name="name" value="<?php echo $mostrar[$fila1]; ?>">
 
         <div class="modal-body div1" id="cont_modal">
-
-          <h1 class="modal-title">
-            <?php echo $mostrar[$fila1]; ?>
-          </h1>
-          <h2 class="modal-title">
+          <h4 class="fs-3 fw-bold text-dark mb-3"><?php echo $mostrar[$fila1]; ?></h4>
+          <span class="badge bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-pill fs-6 mb-4">
             <?php echo $mostrar[$fila8]; ?>
-          </h2>
-          <h2 class="modal-title">
-            <?php echo $mostrar[$fila6]; ?>
-          </h2>
-         </div>
+          </span>
+          <br>
+          <span class="badge badge-success px-3 py-2"> <?php echo $mostrar[$fila6]; ?></span>
+        </div>
         <div class="modal-footer" style="display: flex;justify-content: center;">
           <button type="submit" name="Mangas" class="btn btn-warning">
-          <i class="fa-solid fa-delete-left"></i> Borrar de Pendientes, Mover a Mangas</button>
+            <i class="fa-solid fa-delete-left"></i> Borrar de Pendientes, Mover a Mangas</button>
           <button type="submit" name="Finalizados" class="btn btn-danger">
-          <i class="fa-solid fa-trash"></i> Borrar de Pendientes, Mover a Finalizados</button>
+            <i class="fa-solid fa-trash"></i> Borrar de Pendientes, Mover a Finalizados</button>
         </div>
       </form>
 

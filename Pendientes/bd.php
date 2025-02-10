@@ -23,6 +23,11 @@ try {
     die("Connection error: " . $exception->getMessage());
 }
 
+include('../funciones.php');
+
+// Establecer la zona horaria para Santiago de Chile.
+date_default_timezone_set('America/Santiago');
+
 $tabla = "pendientes_manga";
 $tabla2 = "lista";
 $tabla3 = "estado";

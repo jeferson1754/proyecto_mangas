@@ -19,7 +19,7 @@
             <label class="form-label fw-bold"><?php echo $fila1 ?></label>
             <div class="input-group">
               <textarea name="fila1" id="inputarea<?php echo $mostrar[$fila7]; ?>"
-                class="form-control border-end-0 rounded-start"
+                class="form-control border-end-0 rounded-start" required
                 oninput="replicarTextoDesdeTextarea('<?php echo $mostrar[$fila7]; ?>')"><?php echo htmlspecialchars($mostrar[$fila1]); ?></textarea>
               <button class="btn btn-light border" type="button" onclick="mostrarDiv('<?php echo $mostrar[$fila7]; ?>')">
                 <i class="fa-solid fa-arrows-rotate me-1"></i>Cambiar
@@ -144,7 +144,7 @@
                   if ($estados) {
                     foreach ($estados as $estado) {
                       echo "<option value='{$estado[$fila1]}' " .
-                        ($estado[$fila1] === $mostrar[$fila1] ? 'selected' : '') .
+                        ($estado[$fila1] === $mostrar[$fila6] ? 'selected' : '') .
                         ">{$estado[$fila1]}</option>";
                     }
                   }

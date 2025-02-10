@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../css/barra.css?v=<?php echo time(); ?>">
 </head>
 
+
 <body>
 
     <?php
@@ -72,7 +73,7 @@
     <?php echo "<h3>Dia:$diaMasRepetido - Cantidad:$cantidadRepeticiones - Frecuencia:$frecuencia</h3>"; ?>
 
     <div class="grafico">
-        <canvas id="myChart"></canvas>
+        <div id="chart-container"></div>
     </div>
     <?php //echo $variable 
     ?>
@@ -183,10 +184,11 @@
 
 
 
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="../js/popper.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
+    <script src="https://echarts.apache.org/en/js/vendors/echarts/dist/echarts.min.js"></script>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="./js/popper.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
     <?php
     // Consulta SQL para obtener los datos del gráfico
     $consulta = "SELECT Fecha, Diferencia FROM `$tabla7` where $fila9='$variable' ORDER BY `$tabla7`.`Fecha` DESC";
@@ -213,32 +215,51 @@
         var labels = <?php echo json_encode($labels); ?>;
         var data = <?php echo json_encode($data); ?>;
 
-        // Configurar los datos del gráfico
-        var datos = {
-            labels: labels,
-            datasets: [{
-                label: 'Diferencia',
-                data: data,
-                backgroundColor: 'orange', // Color de fondo de las barras
-                borderColor: 'black', // Color del borde de las barras
-                borderWidth: 1 // Ancho del borde de las barras
+        var dom = document.getElementById('chart-container');
+        var myChart = echarts.init(dom, null, {
+            renderer: 'canvas',
+            useDirtyRect: false
+        });
+        var app = {};
+
+        var option;
+
+        option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [{
+                type: 'category',
+                data: labels,
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            series: [{
+                name: 'Diferencia',
+                type: 'bar',
+                barWidth: '60%',
+                data: data
             }]
         };
 
-        // Configuración del gráfico
-        var opciones = {
-            width: 100,
-            height: 40
+        if (option && typeof option === 'object') {
+            myChart.setOption(option);
+        }
 
-        };
-
-        // Obtener el lienzo del gráfico y crear el gráfico de barras
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'bar', // Tipo de gráfico
-            data: datos,
-            options: opciones
-        });
+        window.addEventListener('resize', myChart.resize);
     </script>
 </body>
 

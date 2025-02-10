@@ -1,22 +1,22 @@
 <?php
 if (isset($_GET['borrar'])) {
-    $link = "./?busqueda_pendientes_manga=&borrar=";
+    $link = "./?borrar=";
     echo "<input type='hidden' name='link' value='$link'>";
     $lista="Seleccione";
     $valor="";
  }else if (isset($_GET['buscar'])) {
-    $link = "./?busqueda_pendientes_manga=$busqueda&buscar=&accion=Busqueda";
+    $link = "./?busqueda_webtoon=$busqueda&buscar=";
     echo "<input type='hidden' name='link' value='$link'>";
     $lista="Seleccione";
     $valor="";
  }else if (isset($_GET['filtrar'])) {
-    $link = "./?estado=$estado&accion=Filtro2&filtrar=";
+    $link = "./?estado=$estado&accion=Filtro&filtrar=";
     echo "<input type='hidden' name='link' value='$link'>";
     $lista="Seleccione";
     $valor="";
 
  }else if (isset($_GET['linkeado'])) {
-    $link = "./?linkeado=";
+    $link = "./?link=";
     echo "<input type='hidden' name='link' value='$link'>";
     $lista="Seleccione";
     $valor="";
