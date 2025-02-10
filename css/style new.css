@@ -696,3 +696,162 @@ body {
               .close:hover {
                 opacity: 0.75;
               }
+
+                      /* Estilos para el modal de eliminación */
+        .delete-modal .modal-content {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .delete-modal .modal-header {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .delete-modal .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .delete-modal .close {
+            color: white;
+            opacity: 1;
+            text-shadow: none;
+            transition: transform 0.3s ease;
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+        }
+
+        .delete-modal .close:hover {
+            transform: rotate(90deg);
+            opacity: 1;
+        }
+
+        .delete-modal .modal-body {
+            padding: 2rem;
+            text-align: center;
+            background: #fff;
+        }
+
+        .delete-modal .anime-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .delete-modal .anime-details {
+            font-size: 1.25rem;
+            color: #6b7280;
+            margin: 0.5rem 0;
+        }
+
+        .delete-modal .warning-icon {
+            font-size: 4rem;
+            color: #ef4444;
+            margin-bottom: 1.5rem;
+            animation: warningPulse 2s infinite;
+        }
+
+        @keyframes warningPulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .delete-modal .modal-footer {
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .delete-modal .btn {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .delete-modal .btn-cancel {
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+
+        .delete-modal .btn-cancel:hover {
+            background: #e5e7eb;
+            transform: translateY(-1px);
+        }
+
+        .delete-modal .btn-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+        }
+
+        .delete-modal .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Animación de entrada */
+        .modal.fade .modal-dialog {
+            transform: scale(0.8);
+            transition: transform 0.3s ease-out;
+        }
+
+        .modal.show .modal-dialog {
+            transform: scale(1);
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .delete-modal .modal-body {
+                padding: 1.5rem;
+            }
+
+            .delete-modal .anime-title {
+                font-size: 1.5rem;
+            }
+
+            .delete-modal .anime-details {
+                font-size: 1rem;
+            }
+
+            .delete-modal .modal-footer {
+                flex-direction: column;
+            }
+
+            .delete-modal .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table td {
+                border-top: none !important;
+            }
+        }
