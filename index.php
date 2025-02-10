@@ -167,7 +167,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
         } else if (isset($_GET['tachiyomi'])) {
             $where = " LEFT JOIN `tachiyomi` ON manga.ID = tachiyomi.ID_Manga WHERE tachiyomi.ID_Manga IS NULL AND manga.Faltantes > 0 $order LIMIT 10;";
             $capi = "1";
-            $titulo = "Mostrar Mangas Fuera de Tachiyomi";
+            $titulo = "Mangas Fuera de Tachiyomi";
 
             $columnas = " manga.ID as ID, 
             manga.Nombre as Nombre,
@@ -366,9 +366,9 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
 
                             <?php
                             include('Modal-Caps.php');
-                            //include('Modal-Aumentar.php'); 
+                            include('Modal-Aumentar.php'); 
                             include('ModalEditar.php'); 
-                            //include('ModalDelete.php'); 
+                            include('ModalDelete.php'); 
 
                         }
                             ?>

@@ -71,11 +71,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo $dias;
     echo "<br>";
 
-    if ($dato2 == "") {
-        $estado = "Faltante";
-    } else {
-        $estado = "Correcto";
-    }
+    $estado = empty($dato2) ? "Faltante" : "Correcto";
+
     echo $estado;
     echo "<br>";
 

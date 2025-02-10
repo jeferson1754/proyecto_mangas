@@ -5,6 +5,26 @@
 
 <?php
 include 'bd.php';
+
+function alerta($alertTitle, $alertText, $alertType, $redireccion)
+{
+
+    echo '
+ <script>
+        Swal.fire({
+            title: "' . $alertTitle . '",
+            text: "' . $alertText . '",
+            html: "' . $alertText . '",
+            icon: "' . $alertType . '",
+            showCancelButton: false,
+            confirmButtonText: "OK",
+            closeOnConfirm: false
+        }).then(function() {
+          ' . $redireccion . '  ; // Redirigir a la página principal
+        });
+    </script>';
+}
+
 $hora_actual = date('H:i:s');
 
 $idRegistros = $_REQUEST['id'];
@@ -21,20 +41,12 @@ $fecha_ultima = $_REQUEST['fila11'];
 $cantidad    = $_REQUEST['cantidad'];
 
 
-if (isset($_REQUEST["Anime"])) {
-    $checkbox    = $_REQUEST['Anime'];
-    // Hacer algo con $checkbox1Value
-    echo "Anime_Verdadero<br>";
-    echo $checkbox . "<br>";
-} else {
-    $checkbox = "NO";
-    echo "Anime_Falso<br>";
-    echo $checkbox . "<br>";
-}
-//Verificacion de Estado del Link
-if ($dato2 == "") {
-    $estado = "Faltante";
-}
+$checkbox = $_REQUEST["Anime"] ?? "NO";
+echo ($checkbox === "SI") ? "Anime_Verdadero<br>$checkbox<br>" : "Anime_Falso<br>$checkbox<br>";
+
+// Verificación de Estado del Link
+$estado = empty($dato2) ? "Faltante" : $estado;
+
 
 //Agranda la primera letra de la varible
 $Tabla = ucfirst($tabla);
@@ -88,11 +100,7 @@ echo $nueva_cantidad;
 $Tabla = ucfirst($tabla);
 $Tabla4 = ucfirst($tabla4);
 
-//Hacer la resta de dias
-$fechaInicio = new DateTime($fecha_nueva);
-$fechaFin = new DateTime($fecha_ultima);
-$diferencia = $fechaInicio->diff($fechaFin);
-$dias = $diferencia->days;
+$dias = calcularDiferenciaDias($fecha_nueva, $fecha_ultima);
 echo "Dias :" . $dias;
 echo "<br>";
 echo $estado;
@@ -100,27 +108,8 @@ echo "<br>";
 echo "$dato1 existe en $tabla";
 echo "<br>";
 
-// Convierte la fecha a un timestamp
-$timestamp = strtotime(str_replace('-', '/', $fecha_nueva));
 
-// Array asociativo para traducir nombres de días
-$diasSemana = array(
-    'Monday'    => 'Lunes',
-    'Tuesday'   => 'Martes',
-    'Wednesday' => 'Miercoles',
-    'Thursday'  => 'Jueves',
-    'Friday'    => 'Viernes',
-    'Saturday'  => 'Sabado',
-    'Sunday'    => 'Domingo'
-);
-
-// Obtiene el nombre del día en español
-$nombreDia = date('l', $timestamp);
-$nombreDiaEspañol = $diasSemana[$nombreDia];
-
-
-echo $nombreDiaEspañol;
-echo "<br>";
+$nombreDiaEspañol = obtenerDiaSemana($fecha_nueva); // Salida: Miércoles
 
 if ($fecha_antigua == $fecha_nueva) {
     echo "Las ultimas dos fechas son iguales";
@@ -180,106 +169,6 @@ if ($cantidad <= 0) {
     echo "mayor a cero:" . $cantidad;
 }
 echo "<br>";
-if ($listen < 101) {
-    echo "Menor a 100";
-
-    //Hace la actualizacion en mangas
-    try {
-        $sql = "UPDATE $tabla SET 
-    `Nombre` ='" . $dato1 . "',
-    `$fila2` ='" . $dato2 . "',
-    `$fila3` ='" . $dato3 . "',
-    `$fila4` ='" . $dato4 . "',
-    `$fila8` ='" . $dato8 . "',
-    `$fila6` ='" . $dato6 . "',
-    `$fila13`='" . $estado . "',
-    `$fila10`='" . $fecha_nueva . "',
-    `$fila11`='" . $fecha_ultima . "',
-    `Anime`='" . $checkbox . "',
-    `$fila17`=NOW()
-    WHERE `$fila7`='" . $idRegistros . "'";
-        $resultado = mysqli_query($conexion, $sql);
-        echo $sql;
-    } catch (PDOException $e) {
-        echo $e;
-        echo "<br>";
-        echo $sql;
-        echo '<script>
-    Swal.fire({
-        icon: "error",
-        title: "Registro de ' . $dato1 . ' Existe en  ' . $Tabla . '",
-        confirmButtonText: "OK"
-    }).then(function() {
-         window.location = "' . $link . '"; 
-    });
-    </script>';
-    }
-
-    if (mysqli_num_rows($consulta1) > 0) {
-        echo "Existe en $tabla4 y en $tabla";
-        echo "<br>";
-
-        //Actualiza los datos requeridos en tachiyomi
-        try {
-            $sql = "UPDATE $tabla4 SET 
-        `$fila2` ='" . $dato2 . "',
-        `$fila3` ='" . $dato3 . "',
-        `$fila4` ='" . $dato4 . "',
-        `$fila8` ='" . $dato8 . "',
-        `$fila6` ='" . $dato6 . "',
-        `$fila13`='" . $estado . "',
-        `$fila10`='" . $fecha_nueva . "'
-        WHERE `$fila9`='" . $idRegistros . "';";
-            $resultado = mysqli_query($conexion, $sql);
-            echo $sql;
-        } catch (PDOException $e) {
-            echo $e;
-            echo "<br>";
-            echo $sql;
-            echo '<script>
-        Swal.fire({
-            icon: "error",
-            title: "Registro de ' . $dato1 . ' Existe en  ' . $Tabla . ' y en ' . $Tabla4 . '",
-            confirmButtonText: "OK"
-        }).then(function() {
-            window.location = "' . $link . '"; 
-        });
-        </script>';
-        }
-
-        echo '<script>
-        Swal.fire({
-            icon: "success",
-            title: "Actualizando ' . $dato1 . ' en ' . $Tabla . ' y en ' . $Tabla4 . '",
-            confirmButtonText: "OK"
-        }).then(function() {
-            window.location = "' . $link . '"; 
-        });
-    </script>';
-    }
-
-    echo '<script>
-        Swal.fire({
-            icon: "success",
-            title: "Actualizando ' . $dato1 . ' en ' . $Tabla . '",
-            confirmButtonText: "OK"
-        }).then(function() {
-            window.location = "' . $link . '"; 
-        });
-    </script>';
-} else {
-
-    echo '<script>
-    Swal.fire({
-        icon: "error",
-        title: "El registro de ' . $dato1 . ' supera el limite de la Lista ' . $dato6 . '",
-        confirmButtonText: "OK"
-    }).then(function() {
-         window.location = "' . $link . '"; 
-    });
-    </script>';
-}
-echo "<br>";
 
 //Hace la actualizacion general de faltantes de mangas
 try {
@@ -314,3 +203,117 @@ $consulta3 = mysqli_query($conexion, $sql3);
 echo "<br>";
 echo $link;
 echo "<br>";
+
+
+try {
+    // Verificar si el nombre ya existe en la tabla
+    $sql_check = "SELECT COUNT(*) AS count FROM nombres_mangas WHERE `$fila9` = '$idRegistros' AND `Nombre` = '$dato1'";
+    $result_check = mysqli_query($conexion, $sql_check);
+    $row = mysqli_fetch_assoc($result_check);
+
+    if ($row['count'] == 0) { // Si no existe, insertar
+        $sql = "INSERT INTO nombres_mangas (`$fila9`, `Nombre`) VALUES ('$idRegistros', '$dato1')";
+        $resultado = mysqli_query($conexion, $sql);
+        echo "Registro insertado: " . $sql;
+    } else {
+        echo "El nombre ya existe en la tabla.";
+    }
+} catch (PDOException $e) {
+    $conn = null;
+    echo "Error: " . $e->getMessage();
+}
+
+
+if ($listen < 101) {
+    echo "Menor a 100";
+
+    //Hace la actualizacion en mangas
+    try {
+        $sql = "UPDATE $tabla SET 
+    `Nombre` ='" . $dato1 . "',
+    `$fila2` ='" . $dato2 . "',
+    `$fila3` ='" . $dato3 . "',
+    `$fila4` ='" . $dato4 . "',
+    `$fila8` ='" . $dato8 . "',
+    `$fila6` ='" . $dato6 . "',
+    `$fila13`='" . $estado . "',
+    `$fila10`='" . $fecha_nueva . "',
+    `$fila11`='" . $fecha_ultima . "',
+    `Anime`='" . $checkbox . "',
+    `$fila17`=NOW()
+    WHERE `$fila7`='" . $idRegistros . "'";
+        $resultado = mysqli_query($conexion, $sql);
+        echo $sql;
+    } catch (PDOException $e) {
+        echo $e;
+        echo "<br>";
+        echo $sql;
+
+        $alertTitle = '¡Registro No Existe!';
+        $alertText = 'Registro de ' . $dato1 . ' No Existe en  ' . $Tabla . '';
+        $alertType = 'error';
+        $redireccion = "window.location='$link'";
+
+        alerta($alertTitle, $alertText, $alertType, $redireccion);
+        die();
+    }
+
+    if (mysqli_num_rows($consulta1) > 0) {
+        echo "Existe en $tabla4 y en $tabla";
+        echo "<br>";
+
+        //Actualiza los datos requeridos en tachiyomi
+        try {
+            $sql = "UPDATE $tabla4 SET 
+        `$fila2` ='" . $dato2 . "',
+        `$fila3` ='" . $dato3 . "',
+        `$fila4` ='" . $dato4 . "',
+        `$fila8` ='" . $dato8 . "',
+        `$fila6` ='" . $dato6 . "',
+        `$fila13`='" . $estado . "',
+        `$fila10`='" . $fecha_nueva . "'
+        WHERE `$fila9`='" . $idRegistros . "';";
+            $resultado = mysqli_query($conexion, $sql);
+            echo $sql;
+        } catch (PDOException $e) {
+            echo $e;
+            echo "<br>";
+            echo $sql;
+
+            $alertTitle = '¡Registro No Existe!';
+            $alertText = 'Registro de ' . $dato1 . ' No Existe en  ' . $Tabla . ' y en ' . $Tabla4 . '';
+            $alertType = 'error';
+            $redireccion = "window.location='$link'";
+
+            alerta($alertTitle, $alertText, $alertType, $redireccion);
+            die();
+        }
+
+
+        $alertTitle = '¡Registro Actualizado!';
+        $alertText = 'Actualizando ' . $dato1 . ' en ' . $Tabla . ' y en ' . $Tabla4 . '';
+        $alertType = 'success';
+        $redireccion = "window.location='$link'";
+
+        alerta($alertTitle, $alertText, $alertType, $redireccion);
+        die();
+    }
+
+
+    $alertTitle = '¡Registro Actualizado!';
+    $alertText = 'Actualizando ' . $dato1 . ' en ' . $Tabla . '';
+    $alertType = 'success';
+    $redireccion = "window.location='$link'";
+
+    alerta($alertTitle, $alertText, $alertType, $redireccion);
+    die();
+} else {
+
+    $alertTitle = '¡Limite Superado!';
+    $alertText = 'El registro de ' . $dato1 . ' supera el limite de la Lista ' . $dato6 . '';
+    $alertType = 'error';
+    $redireccion = "window.location='$link'";
+
+    alerta($alertTitle, $alertText, $alertType, $redireccion);
+    die();
+}

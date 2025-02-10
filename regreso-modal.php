@@ -9,21 +9,6 @@ if (isset($_GET['borrar'])) {
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = $estado;
    $valor = $estado;
-} else if (isset($_GET['buscar'])) {
-   $link = "./?busqueda_manga=$busqueda&buscar=&accion=Busqueda";
-   echo "<input type='hidden' name='link' value='$link'>";
-   $lista = "Seleccione";
-   $valor = "";
-} else if (isset($_GET['estado'])) {
-   $link = "./?estado=$estado&accion=Filtro=";
-   echo "<input type='hidden' name='link' value='$link'>";
-   $lista = "Seleccione";
-   $valor = "";
-} else if (isset($_GET['listas_sinleer'])) {
-   $link = "./?listas_sinleer=$estado&accion=Filtro2";
-   echo "<input type='hidden' name='link' value='$link'>";
-   $lista = $estado;
-   $valor = $estado;
 } else if (isset($_GET['linkeado'])) {
    $link = "./?linkeado=";
    echo "<input type='hidden' name='link' value='$link'>";
@@ -44,18 +29,23 @@ if (isset($_GET['borrar'])) {
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
-} else if (isset($_GET['capitulos'])) {
-   $link = "./?capitulos=$caps&accion=Filtro3";
-   echo "<input type='hidden' name='link' value='$link'>";
-   $lista = "Seleccione";
-   $valor = "";
 } else if (isset($_GET['anime'])) {
    $link = "./?anime=";
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
+} else if (isset($_GET['tachiyomi'])) {
+   $link = "./?tachiyomi=";
+   echo "<input type='hidden' name='link' value='$link'>";
+   $lista = "Seleccione";
+   $valor = "";
+} else if (isset($_GET['buscar'])) {
+   $link = "./?busqueda_manga=$busqueda&todos=&capitulos=&estado=&buscar=";
+   echo "<input type='hidden' name='link' value='$link'>";
+   $lista = "Seleccione";
+   $valor = "";
 } else {
-   $link = "./";
+   $link = "./?borrar=";
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
