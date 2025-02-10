@@ -6,16 +6,7 @@
 <?php
 include 'bd.php'; // Asegúrate de incluir tu archivo de conexión a la base de datos
 
-$nombre = $_REQUEST['nombre'];
-
-// Consulta SQL para obtener datos filtrados por nombre
-$sql2 = "SELECT $fila7 FROM $tabla2 WHERE $fila1 LIKE '%$nombre%'";
-$consulta2 = mysqli_query($conexion, $sql2);
-
-while ($mostrar2 = mysqli_fetch_assoc($consulta2)) {
-    $dato9 = $mostrar2[$fila7];
-    echo $dato9 . "<br>";
-}
+$dato9 = $_REQUEST['id'];
 
 // Consulta SQL para obtener datos filtrados por $fila7
 $sql = "SELECT * FROM $tabla2 WHERE $fila7='$dato9'";
@@ -24,8 +15,6 @@ $consulta = mysqli_query($conexion, $sql);
 // Consulta SQL para obtener datos filtrados por $fila9
 $sql1 = "SELECT * FROM $tabla WHERE $fila9='$dato9'";
 $consulta1 = mysqli_query($conexion, $sql1);
-
-echo $sql2 . "<br>";
 
 while ($mostrar = mysqli_fetch_assoc($consulta)) {
     $dato1 = $mostrar[$fila1];
