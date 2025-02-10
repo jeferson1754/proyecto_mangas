@@ -28,7 +28,7 @@ $tabla2 = "manga";
 $tabla3 = "manga";
 $tabla4 = "estado";
 $tabla5 = "dias";
-$tabla6="estado_link";
+$tabla6 = "estado_link";
 
 $fila1 = "Nombre";
 $fila2 = "Link";
@@ -40,4 +40,27 @@ $fila8 = "Estado";
 $fila7 = "ID";
 $fila13 = "Estado_Link";
 
-$titulo1="Estado del Link";
+$titulo1 = "Estado del Link";
+
+
+// Establecer la zona horaria para Santiago de Chile.
+date_default_timezone_set('America/Santiago');
+
+// Obtener la fecha y hora actual con 5 horas de retraso.
+$fecha_actual_retrasada = date('Y-m-d H:i:s', strtotime('-5 hours'));
+
+$nombres_dias = array(
+    'Domingo',
+    'Lunes',
+    'Martes',
+    'Miercoles',
+    'Jueves',
+    'Viernes',
+    'Sabado'
+);
+
+// Obtener el número del día de la semana (0 para domingo, 1 para lunes, etc.).
+$numero_dia = date('w', strtotime($fecha_actual_retrasada));
+
+// Obtener el nombre del día actual en español.
+$day = $nombres_dias[$numero_dia];
