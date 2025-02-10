@@ -5,6 +5,7 @@ include 'upa.php';
 $fecha_actual = date('Y-m-d');
 $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
 
+$sizebtn = "sm";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +31,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
         <!--- Formulario para registrar Cliente --->
         <div class="actions-panel button-group">
             <form action="" method="GET" class="d-flex gap-2 flex-wrap">
-                <button type="button" class="btn btn-m btn-custom btn-primary" data-bs-toggle="modal" data-bs-target="#new">
+                <button type="button" class="btn btn-<?php echo $sizebtn ?> btn-custom btn-primary vista-celu" data-bs-toggle="modal" data-bs-target="#new">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -38,7 +39,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
                 </button>
 
 
-                <button type="button" class="btn btn-m btn-custom btn-outline-secondary" onclick="toggleFilters()">
+                <button type="button" class="btn btn-<?php echo $sizebtn ?> btn-custom btn-outline-secondary" onclick="toggleFilters()">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                     </svg>
@@ -46,27 +47,27 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
                 </button>
 
 
-                <button type="submit" name="linkeado" class="btn btn-sm btn-warning btn-custom" style="text-decoration: none;">
+                <button type="submit" name="linkeado" class="btn btn-<?php echo $sizebtn ?> btn-warning btn-custom vista-celu" style="text-decoration: none;">
                     <i class="fas fa-unlink"></i> Sin Link
                 </button>
-                <button class="btn btn-custom btn-sm btn-warning" type="submit" name="sin-fechas">
+                <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-warning vista-celu" type="submit" name="sin-fechas">
                     <i class="fas fa-times-circle"></i> Sin Revisión
                 </button>
-                <button class="btn btn-custom btn-sm btn-warning" type="submit" name="sin-actividad">
+                <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-warning vista-celu" type="submit" name="sin-actividad">
                     <i class="fas fa-pause-circle"></i> Sin Actividad
                 </button>
-                <button class="btn btn-custom btn-sm btn-warning" type="submit" name="tachiyomi">
+                <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-warning" type="submit" name="tachiyomi">
                     <i class="fas fa-ban"></i> No Tachiyomi
                 </button>
-                <button class="btn btn-custom btn-sm btn-success" type="submit" name="mayor-actividad">
+                <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-success" type="submit" name="mayor-actividad">
                     <i class="fas fa-play-circle"></i> Mayor Actividad
                 </button>
-                <button class="btn btn-custom btn-sm btn-info" type="submit" name="anime">
+                <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-info vista-celu" type="submit" name="anime">
                     <i class="fas fa-tv"></i> Tiene Anime
                 </button>
 
 
-                <button class="btn btn-custom btn-m btn-secondary" type="submit" name="borrar">
+                <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-secondary" type="submit" name="borrar">
                     <i class="fas fa-eraser"></i>
                     <span>Borrar Filtros</span>
                 </button>
@@ -366,10 +367,9 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
 
                             <?php
                             include('Modal-Caps.php');
-                            include('Modal-Aumentar.php'); 
-                            include('ModalEditar.php'); 
-                            include('ModalDelete.php'); 
-
+                            include('Modal-Aumentar.php');
+                            include('ModalEditar.php');
+                            include('ModalDelete.php');
                         }
                             ?>
                     </tbody>

@@ -75,35 +75,6 @@
   </div>
 </div>
 
-<style>
-  .hover-shadow:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  }
-
-  .transition-all {
-    transition: all 0.3s ease;
-  }
-
-  .form-control:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
-  }
-
-  .badge {
-    letter-spacing: 0.5px;
-  }
-
-  .bg-gradient-to-r {
-    background: linear-gradient(to right, var(--bs-blue), var(--bs-indigo));
-  }
-
-  .modal-content {
-    border: none;
-    overflow: hidden;
-  }
-</style>
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const forms = document.querySelectorAll('.needs-validation');

@@ -515,7 +515,7 @@ body {
 }
 
 .vista-celu {
-    display: block !important;
+    display: inline-block !important;
 }
 
 /* Responsive adjustments */
@@ -624,4 +624,75 @@ body {
                 /* Ancho fijo */
                 height: auto;
                 /* Altura automática */
+              }
+
+              .hover-shadow:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+              }
+            
+              .transition-all {
+                transition: all 0.3s ease;
+              }
+            
+              .form-control:focus {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+              }
+            
+              .badge {
+                letter-spacing: 0.5px;
+              }
+            
+              .bg-gradient-to-r {
+                background: linear-gradient(to right, var(--bs-blue), var(--bs-indigo));
+              }
+            
+              .modal-content {
+                border: none;
+                overflow: hidden;
+              }
+
+              .bg-gradient-primary {
+                background: linear-gradient(to right, #4e73df, #224abe);
+              }
+            
+              .modal-content {
+                border-radius: 0.75rem;
+              }
+            
+              .badge {
+                font-size: 0.9rem;
+                border-radius: 50rem;
+              }
+            
+              .card {
+                border-radius: 0.5rem;
+                transition: transform 0.2s;
+              }
+            
+              .card:hover {
+                transform: translateY(-2px);
+              }
+            
+              .input-group-text {
+                border-radius: 0.5rem 0 0 0.5rem;
+              }
+            
+              .form-control {
+                border-radius: 0 0.5rem 0.5rem 0;
+              }
+            
+              .btn {
+                border-radius: 0.5rem;
+                padding: 0.5rem 1.5rem;
+              }
+            
+              .modal-header .close {
+                padding: 1rem;
+                margin: -1rem -1rem -1rem auto;
+              }
+            
+              .close:hover {
+                opacity: 0.75;
               }

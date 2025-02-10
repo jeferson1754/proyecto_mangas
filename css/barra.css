@@ -5,6 +5,10 @@
     margin: 0 auto;
 }
 
+#chart-container {
+    height: 100%;
+}
+
 table {
     width: 100% !important;
     background-color: white !important;
@@ -210,3 +214,6 @@ a:visited {
     }
 
 }
+
+
+  
