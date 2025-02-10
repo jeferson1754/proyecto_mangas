@@ -1,51 +1,59 @@
-<!--ventana para Update--->
-<div class="modal fade" id="delete<?php echo $mostrar[$fila7]; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<!-- Modal de eliminación -->
+<div class="modal fade" id="delete<?php echo $mostrar[$fila7]; ?>" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header">
-        <h6 class="modal-title">
-          ¿Realmente deseas eliminar a ?
-        </h6>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <div class="modal-header bg-light">
+        <h5 class="modal-title" id="deleteModalLabel">
+          Confirmar Eliminación
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <style>
-        .div1 {
-          text-align: center;
-        }
-      </style>
 
-
-      <form method="POST" action="recib_Delete.php">
-
+      <form action="recib_Delete.php" method="POST">
         <?php include('regreso-modal.php');  ?>
-
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
-        <input type="hidden" name="id_manga" value="<?php echo $mostrar[$fila9]; ?>">
         <input type="hidden" name="name" value="<?php echo $mostrar[$fila1]; ?>">
-        <input type="hidden" name="lista" value="<?php echo $mostrar[$fila6]; ?>">
 
+        <div class="modal-body text-center py-4">
+          <div class="mb-4">
+            <h4 class="fs-3 fw-bold text-dark mb-3">
+              <?php echo $mostrar[$fila1]; ?>
+            </h4>
 
-        <div class="modal-body div1" id="cont_modal">
-          <h4 class="fs-3 fw-bold text-dark mb-3"><?php echo $mostrar[$fila1]; ?></h4>
-          <span class="badge bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-pill fs-6 mb-4">
-            <?php echo $mostrar[$fila8]; ?>
-          </span>
-          <br>
-          <span class="badge badge-success px-3 py-2"> <?php echo $mostrar[$fila6]; ?></span>
+            <span class="badge bg-primary bg-gradient p-2 px-3 fs-6 mb-3">
+              <?php echo $mostrar[$fila8]; ?>
+            </span>
+
+            <div class="mt-2">
+              <span class="badge bg-success p-2">
+                <?php echo $mostrar[$fila6]; ?>
+              </span>
+            </div>
+          </div>
+
+          <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Selecciona una opción para continuar
+          </div>
         </div>
-        <div class="modal-footer" style="display: flex;justify-content: center;">
-          <button type="submit" name="Tachiyomi" class="btn btn-primary">
-            <i class="fa-solid fa-recycle"></i> Borrar de Tachiyomi y Dejar en Mangas</button>
-          <button type="submit" name="Pendientes" class="btn btn-warning">
-            <i class="fa-solid fa-delete-left"></i> Borrar de Tachiyomi y Manga, Mover a Pendientes</button>
-          <button type="submit" name="Finalizados" class="btn btn-danger">
-            <i class="fa-solid fa-trash"></i> Borrar de Tachiyomi y Mangas, Mover a Finalizados</button>
+
+        <div class="modal-footer flex-column border-top-0">
+          <button type="submit" name="Tachiyomi" class="btn btn-primary btn-lg w-100 mx-0 mb-2">
+            <i class="fas fa-recycle me-2"></i>
+            Borrar de Tachiyomi y Dejar en Mangas
+          </button>
+
+          <button type="submit" name="Pendientes" class="btn btn-warning btn-lg w-100 mx-0 mb-2">
+            <i class="fas fa-clock me-2"></i>
+            Borrar de Tachiyomi y Manga, Mover a Pendientes
+          </button>
+
+          <button type="submit" name="Finalizados" class="btn btn-danger btn-lg w-100 mx-0">
+            <i class="fas fa-trash-alt me-2"></i>
+            Borrar de Tachiyomi y Mangas, Mover a Finalizados
+          </button>
         </div>
       </form>
-
     </div>
   </div>
 </div>
-<!---fin ventana Update --->

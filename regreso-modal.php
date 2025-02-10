@@ -4,11 +4,6 @@ if (isset($_GET['borrar'])) {
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
-} else if (isset($_GET['todos'])) {
-   $link = "./?todos=$estado&accion=Filtro1";
-   echo "<input type='hidden' name='link' value='$link'>";
-   $lista = $estado;
-   $valor = $estado;
 } else if (isset($_GET['linkeado'])) {
    $link = "./?linkeado=";
    echo "<input type='hidden' name='link' value='$link'>";

@@ -344,14 +344,14 @@ $sizebtn = "sm";
                                             aria-label="Editar">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button"
-                                            class="action-button bg-danger"
-                                            data-tooltip="Eliminar"
-                                            data-toggle="modal"
-                                            data-target="#delete<?php echo $mostrar[$fila7]; ?>"
-                                            aria-label="Eliminar">
+
+                                        <button type="button" 
+                                        class="action-button bg-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#delete<?php echo $mostrar[$fila7]; ?>">
                                             <i class="fas fa-trash"></i>
                                         </button>
+
                                         <?php
                                         $variable = $mostrar[$fila7];
                                         ?>
