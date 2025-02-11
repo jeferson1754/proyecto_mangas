@@ -221,31 +221,39 @@
 </style>
 
 <script>
-  function validarFormulario(id) {
-    const iframe = document.getElementById(`iframeFechas-${id}`);
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    const fecha1 = iframeDoc.querySelector('[id^="date1-"]');
-    const fecha2 = iframeDoc.querySelector('[id^="date2-"]');
-    const error = document.getElementById(`error-${id}`);
-    const errorMsg = document.getElementById(`error-mensaje-${id}`);
+  document.getElementById('mi-formulario-<?php echo $mostrar[$fila7]; ?>').addEventListener('submit', function(event) {
+    var iframe = document.getElementById('iframeFechas-<?php echo $mostrar[$fila7]; ?>');
+    var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
 
-    if (fecha1.value === fecha2.value) {
-      errorMsg.textContent = 'Las fechas no pueden ser iguales.';
-      error.style.display = 'flex';
-      return false;
+    // Obtener todos los elementos input en el iframe que contienen fechas
+    var fechaInput1 = iframeDocument.querySelector('[id^="date1-"]');
+    var fechaInput2 = iframeDocument.querySelector('[id^="date2-"]');
+
+
+    var error = document.getElementById('error-<?php echo $mostrar[$fila7]; ?>');
+    var errorMensaje = document.getElementById('error-mensaje-<?php echo $mostrar[$fila7]; ?>');
+
+    // Verificar si las fechas son iguales
+    if (fechaInput1.value === fechaInput2.value) {
+      errorMensaje.textContent = 'Las fechas no pueden ser iguales.'; // Mensaje de error
+      error.style.display = 'flex'; // Mostrar el mensaje de error
+      event.preventDefault(); // Evitar el envío del formulario
+      return;
+    } else if (fechaInput1.value < fechaInput2.value) {
+      errorMensaje.textContent = 'La Ultima Fecha no puede ser menor a la Penultima Fecha.'; // Mensaje de error
+      error.style.display = 'flex'; // Mostrar el mensaje de error
+      event.preventDefault(); // Evitar el envío del formulario
+      return;
     }
 
-    if (fecha1.value < fecha2.value) {
-      errorMsg.textContent = 'La Ultima Fecha no puede ser menor a la Penultima Fecha.';
-      error.style.display = 'flex';
-      return false;
-    }
-
+    // Ocultar el mensaje de error si estaba visible
     error.style.display = 'none';
-    document.getElementById(`fechaActual-${id}`).value = fecha1.value;
-    document.getElementById(`fechaDestino-${id}`).value = fecha2.value;
-    return true;
-  }
+
+    // Pasar los valores a los inputs ocultos del formulario
+    document.getElementById('fechaActual-<?php echo $mostrar[$fila7]; ?>').value = fechaInput1.value;
+    document.getElementById('fechaDestino-<?php echo $mostrar[$fila7]; ?>').value = fechaInput2.value;
+
+  });
 
   function replicarTextoDesdeTextarea(id) {
     const texto = document.getElementById(`inputarea${id}`).value;

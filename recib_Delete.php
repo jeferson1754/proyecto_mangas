@@ -6,41 +6,55 @@
 <?php
 include 'bd.php';
 
-$sql = ("select Date_FORMAT(DATE_SUB(NOW(),INTERVAL 5 HOUR),'%W');");
+function alerta($alertTitle, $alertText, $alertType, $redireccion)
+{
 
-$dia      = mysqli_query($conexion, $sql);
-
-while ($rows = mysqli_fetch_array($dia)) {
-
-    $day = $rows[0];
-    // echo $day;
+    echo '
+ <script>
+        Swal.fire({
+            title: "' . $alertTitle . '",
+            text: "' . $alertText . '",
+            html: "' . $alertText . '",
+            icon: "' . $alertType . '",
+            showCancelButton: false,
+            confirmButtonText: "OK",
+            closeOnConfirm: false
+        }).then(function() {
+          ' . $redireccion . '  ; // Redirigir a la página principal
+        });
+    </script>';
 }
 
-$idRegistros = $_REQUEST['id'];
-$nombre = $_REQUEST['name'];
-$link = $_REQUEST['link'];
 
-$query = "SELECT * FROM `$tabla7` WHERE `$fila9`='$idRegistros';";
-$resultado3 = mysqli_query($conexion, $query);
+// Establecer la zona horaria para Santiago de Chile.
+date_default_timezone_set('America/Santiago');
 
-// Mapeo de días de la semana en inglés a español
-$dias_semana = array(
-    "Monday" => "Lunes",
-    "Tuesday" => "Martes",
-    "Wednesday" => "Miércoles",
-    "Thursday" => "Jueves",
-    "Friday" => "Viernes",
-    "Saturday" => "Sábado",
-    "Sunday" => "Domingo"
+// Obtener la fecha y hora actual con 5 horas de retraso.
+$fecha_actual_retrasada = date('Y-m-d H:i:s', strtotime('-5 hours'));
+
+// Array con los nombres de los días en español.
+$nombres_dias = array(
+    'Domingo',
+    'Lunes',
+    'Martes',
+    'Miercoles',
+    'Jueves',
+    'Viernes',
+    'Sabado'
 );
 
-if (isset($_POST['Finalizados'])) {
-    // Verifica si el día actual está presente en el array y establece el equivalente en español
-    if (array_key_exists($day, $dias_semana)) {
-        $week = $dias_semana[$day];
-    }
+// Obtener el número del día de la semana (0 para domingo, 1 para lunes, etc.).
+$numero_dia = date('w', strtotime($fecha_actual_retrasada));
 
-    // Consulta para verificar si la manga tiene capítulos faltantes
+// Obtener el nombre del día actual en español.
+$day = $nombres_dias[$numero_dia];
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $idRegistros = $_REQUEST['id'];
+    $nombre = $_REQUEST['name'];
+    $link = $_REQUEST['link'];
+    $capitulos_faltantes = $_REQUEST['faltantes'];
+
     $sql = "SELECT * FROM $tabla WHERE $fila7 = ?";
     $consulta = $conexion->prepare($sql);
     $consulta->bind_param("i", $idRegistros);
@@ -56,24 +70,51 @@ if (isset($_POST['Finalizados'])) {
         $dato5 = $mostrar[$fila5];
         $dato6 = $mostrar[$fila6];
         $dato8 = $mostrar[$fila8];
+
         $dato10 = $mostrar[$fila10];
         $dato11 = $mostrar[$fila11];
         $dato13 = $mostrar[$fila13];
+        $dato17 = $mostrar[$fila17];
+        $verificado = $mostrar[$ver];
+        $anime = $mostrar['Anime'];
+    }
 
-        // Comprobar si hay capítulos faltantes
-        if ($mostrar[$fila5] == 0) {
+    // Consulta para verificar si hay datos en la tabla tachiyomi
+    $sql = "SELECT 1 FROM $tabla4 WHERE $fila9 = ?";
+    $consulta_tachiyomi = $conexion->prepare($sql);
+    $consulta_tachiyomi->bind_param("i", $idRegistros);
+    $consulta_tachiyomi->execute();
+    $consulta_tachiyomi->store_result();
+    $existe_tachiyomi = $consulta_tachiyomi->num_rows > 0;
+
+    $sql_diferencias = "SELECT * FROM diferencias WHERE ID_Manga = ?";
+    $consulta_diferencias = $conexion->prepare($sql_diferencias);
+    $consulta_diferencias->bind_param("i", $idRegistros);
+    $consulta_diferencias->execute();
+    $resultado_diferencias = $consulta_diferencias->get_result();
+
+    if (isset($_POST['Finalizados'])) {
+
+        if ($capitulos_faltantes == 0) {
             // Si no hay capítulos faltantes, mueve la manga a la tabla de finalizados
             try {
-                $sql = "INSERT INTO `finalizados_manga`(`Nombre`, `Link`, `Capitulos Vistos`, `Capitulos Totales`, `Faltantes`, `Estado`, `Lista`, `Estado_Link`, `Fecha_Cambio1`, `Fecha_Cambio2`, `ID_Eliminado`, `Modulo`) VALUES
-                ( '" . $dato1 . "','" . $dato2 . "','" . $dato3 . "','" . $dato4 . "','" . $dato5 . "','Finalizado','" . $dato6 . "','" . $dato13 . "','" . $dato10 . "','" . $dato11 . "','" . $idRegistros . "', 'Manga')";
-                $resultado = mysqli_query($conexion, $sql);
-                echo $sql;
-                echo "<br>";
-            } catch (PDOException $e) {
-                echo $e;
-                echo "<br>";
-                echo $sql;
+                $sql = "INSERT INTO `finalizados_manga` (`Nombre`, `Link`, `Capitulos Vistos`, `Capitulos Totales`, `Faltantes`, `Estado`, `Lista`, `Estado_Link`, `Fecha_Cambio1`, `Fecha_Cambio2`, `ID_Eliminado`, `Modulo`) 
+                        VALUES (?, ?, ?, ?, ?, 'Finalizado', ?, ?, ?, ?, ?, 'Manga')";
+
+                $stmt = $conexion->prepare($sql);
+                $stmt->bind_param("ssiiissssi", $dato1, $dato2, $dato3, $dato4, $dato5, $dato6, $dato13, $dato10, $dato11, $idRegistros);
+
+                if ($stmt->execute()) {
+                    echo "Registro insertado correctamente en finalizados_manga.<br>";
+                } else {
+                    echo "Error al insertar: " . $stmt->error . "<br>";
+                }
+
+                $stmt->close();
+            } catch (Exception $e) {
+                echo "Error: " . $e->getMessage() . "<br>";
             }
+
 
             // Elimina la manga de la tabla original
             $sql_delete = "DELETE FROM `$tabla` WHERE $fila7 = ?";
@@ -81,145 +122,160 @@ if (isset($_POST['Finalizados'])) {
             $stmt_delete->bind_param("i", $idRegistros);
             $stmt_delete->execute();
 
-            // Mensaje de éxito
-            echo '<script>
-            Swal.fire({
-                icon: "success",
-                title: "Eliminando ' . $nombre . ' de ' . ucfirst($tabla) . ' y insertando en Finalizados",
-                confirmButtonText: "OK"
-            }).then(function() {
-                window.location = "' . $link . '";
-            });
-        </script>';
+            // Elimina el manga de la tabla diferencias
+            $sql_delete_diferencias = "DELETE FROM `$tabla7` WHERE $fila9 = ?";
+            $stmt_delete_diferencias = $conexion->prepare($sql_delete_diferencias);
+            $stmt_delete_diferencias->bind_param("i", $idRegistros);
+            $stmt_delete_diferencias->execute();
+
+            // Elimina el manga de la tabla nombres_mangas
+            $sql_delete_nombres = "DELETE FROM `nombres_mangas` WHERE $fila9 = ?";
+            $stmt_delete_nombres = $conexion->prepare($sql_delete_nombres);
+            $stmt_delete_nombres->bind_param("i", $idRegistros);
+            $stmt_delete_nombres->execute();
+
+
+            if ($existe_tachiyomi) {
+                // Si hay registros, eliminarlos
+                $sql = "DELETE FROM `$tabla4` WHERE $fila9 = ?";
+                $stmt_delete_tachiyomi = $conexion->prepare($sql);
+                $stmt_delete_tachiyomi->bind_param("i", $idRegistros);
+                $stmt_delete_tachiyomi->execute();
+
+                $alertTitle = '¡Manga Eliminado!';
+                $alertText = 'Eliminando ' . $nombre . ' de ' . ucfirst($tabla) . '  y ' . ucfirst($tabla4) . ' e insertando en Finalizados';
+                $alertType = 'success';
+                $redireccion = "window.location='$link'";
+
+                alerta($alertTitle, $alertText, $alertType, $redireccion);
+                die();
+            } else {
+                $alertTitle = '¡Manga Eliminado!';
+                $alertText = 'Eliminando ' . $nombre . ' de ' . ucfirst($tabla) . '  y insertando en Finalizados';
+                $alertType = 'success';
+                $redireccion = "window.location='$link'";
+
+                alerta($alertTitle, $alertText, $alertType, $redireccion);
+                die();
+            }
         } else {
-            // Mensaje de error si hay capítulos faltantes
-            echo '<script>
-            Swal.fire({
-                icon: "error",
-                title: "' . $nombre . ' tiene Capítulos Faltantes",
-                confirmButtonText: "OK"
-            }).then(function() {
-                window.location = "' . $link . '";
-            });
-        </script>';
+            $alertTitle = '¡Capitulos Faltantes!';
+            $alertText = $nombre . ' tiene ' . $capitulos_faltantes . ' Capitulos Faltantes';
+            $alertType = 'error';
+            $redireccion = "window.location='$link'";
+
+            alerta($alertTitle, $alertText, $alertType, $redireccion);
+            die();
         }
-    } else {
-        // No se encontraron resultados
-        echo "No se encontraron resultados para el ID: $idRegistros";
-    }
-} elseif (isset($_POST['Pendientes'])) {
-    // Consulta para obtener información de la manga
-    $sql = "SELECT * FROM $tabla WHERE $fila7 = '$idRegistros'";
-    $consulta = mysqli_query($conexion, $sql);
-    $resultado = mysqli_fetch_array($consulta);
+    } elseif (isset($_POST['Pendientes'])) {
 
-    // Consulta para verificar si ya existe la manga en la tabla de tachiyomi
-    $sql = "SELECT * FROM $tabla4 WHERE $fila9 = '$idRegistros'";
-    $consulta_tachiyomi = mysqli_query($conexion, $sql);
-
-    // Si no existe la manga en la tabla de tachiyomi, la inserta
-    if (mysqli_num_rows($consulta_tachiyomi) == 0) {
-
-        $sql = "INSERT INTO `$tabla8`(`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila5`, `$fila6`, `$fila8`, `$fila10`, `$fila11`, `$fila13`,`$titulo3`, `$ver`, `$fila17`, `Anime`)
-        VALUES ('" . $resultado[$fila1] . "', '" . $resultado[$fila2] . "', '" . $resultado[$fila3] . "', '" . $resultado[$fila4] . "', '" . $resultado[$fila5] . "', '" . $resultado[$fila6] . "', '" . $resultado[$fila8] . "', '" . $resultado[$fila10] . "', '" . $resultado[$fila11] . "', '" . $resultado[$fila13] . "', '" . $resultado[$titulo3] . "', '" . $resultado[$ver] . "', '" . $resultado[$fila17] . "', '" . $resultado['Anime'] . "')";
-        mysqli_query($conexion, $sql);
-
-
-        // Actualiza la cantidad de capítulos faltantes en la manga
-        $sql = "UPDATE `$tabla8` SET `$fila5` = (`$fila4` - `$fila3`)";
-        mysqli_query($conexion, $sql);
-
-        // Elimina la manga de la tabla original y de la tabla de tachiyomi
-        $sql = "DELETE FROM `$tabla` WHERE $fila7 = '$idRegistros'";
-        mysqli_query($conexion, $sql);
-
-        // Mensaje de éxito
-        echo '<script>
-    Swal.fire({
-        icon: "success",
-        title: "Eliminando registro de ' . $nombre . ' en ' . ucfirst($tabla) . ' e insertando en Pendientes",
-        confirmButtonText: "OK"
-    }).then(function() {
-        window.location = "' . $link . '";
-    });
-</script>';
-    } else {
-        $sql = "INSERT INTO `$tabla8`(`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila5`, `$fila6`, `$fila8`, `$fila10`, `$fila11`, `$fila13`,`$titulo3`, `$ver`, `$fila17`, `Anime`)
-        VALUES ('" . $resultado[$fila1] . "', '" . $resultado[$fila2] . "', '" . $resultado[$fila3] . "', '" . $resultado[$fila4] . "',
-        '" . $resultado[$fila5] . "', '" . $resultado[$fila6] . "', '" . $resultado[$fila8] . "', '" . $resultado[$fila10] . "',
-        '" . $resultado[$fila11] . "', '" . $resultado[$fila13] . "', '" . $resultado[$titulo3] . "', '" . $resultado[$ver] . "', '" . $resultado[$fila17] . "', '" . $resultado['Anime'] . "')";
-        mysqli_query($conexion, $sql);
-
-        // Actualiza la cantidad de capítulos faltantes en la pendientes
-        $sql = "UPDATE `$tabla8` SET `$fila5` = (`$fila4` - `$fila3`)";
-        mysqli_query($conexion, $sql);
-
-        // Si la manga ya existe en la tabla de tachiyomi, simplemente la elimina de las tablas originales
-        $sql = "DELETE FROM `$tabla` WHERE $fila7 = '$idRegistros'";
-        mysqli_query($conexion, $sql);
-
-        $sql = "DELETE FROM `$tabla4` WHERE $fila9 = '$idRegistros'";
-        mysqli_query($conexion, $sql);
-
-        // Mensaje de éxito
-        echo '<script>
-    Swal.fire({
-        icon: "success",
-        title: "Eliminando registro de ' . $nombre . ' en ' . ucfirst($tabla) . ' y ' . ucfirst($tabla4) . ' e insertando en Pendientes",
-        confirmButtonText: "OK"
-    }).then(function() {
-        window.location = "' . $link . '";
-    });
-</script>';
-    }
-
-    // Verificar si hay resultados
-    if (mysqli_num_rows($resultado3) > 0) {
-        // Buscar el ID de la manga recién insertado
-        $consulta1 = "SELECT * FROM `$tabla8` WHERE Nombre = '$nombre'";
-        $resultado1 = mysqli_query($conexion, $consulta1);
-        $fila1 = mysqli_fetch_assoc($resultado1);
-        $iden = $fila1['ID'];
-
-        // Preparar la consulta de inserción en la nueva tabla
-        $insertQuery = "INSERT INTO $tabla9 ($fila15, $fila12, $titulo4) VALUES ";
-
-        // Arreglo para almacenar los valores de inserción
-        $valores = array();
-
-        // Recorrer los resultados y guardar los valores de inserción en el arreglo
-        while ($fila = mysqli_fetch_assoc($resultado3)) {
-            $columna1 = $fila['Diferencia'];
-            $columna2 = $fila['Fecha'];
-            $valores[] = "('$iden', '$columna1', '$columna2')";
-        }
-
-        // Combinar los valores de inserción en una cadena
-        $insertQuery .= implode(",", $valores);
-
-        // Ejecutar la consulta de inserción
-        $resultado2 = mysqli_query($conexion, $insertQuery);
-
-        // Intentar eliminar los registros de la tabla $tabla7
         try {
-            $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "DELETE FROM `$tabla7` WHERE $fila9='$idRegistros';";
-            $conn->exec($sql);
-        } catch (PDOException $e) {
-            $conn = null;
-            echo $e;
-            echo "<br>";
-            echo $sql;
+            $sql = "INSERT INTO `$tabla8`(`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila5`, `$fila6`, `$fila8`, `$fila10`, `$fila11`, `$fila13`, `$ver`, `$fila17`, `Anime`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            $stmt = $conexion->prepare($sql);
+            $stmt->bind_param("ssiiissssssss", $dato1, $dato2, $dato3, $dato4, $dato5, $dato6, $dato8, $dato10, $dato11, $dato13, $verificado, $dato17, $anime);
+
+            if ($stmt->execute()) {
+                $iden = $conexion->insert_id;
+                echo "Registro insertado correctamente en pendientes.<br>";
+            } else {
+                echo "Error al insertar: " . $stmt->error . "<br>";
+            }
+
+            $stmt->close();
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage() . "<br>";
+        }
+
+        // Elimina la manga de la tabla original
+        $sql_delete = "DELETE FROM `manga` WHERE ID = ?";
+        $stmt_delete = $conexion->prepare($sql_delete);
+        $stmt_delete->bind_param("i", $idRegistros);
+        $stmt_delete->execute();
+
+        // Elimina el manga de la tabla diferencias
+        $sql_delete_diferencias = "DELETE FROM `diferencias` WHERE ID_Manga = ?";
+        $stmt_delete_diferencias = $conexion->prepare($sql_delete_diferencias);
+        $stmt_delete_diferencias->bind_param("i", $idRegistros);
+        $stmt_delete_diferencias->execute();
+
+        // Elimina el manga de la tabla nombres_mangas
+        $sql_delete_nombres = "DELETE FROM `nombres_mangas` WHERE $fila9 = ?";
+        $stmt_delete_nombres = $conexion->prepare($sql_delete_nombres);
+        $stmt_delete_nombres->bind_param("i", $idRegistros);
+        $stmt_delete_nombres->execute();
+
+
+        // Verificar si hay resultados
+        if (mysqli_num_rows($resultado_diferencias) > 0) {
+
+            try {
+                // Preparar la consulta de inserción
+                $insertQuery = "INSERT INTO $tabla9 ($fila15, $fila12, $titulo4, $fila18) VALUES (?, ?, ?, ?)";
+
+                // Preparar la declaración
+                $stmt = $conexion->prepare($insertQuery);
+
+                // Recorrer los resultados y ejecutar la inserción
+                while ($fila = mysqli_fetch_assoc($resultado_diferencias)) {
+                    $columna1 = $fila['Diferencia'];
+                    $columna2 = $fila['Fecha'];
+                    $columna3 = $fila['Dia'];
+
+                    // Vincular los parámetros y ejecutar la consulta para cada fila
+                    $stmt->bind_param("ssss", $iden, $columna1, $columna2, $columna3);
+                    $stmt->execute();
+                }
+
+                // Confirmar la transacción
+                $conexion->commit();
+                echo "Inserción completada correctamente.";
+            } catch (Exception $e) {
+                // En caso de error, hacer rollback de la transacción
+                $conexion->rollback();
+                echo "Error: " . $e->getMessage();
+            }
+
+
+            // Elimina el manga de la tabla diferencias
+            $sql_delete_diferencias = "DELETE FROM `$tabla7` WHERE $fila9 = ?";
+            $stmt_delete_diferencias = $conexion->prepare($sql_delete_diferencias);
+            $stmt_delete_diferencias->bind_param("i", $idRegistros);
+            $stmt_delete_diferencias->execute();
+        } else {
+            echo "No se encontraron resultados en diferencias.";
+        }
+
+        //Hace una actualizacion general de las cantidad de diferencias con el ID Manga
+        $update_cantidad = ("UPDATE pendientes_manga SET Cantidad = ( SELECT COUNT(*) AS cantidad_productos FROM diferencias_pendientes WHERE pendientes_manga.ID = diferencias_pendientes.ID_Pendientes);");
+        $result_cantidad = mysqli_query($conexion, $update_cantidad);
+
+        if ($existe_tachiyomi) {
+            // Si hay registros, eliminarlos
+            $sql = "DELETE FROM `$tabla4` WHERE $fila9 = ?";
+            $stmt_delete_tachiyomi = $conexion->prepare($sql);
+            $stmt_delete_tachiyomi->bind_param("i", $idRegistros);
+            $stmt_delete_tachiyomi->execute();
+
+            $alertTitle = '¡Manga Eliminado!';
+            $alertText = 'Eliminando ' . $nombre . ' de ' . ucfirst($tabla) . '  y ' . ucfirst($tabla4) . ' e insertando en Pendientes';
+            $alertType = 'success';
+            $redireccion = "window.location='$link'";
+
+            alerta($alertTitle, $alertText, $alertType, $redireccion);
+            die();
+        } else {
+            $alertTitle = '¡Manga Eliminado!';
+            $alertText = 'Eliminando ' . $nombre . ' de ' . ucfirst($tabla) . '  y insertando en Pendientes';
+            $alertType = 'success';
+            $redireccion = "window.location='$link'";
+
+            alerta($alertTitle, $alertText, $alertType, $redireccion);
+            die();
         }
     } else {
-        echo "No se encontraron resultados.";
     }
-    // Liberar memoria
-    mysqli_free_result($resultado3);
 }
 
-// Liberar memoria
-mysqli_free_result($consulta);
-mysqli_free_result($consulta_tachiyomi);
 ?>

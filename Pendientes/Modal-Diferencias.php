@@ -11,7 +11,6 @@
       background-color: #FEF2F2;
       border-bottom: 1px solid #FEE2E2;
       border-radius: 12px 12px 0 0;
-      padding: 1.25rem 1.5rem;
     }
 
     .delete-modal .modal-title {
@@ -44,14 +43,12 @@
     }
 
     .delete-modal .modal-body {
-      padding: 2rem 1.5rem;
       text-align: center;
     }
 
     .delete-modal .info-group {
       background: #F9FAFB;
       border-radius: 8px;
-      padding: 1.5rem;
       margin: 1rem 0;
     }
 
@@ -72,14 +69,12 @@
       background-color: #F9FAFB;
       border-top: 1px solid #E5E7EB;
       border-radius: 0 0 12px 12px;
-      padding: 1.25rem 1.5rem;
       display: flex;
       justify-content: flex-end;
       gap: 0.75rem;
     }
 
     .delete-modal .btn {
-      padding: 0.6rem 1.25rem;
       border-radius: 8px;
       font-weight: 500;
       transition: all 0.2s ease;
@@ -123,7 +118,7 @@
           <i class="fas fa-exclamation-triangle"></i>
           Confirmar eliminación
         </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -137,7 +132,7 @@
         <div class="modal-body">
           <i class="fas fa-trash-alt warning-icon"></i>
           <p style="color: #4B5563; margin-bottom: 1.5rem;">
-            ¿Está seguro que desea eliminar este registro? Esta acción no se puede deshacer.
+            ¿Está seguro que desea eliminar este registro?<br> Esta acción no se puede deshacer.
           </p>
 
           <div class="info-group">
@@ -162,7 +157,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-cancel" data-dismiss="modal">
+          <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
             <i class="fas fa-times"></i>
             Cancelar
           </button>

@@ -13,6 +13,7 @@
         <?php include('regreso-modal.php');  ?>
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
         <input type="hidden" name="name" value="<?php echo $mostrar[$fila1]; ?>">
+        <input type="hidden" name="faltantes" value="<?php echo $mostrar[$fila5]; ?>">
 
         <div class="modal-body text-center py-4">
           <div class="mb-4">
@@ -41,12 +42,12 @@
 
           <button type="submit" name="Pendientes" class="btn btn-warning btn-lg w-100 mx-0 mb-2">
             <i class="fas fa-clock me-2"></i>
-            Borrar de Tachiyomi y Manga, Mover a Pendientes
+            Borrar de <?php echo $tachiyomi; ?>Mangas, Mover a Pendientes
           </button>
 
           <button type="submit" name="Finalizados" class="btn btn-danger btn-lg w-100 mx-0">
             <i class="fas fa-trash-alt me-2"></i>
-            Borrar de Tachiyomi y Mangas, Mover a Finalizados
+            Borrar de <?php echo $tachiyomi; ?>Mangas, Mover a Finalizados
           </button>
         </div>
       </form>

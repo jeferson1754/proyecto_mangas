@@ -280,6 +280,7 @@ $sizebtn = "sm";
 
                             // Determinar la clase del punto de color según el resultado de la consulta
                             $colorClass = $is_successful ? 'blue' : 'white';
+                            $tachiyomi = $is_successful ? 'Tachiyomi y ' : '';
 
                             $verificado = ($mostrar['verificado'] == 'SI') ? 'green' : 'red';
                             $anime = ($mostrar['Anime'] == 'SI') ? 'orange' : 'white';
@@ -345,10 +346,10 @@ $sizebtn = "sm";
                                             <i class="fas fa-edit"></i>
                                         </button>
 
-                                        <button type="button" 
-                                        class="action-button bg-danger" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#delete<?php echo $mostrar[$fila7]; ?>">
+                                        <button type="button"
+                                            class="action-button bg-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#delete<?php echo $mostrar[$fila7]; ?>">
                                             <i class="fas fa-trash"></i>
                                         </button>
 

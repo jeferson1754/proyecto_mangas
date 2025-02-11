@@ -48,7 +48,7 @@ require 'bd.php';
                     </thead>
                     <tbody>
                         <?php
-                        $sql1 = "SELECT * FROM $tabla ";
+                        $sql1 = "SELECT * FROM `finalizados_manga` ORDER BY `finalizados_manga`.`ID` DESC";
 
                         $result = mysqli_query($conexion, $sql1);
                         //echo $sql1;
