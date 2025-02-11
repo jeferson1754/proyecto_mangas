@@ -1,16 +1,16 @@
-<!--ventana para Update--->
-<div class="modal fade delete-modal" id="delete<?php echo $mostrar[$fila7]; ?>" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">
-          Confirmar Eliminación
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+<!-- Modal para confirmación de eliminación -->
+<div class="modal fade" id="delete<?php echo $mostrar['ID']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0">
+      <!-- Header con imagen de fondo -->
+      <div class="modal-header border-0 rounded-top-4 text-white position-relative"
+        style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); height: 120px;">
+        <div class="position-absolute bottom-0 start-0 p-4">
+          <h4 class="modal-title mb-0" id="deleteModalLabel">Confirmar Acción</h4>
+          <p class="mb-0 opacity-75">¿Qué deseas hacer con este anime?</p>
+        </div>
+        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-dismiss="modal" aria-label="Close"></button>
       </div>
-
 
       <form method="POST" action="recib_Delete.php">
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
@@ -18,37 +18,105 @@
         <input type="hidden" name="modulo" value="<?php echo $mostrar[$fila16]; ?>">
         <input type="hidden" name="id_manga" value="<?php echo $mostrar[$fila14]; ?>">
 
+        <div class="modal-body px-4 py-4">
+          <!-- Información del Anime -->
+          <div class="anime-info mb-4">
+            <h3 class="text-center fw-bold text-primary mb-4"> <?php echo $mostrar[$fila1]; ?></h3>
 
-        <div class="modal-body">
-          <i class="fas fa-exclamation-triangle warning-icon"></i>
+            <div class="row g-3 mb-4">
+              <div class="col-12">
+                <div class="p-3 rounded-3 bg-light">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <p class="small text-muted mb-1">Estado</p>
+                      <p class="mb-0 fw-medium"> <?php echo $mostrar[$fila8]; ?></p>
+                    </div>
+                    <div class="text-end">
+                      <div class="d-flex gap-3">
+                        <div>
+                          <p class="small text-muted mb-1">Lista</p>
+                          <h5 class="mb-0"> <?php echo $mostrar[$fila6]; ?></h5>
+                        </div>
+                        <div>
+                          <p class="small text-muted mb-1">Caps. Total</p>
+                          <h5 class="mb-0"> <?php echo $mostrar[$fila4]; ?></h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <h1 class="anime-title">
-            <?php echo $mostrar[$fila1]; ?>
-          </h1>
-          <h2 class="anime-details">
-            <?php echo $mostrar[$fila8]; ?>
-          </h2>
-          <h2 class="anime-details">
-            <?php echo $mostrar[$fila6]; ?>
-          </h2>
-          <p class="mt-4 text-gray-600">
-            Esta acción no se puede deshacer.
-          </p>
-        </div>
+            <!-- Botones de Acción -->
+            <div class="d-grid gap-2">
+              <button type="submit" name="Calificar_Ahora" class="btn btn-primary py-3 rounded-3 d-flex align-items-center justify-content-center gap-2">
+                <i class="fa-solid fa-star"></i>
+                <span>Borrar y Calificar Ahora</span>
+              </button>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-cancel" data-dismiss="modal">
-            <i class="fas fa-times"></i>
-            Cancelar
-          </button>
-          <button type="submit" class="btn btn-delete">
-            <i class="fas fa-trash-alt"></i>
-            Eliminar
-          </button>
+              <button type="submit" name="Calificar_Luego" class="btn btn-outline-primary py-3 rounded-3 d-flex align-items-center justify-content-center gap-2">
+                <i class="fa-solid fa-clock"></i>
+                <span>Borrar y Calificar Luego</span>
+              </button>
+
+              <button type="submit" class="btn btn-light py-3 rounded-3 d-flex align-items-center justify-content-center gap-2 text-danger">
+                <i class="fa-solid fa-trash"></i>
+                <span>Borrar sin Calificar</span>
+              </button>
+            </div>
+          </div>
         </div>
       </form>
-
     </div>
   </div>
 </div>
-<!---fin ventana Update --->
+
+<style>
+  .modal-content {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-light:hover {
+    background-color: #fee2e2;
+    border-color: #fee2e2;
+  }
+
+  .anime-info {
+    position: relative;
+  }
+
+  .rounded-3 {
+    border-radius: 12px !important;
+  }
+
+  .rounded-4 {
+    border-radius: 16px !important;
+  }
+
+  .fw-medium {
+    font-weight: 500;
+  }
+
+  .modal-dialog {
+    max-width: 400px;
+    margin: 1.75rem auto;
+  }
+
+  @media (max-width: 576px) {
+    .modal-dialog {
+      margin: 1rem;
+    }
+  }
+</style>

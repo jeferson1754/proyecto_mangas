@@ -45,6 +45,17 @@
                 <li class="nav-item active"> <a class="nav-link" href="/Manga/Finalizados/">Finalizados</a> </li>
             </ul>
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item active dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Calificaciones
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/Manga/Calificaciones/calificaciones.php">Ver Calificaciones</a>
+                        <a class="dropdown-item" href="/Manga/Calificaciones/">Editar Calificaciones</a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item active"> <a class="nav-link" href="/Manga/listas.php/">Listas</a> </li>
             </ul>
             <ul class="navbar-nav mr-auto">
