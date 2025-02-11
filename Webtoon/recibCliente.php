@@ -30,12 +30,6 @@ if ($resultado->num_rows === 0) {
         $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $dato1 = htmlentities($_POST['fila1']);
-        $dato2 = htmlentities($_POST['fila2']);
-        $dato3 = htmlentities($_POST['fila3']);
-        $dato4 = htmlentities($_POST['fila4']);
-        $dato8 = htmlentities($_POST['fila8']);
-
         
         if (isset($_POST['check_lista']) && is_array(value: $_POST['check_lista']) && !empty($_POST['check_lista'])) {
             $check = addslashes(implode(", ", $_POST['check_lista']));

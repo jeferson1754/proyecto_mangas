@@ -1,61 +1,102 @@
-<div class="modal fade" id="edit<?php echo $mostrar[$fila7]; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h6 class="modal-title">
-          Actualizar Información
-        </h6>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+<div class="modal fade" id="edit<?php echo $mostrar[$fila7]; ?>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content border-0 shadow-lg rounded-lg">
+      <div class="modal-header bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+        <h5 class="modal-title d-flex align-items-center fw-bold">
+          <i class="fas fa-edit me-2"></i>Actualizar Webtoon
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
       </div>
-
 
       <form method="POST" action="recib_Update.php">
         <?php include('regreso-modal.php');  ?>
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
 
-        <div class="modal-body" id="cont_modal">
+        <div class="modal-body p-4">
           <div class="form-group">
             <label for="recipient-name" class="col-form-label"><?php echo $fila1 ?></label>
             <input type="text" name="fila1" class="form-control" value="<?php echo $mostrar[$fila1]; ?>" required="true">
           </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label"><?php echo $fila2 ?></label>
-            <input type="text" name="fila2" class="form-control" value="<?php echo $mostrar[$fila2]; ?>">
+          <div class="row g-3">
+            <!-- Autor -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label fw-bold"><?php echo $fila2 ?></label>
+                <input type="text" name="fila2" class="form-control" value="<?php echo $mostrar[$fila2]; ?>">
+              </div>
+            </div>
+
+            <!-- Estado Link -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label fw-bold"><?php echo $titulo1 ?></label>
+                <select name="fila13" class="form-select" required>
+                  <?php
+                  $query = "SELECT $fila8 FROM `$tabla6`;";
+                  $stmt = $db->prepare($query);
+                  $stmt->execute();
+                  $estados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                  if (empty($mostrar[$fila13])) {
+                    echo "<option value=''>Selecciona un Estado Link</option>";
+                  }
+
+                  if ($estados) {
+                    foreach ($estados as $estado) {
+                      echo "<option value='{$estado[$fila8]}' " .
+                        ($estado[$fila8] === $mostrar[$fila13] ? 'selected' : '') .
+                        ">{$estado[$fila8]}</option>";
+                    }
+                  }
+                  ?>
+                </select>
+              </div>
+            </div>
+
+            <!-- Capítulos -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label fw-bold"><?php echo $fila3 ?></label>
+                <input type="number" name="fila3" class="form-control" value="<?php echo $mostrar[$fila3]; ?>">
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label fw-bold"><?php echo $fila4 ?></label>
+                <input type="number" name="fila4" class="form-control" value="<?php echo $mostrar[$fila4]; ?>">
+              </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label fw-bold"><?php echo $fila8 ?></label>
+                <select name="fila8" class="form-select" required>
+                  <?php
+                  $query = "SELECT * FROM estado;";
+                  $stmt = $db->prepare($query);
+                  $stmt->execute();
+                  $estados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                  if (empty($mostrar[$fila8])) {
+                    echo "<option value=''>Selecciona un estado</option>";
+                  }
+
+                  if ($estados) {
+                    foreach ($estados as $estado) {
+                      echo "<option value='{$estado['Estado']}' " .
+                        ($estado['Estado'] === $mostrar[$fila8] ? 'selected' : '') .
+                        ">{$estado['Estado']}</option>";
+                    }
+                  }
+                  ?>
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label"><?php echo $fila3 ?></label>
-            <input type="number" name="fila3" class="form-control" value="<?php echo $mostrar[$fila3]; ?>">
-          </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label"><?php echo $fila4 ?></label>
-            <input type="number" name="fila4" class="form-control" value="<?php echo $mostrar[$fila4]; ?>">
-          </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label"><?php echo $fila8 ?></label>
-            <select name="fila8" class="form-control" required>
-              <option value="<?php echo $mostrar[$fila8]; ?>"><?php echo $mostrar[$fila8]; ?></option>
-              <?php
-              $query = $conexion->query("SELECT * FROM estado;");
-              while ($valores = mysqli_fetch_array($query)) {
-                echo '<option value="' . $valores[$fila8] . '">' . $valores[$fila8] . '</option>';
-              }
-              ?>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label"><?php echo $titulo1 ?></label>
-            <select name="fila13" class="form-control">
-              <option value="<?php echo $mostrar[$fila13]; ?>"><?php echo $mostrar[$fila13]; ?></option>
-              <?php
-              $query = $conexion->query("SELECT $fila8 FROM `$tabla6`;");
-              while ($valores = mysqli_fetch_array($query)) {
-                echo '<option value="' . $valores[$fila8] . '">' . $valores[$fila8] . '</option>';
-              }
-              ?>
-            </select>
-          </div>
+
 
           <?php
           // La variable que contiene los días seleccionados
@@ -68,9 +109,8 @@
 
           ?>
 
-          <div class="form-group">
             <div class="form-group">
-              <label for="recipient-name" class="col-form-label"><?php echo $fila6 ?></label>
+              <label class="form-label fw-bold"><?php echo $fila6 ?></label>
               <div class="grid-container">
                 <?php
                 // Mostrar los checkboxes para cada día
@@ -93,7 +133,6 @@
                 ?>
               </div>
             </div>
-          </div>
 
 
         </div>

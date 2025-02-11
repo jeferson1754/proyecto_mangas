@@ -216,7 +216,7 @@ $sizebtn = "m";
             }
         } else if (isset($_GET['link'])) {
 
-            $where = "WHERE $fila2='' OR $fila13='Faltante' ORDER BY `$tabla`.`$fila7` DESC  limit 100";
+            $where = "WHERE $fila2='' OR $fila13='Faltante' OR $fila13='' ORDER BY `$tabla`.`$fila7` DESC  limit 100";
         } else if (isset($_GET['faltantes'])) {
             $where = "WHERE `$tabla`.`$fila5`>0 ORDER BY `$tabla`.`$fila5` ASC  limit 100";
         } else {
