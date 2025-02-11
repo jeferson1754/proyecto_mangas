@@ -58,7 +58,7 @@ if ($variable) {
     }
 
     // Consulta para obtener diferencias ordenadas por fecha
-    $sql1 = "SELECT * FROM `diferencias` WHERE ID_Manga = ? ORDER BY `Fecha` DESC";
+    $sql1 = "SELECT * FROM `diferencias` WHERE ID_Manga = ? ORDER BY `Fecha` DESC limit 50";
     $stmt = $conexion->prepare($sql1);
     $stmt->bind_param("i", $variable);
     $stmt->execute();
@@ -81,8 +81,6 @@ if ($variable) {
     }
 }
 
-// Cerrar la conexión
-$conexion->close();
 ?>
 
 <!DOCTYPE html>
@@ -93,292 +91,56 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manga Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 
-
     <link rel="stylesheet" type="text/css" href="./css/barra.css?v=<?php echo time(); ?>">
-    <style>
-        :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f5f6fa;
-            --accent-color: #2ecc71;
-            --text-color: #2c3e50;
-        }
+    <!-- Bootstrap JS y jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-        body {
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .manga-header {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .manga-title {
-            color: var(--text-color);
-            font-size: 2rem;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .manga-title a {
-            text-decoration: none;
-            color: inherit;
-            transition: color 0.3s ease;
-        }
-
-        .manga-title a:hover {
-            color: var(--primary-color);
-        }
-
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .chart-container {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            height: 400px;
-        }
-
-        .table-container {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .custom-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .custom-table th {
-            background-color: var(--secondary-color);
-            padding: 1rem;
-            font-weight: 600;
-        }
-
-        .custom-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .action-btn {
-            padding: 0.5rem;
-            border-radius: 8px;
-            border: none;
-            margin: 0 0.25rem;
-            transition: all 0.3s ease;
-        }
-
-        .edit-btn {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .delete-btn {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        .action-btn:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-        }
-
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            gap: 0.5rem;
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .stats-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .table-container {
-                overflow-x: auto;
-            }
-
-            .manga-title {
-                font-size: 1.5rem;
-            }
-        }
-
-        /* Modal styles */
-        .modal-content {
-            border-radius: 15px;
-        }
-
-        .modal-header {
-            border-bottom: none;
-            padding: 1.5rem;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .modal-footer {
-            border-top: none;
-            padding: 1.5rem;
-        }
-
-        .verification-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .verification-badge {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .verified {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .not-verified {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        /* Switch Toggle */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 34px;
-            height: 20px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 14px;
-            width: 14px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked+.slider {
-            background-color: #28a745;
-        }
-
-        input:checked+.slider:before {
-            transform: translateX(14px);
-        }
-    </style>
 </head>
 
 <body>
     <div class="dashboard-container">
-        <!-- Manga Header -->
-        <div class="manga-header text-center">
-            <h1 class="manga-title">
-                <a href="<?php echo $enlace ?>" target="_blank">
+        <!-- Nombre -->
+        <div class="manga-title">
+            <h2>
+                <a href="<?php echo $enlace ?>" target="_blank" style="text-decoration: none; color: inherit;">
                     <?php echo $titulo ?>
-                    <i class="fas fa-external-link-alt"></i>
+                    <i class="fas fa-external-link-alt" style="font-size: 0.7em; margin-left: 10px;"></i>
                 </a>
-            </h1>
+            </h2>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="stats-cards">
-            <div class="stat-card">
-                <h3><i class="fas fa-calendar-alt me-2"></i>Día más común</h3>
-                <p class="h2 mb-0"><?php echo $diaMasRepetido ?></p>
+        <!-- Contenido Principal -->
+        <div class="main-content">
+            <!-- Gráfico -->
+            <div class="chart-container">
+                <div id="chart-container" style="height: 100%;"></div>
             </div>
-            <div class="stat-card">
-                <h3><i class="fas fa-clock me-2"></i>Frecuencia</h3>
-                <p class="h2 mb-0"><?php echo $frecuencia ?></p>
-            </div>
-            <div class="stat-card">
-                <h3><i class="fas fa-chart-bar me-2"></i>Repeticiones</h3>
-                <p class="h2 mb-0"><?php echo $cantidadRepeticiones ?></p>
+
+            <!-- Estadísticas -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3><i class="fas fa-calendar-alt me-2"></i>Día más común:</h3>
+                    <p class="h2 mb-0"><?php echo $diaMasRepetido ?></p>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-chart-bar me-2"></i>Repeticiones:</h3>
+                    <p class="h2 mb-0"><?php echo $cantidadRepeticiones ?></p>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-clock me-2"></i>Frecuencia:</h3>
+                    <p class="h2 mb-0"><?php echo $frecuencia ?></p>
+                </div>
             </div>
         </div>
 
-        <!-- Chart -->
-        <div class="chart-container">
-            <div id="chart-container" style="height: 100%;"></div>
-        </div>
+        <!-- Tabla -->
 
-        <!-- Table -->
+
         <div class="table-container">
             <table class="custom-table">
                 <thead>
@@ -386,121 +148,68 @@ $conexion->close();
                         <th>Fecha</th>
                         <th>Diferencia</th>
                         <th>Día</th>
-                        <th>Acciones</th>
+                        <th class="actions-cell">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($mostrar = mysqli_fetch_array($result)) { ?>
+                    <?php
+                    while ($mostrar = mysqli_fetch_array($result)) {
+                        $id = $mostrar['ID']; ?>
                         <tr>
                             <td><?php echo $mostrar['Fecha'] ?></td>
                             <td><?php echo $mostrar['Diferencia'] ?></td>
                             <td><?php echo $mostrar['Dia'] ?></td>
-                            <td>
-                                <button class="action-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $mostrar['ID'] ?>">
+                            <td class="actions-cell">
+                                <button
+                                    class="action-btn edit-btn" title="Editar" data-bs-toggle="modal" data-bs-target="#edit-dif<?php echo $id; ?>">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="action-btn delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $mostrar['ID'] ?>">
+                                <button class="action-btn delete-btn" title="Eliminar" data-bs-toggle="modal" data-bs-target="#dif<?php echo $id; ?>">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
                         </tr>
-                    <?php } ?>
+                    <?php
+                        include('Modal-Diferencias.php');
+                        include('Modal-EditDiferencias.php');
+                    } ?>
                 </tbody>
             </table>
         </div>
-
-        <!-- Verified Badge -->
-        <div class="verified-badge">
-            <i class="fas fa-check-circle"></i>
-            Verificado
-        </div>
-
-        <div class="verification-container">
-            <div class="verification-badge <?php echo ($verif == 'SI') ? 'verified' : 'not-verified'; ?>">
-                <i class="fas <?php echo ($verif == 'SI') ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
-                <?php echo ($verif == 'SI') ? 'Verificado' : 'No Verificado'; ?>
-            </div>
-
-            <form action="verif.php" method="GET">
-                <div class="toggle-container">
-                    <label class="switch">
-                        <input type="checkbox" name="checkbox" value="SI" <?php echo ($verif == "SI") ? "checked" : ""; ?>>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-
-                <input type="hidden" name="id_manga" value="<?php echo $variable ?>">
-                <input type="hidden" name="nombre" value="<?php echo $titulo ?>">
-                <input type="hidden" name="link" value="./ejemplo-barra.php?variable=<?php echo $variable ?>">
-
-                <button type="submit" class="btn btn-<?php echo ($verif == 'SI') ? 'success' : 'danger'; ?>" name="verif">
-                    Guardar
-                </button>
-            </form>
-        </div>
-
-        <div class="bottom-right">
-            Verificado:
-            <?php
-
-            if ($verif == "SI") {
-            ?>
-                <form action="verif.php" method="GET">
-                    <div class="todo">
-
-                        <label class="container">
-                            <input type="checkbox" name="checkbox" checked value='SI'>
-
-                            <div class="checkmark"></div>
-                            <!--
-                <span class="text">Etiqueta IP</span>
-                -->
-                        </label>
-                        <input type="hidden" name="id_manga" value="<?php echo $variable ?>">
-                        <input type="hidden" name="nombre" value="<?php echo $titulo ?>">
-                        <input type="hidden" name="link" value="./ejemplo-barra.php?variable=<?php echo $variable  ?>">
-
-                    </div>
-                    <button type="submit" class="btn btn-info" name="verif">
-                        Guardar
-                    </button>
-                </form>
-            <?php
-            } else {
-
-            ?>
-                <form action="verif.php" method="GET">
-                    <div class="todo">
-
-                        <label class="container">
-                            <input type="checkbox" name="checkbox" value='SI'>
-
-                            <div class="checkmark"></div>
-                            <!--
-                <span class="text">Etiqueta IP</span>
-                -->
-                        </label>
-                        <input type="hidden" name="id_manga" value="<?php echo $variable ?>">
-                        <input type="hidden" name="nombre" value="<?php echo $titulo ?>">
-                        <input type="hidden" name="link" value="./ejemplo-barra.php?variable=<?php echo $variable  ?>">
-
-                    </div>
-                    <button type="submit" class="btn btn-info" name="verif">
-                        Guardar
-                    </button>
-                </form>
-            <?php
-            }
-
-            ?>
-
-
-
-        </div>
-
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <div class="verification-container">
+        <div class="verification-badge <?php echo ($verif == 'SI') ? 'verified' : 'not-verified'; ?>">
+            <i class="fas <?php echo ($verif == 'SI') ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+            <?php echo ($verif == 'SI') ? 'Verificado' : 'No Verificado';
+            $display = ($verif == 'SI') ? "none" : "fixed";
+            ?>
+        </div>
+
+        <form action="verif.php" method="GET" style="display:<?php echo $display ?>">
+            <div class="toggle-container">
+                <label class="switch">
+                    <input type="checkbox" name="checkbox" value="SI" <?php echo ($verif == "SI") ? "checked" : ""; ?>>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <input type="hidden" name="id_manga" value="<?php echo $variable ?>">
+            <input type="hidden" name="nombre" value="<?php echo $titulo ?>">
+            <input type="hidden" name="link" value="./ejemplo-barra.php?variable=<?php echo $variable ?>">
+
+            <button type="submit" class="btn btn-<?php echo ($verif == 'SI') ? 'success' : 'danger'; ?>" name="verif">
+                Guardar
+            </button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
     <script>
         // Configuración del gráfico
         var chartDom = document.getElementById('chart-container');

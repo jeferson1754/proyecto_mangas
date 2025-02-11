@@ -270,7 +270,7 @@ $sizebtn = "sm";
 
                         $result = mysqli_query($conexion, $sql1);
 
-                        echo $sql1;
+                        //echo $sql1;
 
                         while ($mostrar = mysqli_fetch_array($result)) {
 
