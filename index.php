@@ -128,7 +128,7 @@ $sizebtn = "sm";
 
         <?php
 
-        $order = "ORDER BY `manga`.`Faltantes`ASC, `manga`.`Fecha_Cambio1` DESC,`manga`.`Hora_Cambio` DESC";
+        $order = "ORDER BY `manga`.`Faltantes`ASC,`manga`.`Hora_Cambio` DESC";
         // Limpiar parámetros GET y prevenir inyección SQL
         $columnas = "*";
 
@@ -191,7 +191,7 @@ $sizebtn = "sm";
             $conditions = [];
 
             if (!empty($busqueda)) {
-                $conditions[] = "$fila1 LIKE '%$busqueda%'";
+                $conditions[] = "$fila1 COLLATE utf8mb4_general_ci LIKE '%$busqueda%'";
                 $titulo = "Busqueda";
             }
 
@@ -270,7 +270,7 @@ $sizebtn = "sm";
 
                         $result = mysqli_query($conexion, $sql1);
 
-                        //echo $sql1;
+                        echo $sql1;
 
                         while ($mostrar = mysqli_fetch_array($result)) {
 

@@ -128,7 +128,7 @@ $sizebtn = "m";
         <?php
 
 
-        $order = "ORDER BY `$tabla`.`Fecha_Cambio1` DESC,`$tabla`.`Hora_Cambio` DESC";
+        $order = "ORDER BY `$tabla`.`Hora_Cambio` DESC";
 
         $where = "ORDER BY `$tabla`.`ID` DESC limit 10";
         $link = "";
@@ -176,7 +176,7 @@ $sizebtn = "m";
             $conditions = [];
 
             if (!empty($busqueda)) {
-                $conditions[] = "$fila1 LIKE '%$busqueda%'";
+                $conditions[] = "$fila1 COLLATE utf8mb4_general_ci LIKE '%$busqueda%'";
                 $titulo = "Busqueda";
             }
 
