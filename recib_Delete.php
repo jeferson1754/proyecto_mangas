@@ -275,6 +275,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             die();
         }
     } else {
+        $alertTitle = '¡ID Manga no Ingresado!';
+        $alertText = 'No se detecto ID Manga, favor intentarlo denuevo';
+        $alertType = 'error';
+        $redireccion = "window.location='$link'";
+
+        alerta($alertTitle, $alertText, $alertType, $redireccion);
+        die();
     }
 }
 
