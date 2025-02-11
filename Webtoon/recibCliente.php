@@ -35,7 +35,15 @@ if ($resultado->num_rows === 0) {
         $dato3 = htmlentities($_POST['fila3']);
         $dato4 = htmlentities($_POST['fila4']);
         $dato8 = htmlentities($_POST['fila8']);
-        $check = addslashes(implode(", ", $_POST['check_lista']));
+
+        
+        if (isset($_POST['check_lista']) && is_array(value: $_POST['check_lista']) && !empty($_POST['check_lista'])) {
+            $check = addslashes(implode(", ", $_POST['check_lista']));
+        } else {
+            // Aquí puedes manejar el caso de que no se hayan seleccionado días
+            $check = 'Indefinido';  // O asignar algún valor predeterminado
+        }
+
 
         $query = $conn->prepare(
             "INSERT INTO $tabla(`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila6`, `$fila8`) 

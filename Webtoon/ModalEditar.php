@@ -56,10 +56,46 @@
               ?>
             </select>
           </div>
+
+          <?php
+          // La variable que contiene los días seleccionados
+          $seleccionados = $mostrar[$fila6];
+
+          // Convertir la cadena en un arreglo de días
+          $seleccionadosArray = explode(", ", $seleccionados);
+
+          // Los días de la semana para los checkboxes
+
+          ?>
+
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label"><?php echo $fila6 ?></label>
-            <input type="text" name="fila6" class="form-control" value="<?php echo $mostrar[$fila6]; ?>">
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label"><?php echo $fila6 ?></label>
+              <div class="grid-container">
+                <?php
+                // Mostrar los checkboxes para cada día
+                foreach ($dias as $dia) {
+                ?>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="check_<?php echo $dia ?>_<?php echo $mostrar[$fila7]; ?>" name="check_lista[]" value="<?php echo $dia ?>"
+                      <?php
+                      // Verificar si el día está en el arreglo de días seleccionados
+                      if (in_array($dia, $seleccionadosArray)) {
+                        echo 'checked';  // Marcar el checkbox si el día está en la lista de seleccionados
+                      }
+                      ?>>
+                    <label class="form-check-label" for="check_<?php echo $dia ?>_<?php echo $mostrar[$fila7]; ?>">
+                      <?php echo $dia ?>
+                    </label>
+                  </div>
+                <?php
+                }
+                ?>
+              </div>
+            </div>
           </div>
+
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

@@ -146,9 +146,10 @@ while ($mostrar = mysqli_fetch_array($num_result)) {
 
         // Consultas y resultados
         foreach ($dias as $dia) {
-            $consulta = "SELECT Nombre, `Dias Emision` FROM `webtoon` WHERE Estado='Emision' AND `Dias Emision`='$dia' ORDER BY LENGTH(Nombre) DESC";
+            $consulta = "SELECT Nombre, `Dias Emision` FROM `webtoon` WHERE Estado='Emision' AND `Dias Emision` LIKE '%$dia%' ORDER BY LENGTH(Nombre) DESC";
             $resultado = mysqli_query($conexion, $consulta);
 
+           // echo $consulta . "<br>";
             // Verificar si hay resultados
             if ($resultado) {
                 // Guardar los resultados en el array

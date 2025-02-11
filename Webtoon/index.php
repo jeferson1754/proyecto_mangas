@@ -20,6 +20,78 @@ $sizebtn = "m";
     <link rel="stylesheet" type="text/css" href="../css/style new.css?v=<?php echo time(); ?>">
 
 </head>
+<style>
+    /* Configuración del grid */
+    .grid-container {
+        display: grid;
+        margin-top: 15px;
+        grid-template-columns: repeat(4, 1fr);
+        /* 4 columnas de igual tamaño por defecto */
+        gap: 5px;
+        justify-items: center;
+        align-items: center;
+    }
+
+    /* Estilos de los checkboxes */
+    .form-check {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 !important;
+        margin-bottom: 15px;
+    }
+
+    .form-check-input {
+        display: none;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+        background-color: #f0f0f0;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: background-color 0.3s, transform 0.2s;
+        display: block;
+        text-align: center;
+    }
+
+    /* Efecto cuando el checkbox está marcado */
+    .form-check-input:checked+.form-check-label {
+        background-color: #007bff;
+        color: white;
+        transform: scale(1.05);
+    }
+
+    /* Efecto de hover */
+    .form-check-label:hover {
+        background-color: #dcdcdc;
+    }
+
+    /* Media Query para pantallas más pequeñas (hasta 768px de ancho) */
+    @media (max-width: 768px) {
+        .grid-container {
+            grid-template-columns: repeat(3, 1fr);
+            /* 3 columnas en pantallas pequeñas */
+        }
+    }
+
+    /* Media Query para pantallas medianas (hasta 480px de ancho) */
+    @media (max-width: 480px) {
+        .grid-container {
+            grid-template-columns: repeat(2, 1fr);
+            /* 2 columnas en pantallas muy pequeñas */
+        }
+    }
+
+    /* Media Query para pantallas extra pequeñas (hasta 360px de ancho) */
+    @media (max-width: 360px) {
+        .grid-container {
+            grid-template-columns: 1fr;
+            /* 1 columna en pantallas muy pequeñas */
+        }
+    }
+</style>
 
 <body>
 
@@ -63,8 +135,8 @@ $sizebtn = "m";
                 Marcar Vistos
             </button>
 
-            <button type="button" class="btn btn-info mostrar btn-<?php echo $sizebtn; ?>" onclick="window.location.href = './horario.php'">
-                <i class="fas fa-clock"></i> Horario
+            <button type="button" class="btn btn-custom btn-info btn-<?php echo $sizebtn; ?>" onclick="window.location.href = './horario.php'">
+                <i class="fa-regular fa-calendar-days"></i> Horario
             </button>
 
 
@@ -168,7 +240,6 @@ $sizebtn = "m";
                             <th><?php echo $fila5 ?></th>
                             <th><?php echo $fila8 ?></th>
                             <th><?php echo $fila6 ?></th>
-
 
                             <th style="text-align: center;">Acciones</th>
                         </tr>

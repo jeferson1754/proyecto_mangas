@@ -11,8 +11,15 @@ $dato1      = $_REQUEST['fila1'];
 $dato2      = $_REQUEST['fila2'];
 $dato3      = $_REQUEST['fila3'];
 $dato4      = $_REQUEST['fila4'];
-$dato6      = $_REQUEST['fila6'];
 $dato8      = $_REQUEST['fila8'];
+
+if (isset($_POST['check_lista']) && is_array(value: $_POST['check_lista']) && !empty($_POST['check_lista'])) {
+    $dato6 = addslashes(implode(", ", $_POST['check_lista']));
+} else {
+    // Aquí puedes manejar el caso de que no se hayan seleccionado días
+    $dato6 = 'Indefinido';  // O asignar algún valor predeterminado
+}
+
 
 $link       = $_REQUEST['link'];
 
