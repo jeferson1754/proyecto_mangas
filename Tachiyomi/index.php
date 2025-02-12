@@ -31,13 +31,13 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
             <!--- Formulario para registrar Cliente --->
             <form action="" method="GET" class="d-flex gap-2 flex-wrap">
 
+                <button type="button" class="btn btn-primary btn-custom" onclick="window.location.href = './ModalCrear.php'">
 
-                <a href="ModalCrear.php">
-                    <button type="button" class="btn btn-primary btn-custom" data-bs-toggle="modal" data-bs-target="#new">
-                        <i class="fas fa-plus"></i> Nuevo Tachiyomi
-                    </button>
-                </a>
-                
+                    <i class="fas fa-plus"></i> Nuevo Tachiyomi
+
+                </button>
+
+
                 <button type="button" class="btn btn-info btn-custom" onclick="toggleFilter('typeFilter')">
                     <i class="fas fa-filter"></i> Filtrar
                 </button>

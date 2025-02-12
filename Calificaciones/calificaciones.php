@@ -367,7 +367,7 @@
             <?php
                 }
             } else {
-                echo '<div class="col-12 text-center">No se encontraron resultados.</div>';
+                echo '<div class="text-center">No se encontraron resultados.</div>';
             }
             ?>
 
