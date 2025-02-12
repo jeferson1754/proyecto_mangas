@@ -26,23 +26,24 @@ $Tabla = ucfirst($tabla);
 if ($resultado->num_rows === 0) {
     echo "$dato1 no existe en $tabla";
 
+    if (isset($_POST['check_lista']) && is_array(value: $_POST['check_lista']) && !empty($_POST['check_lista'])) {
+        $check = addslashes(implode(", ", $_POST['check_lista']));
+    } else {
+        // Aquí puedes manejar el caso de que no se hayan seleccionado días
+        $check = 'Indefinido';  // O asignar algún valor predeterminado
+    }
+
     try {
-        $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        // Conexión PDO con UTF-8
+        $conn = new PDO("mysql:host=$servidor;dbname=$basededatos;charset=utf8mb4", $usuario, $password, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]);
 
-        
-        if (isset($_POST['check_lista']) && is_array(value: $_POST['check_lista']) && !empty($_POST['check_lista'])) {
-            $check = addslashes(implode(", ", $_POST['check_lista']));
-        } else {
-            // Aquí puedes manejar el caso de que no se hayan seleccionado días
-            $check = 'Indefinido';  // O asignar algún valor predeterminado
-        }
+        // Consulta preparada para inserción
+        $sql = "INSERT INTO $tabla (`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila6`, `$fila8`) 
+                VALUES (:nombres, :link, :vistos, :totales, :dias, :estado)";
 
-
-        $query = $conn->prepare(
-            "INSERT INTO $tabla(`$fila1`, `$fila2`, `$fila3`, `$fila4`, `$fila6`, `$fila8`) 
-             VALUES (:nombres, :link, :vistos, :totales, :dias, :estado)"
-        );
+        $query = $conn->prepare($sql);
         $query->execute([
             ':nombres' => $dato1,
             ':link'    => $dato2,
@@ -52,17 +53,27 @@ if ($resultado->num_rows === 0) {
             ':estado'  => $dato8,
         ]);
 
+        // SweetAlert de éxito
         echo '<script>
             Swal.fire({
                 icon: "success",
-                title: "Creando Registro de ' . $dato1 . ' en ' . $Tabla . '",
+                title: "Registro agregado correctamente",
+                text: "Se ha registrado ' . htmlspecialchars($dato1, ENT_QUOTES, 'UTF-8') . ' en ' . htmlspecialchars($tabla, ENT_QUOTES, 'UTF-8') . '",
                 confirmButtonText: "OK"
             }).then(() => {
-                window.location = "' . $link . '"; 
+                window.location.reload();
             });
         </script>';
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+        // SweetAlert de error con mensaje específico
+        echo '<script>
+            Swal.fire({
+                icon: "error",
+                title: "Error al registrar",
+                text: "' . addslashes($e->getMessage()) . '",
+                confirmButtonText: "OK"
+            });
+        </script>';
     }
 } else {
     echo "$dato1 existe en $tabla";
