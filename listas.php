@@ -52,426 +52,515 @@ function getCountFromTableWithCondition($connection, $table, $condition)
     return mysqli_fetch_assoc($query)['conteo'];
 }
 
+$query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM manga;");
+while ($valores = mysqli_fetch_array($query)) {
+    $totalcaps_faltantes = $valores['conteo'];
+}
+
+$query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM manga WHERE Faltantes<=3;");
+while ($valores = mysqli_fetch_array($query)) {
+    $sinact6 = $valores['conteo'];
+}
+
+if ($sinact6 == 0) {
+    $sinact6 = "4";
+}
+
 ?>
 
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/8846655159.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <title>Listas</title>
     <style>
-        /* Google Fonts */
-        @import url(https://fonts.googleapis.com/css?family=Open+Sans);
-
-        /* set global font to Open Sans */
-        body {
-            font-family: 'Open Sans', 'sans-serif';
-            background-image: url(http://benague.ca/files/pw_pattern.png);
+        :root {
+            --card-width: 150px;
+            --grid-gap: 30px;
+            --cards-per-row: 6;
         }
 
-        /* header */
-        h1 {
-            color: #55acee;
-            text-align: center;
+        .dashboard-container {
+            max-width: calc((var(--card-width) * var(--cards-per-row)) + (var(--grid-gap) * (var(--cards-per-row))));
+            margin: 0 auto;
         }
 
-        /* header/copyright link */
-        .link {
-            text-decoration: none;
-            color: #55acee;
-            border-bottom: 2px dotted #55acee;
-            transition: .3s;
-            -webkit-transition: .3s;
-            -moz-transition: .3s;
-            -o-transition: .3s;
-            cursor: url(http://cur.cursors-4u.net/symbols/sym-1/sym46.cur), auto;
+        .cards-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--grid-gap);
+            justify-content: center;
         }
 
-        .link:hover {
-            color: #2ecc71;
-            border-bottom: 2px dotted #2ecc71;
-        }
-
-        /* button div */
-        #buttons {
-            padding-top: 50px;
-            text-align: center;
-        }
-
-        /* start da css for da buttons */
-        .btn {
-            border-radius: 5px;
-            padding: 15px 25px;
-            font-size: 22px;
-            text-decoration: none;
-            margin: 20px;
-            color: #fff;
+        .stat-card {
+            width: var(--card-width);
+            height: 120px;
+            background: white;
+            border-radius: 0.75rem;
             position: relative;
-            display: inline-block;
-        }
-
-        .btn:active {
-            transform: translate(0px, 5px);
-            -webkit-transform: translate(0px, 5px);
-            box-shadow: 0px 1px 0px 0px;
-        }
-
-        .blue {
-            background-color: #55acee;
-            box-shadow: 0px 5px 0px 0px #3C93D5;
-        }
-
-        .blue:hover {
-            background-color: #6FC6FF;
-        }
-
-        .green {
-            background-color: #2ecc71;
-            box-shadow: 0px 5px 0px 0px #15B358;
-        }
-
-        .green:hover {
-            background-color: #48E68B;
-        }
-
-        .red {
-            background-color: #e74c3c;
-            box-shadow: 0px 5px 0px 0px #CE3323;
-        }
-
-        .red:hover {
-            background-color: #FF6656;
-        }
-
-        .purple {
-            background-color: #9b59b6;
-            box-shadow: 0px 5px 0px 0px #82409D;
-        }
-
-        .purple:hover {
-            background-color: #B573D0;
-        }
-
-        .orange {
-            background-color: #e67e22;
-            box-shadow: 0px 5px 0px 0px #CD6509;
-        }
-
-        .orange:hover {
-            background-color: #FF983C;
-        }
-
-        .yellow {
-            background-color: #f1c40f;
-            box-shadow: 0px 5px 0px 0px #D8AB00;
-        }
-
-        .yellow:hover {
-            background-color: #FFDE29;
-        }
-
-        .pink {
-            background-color: #FF33CC;
-            box-shadow: 0px 5px 0px 0px #CC0099;
-        }
-
-        .pink:hover {
-            background-color: #FF80DF;
-        }
-
-        .gray {
-            background-color: #BDBDBD;
-            box-shadow: 0px 5px 0px 0px #8C8C8C;
-        }
-
-        .gray:hover {
-            background-color: #E0E0E0;
-        }
-
-        .soft-purple {
-            background-color: #CBC3E3;
-            box-shadow: 0px 5px 0px 0px #8F89AB;
-        }
-
-        .soft-purple:hover {
-            background-color: #ada3cc;
-        }
-
-        .cyan {
-            background-color: #00BCD4;
-            box-shadow: 0px 5px 0px 0px #0097A7;
-        }
-
-        .cyan:hover {
-            background-color: #4DD0E1;
-        }
-
-        .dark-yellow {
-            background-color: #FFD600;
-            box-shadow: 0px 5px 0px 0px #FFA000;
-        }
-
-        .dark-yellow:hover {
-            background-color: #FFE57F;
-        }
-
-        .lime {
-            background-color: #CDDC39;
-            box-shadow: 0px 5px 0px 0px #A4B42B;
-        }
-
-        .lime:hover {
-            background-color: #D4E157;
-        }
-
-        .magenta {
-            background-color: #FF00FF;
-            box-shadow: 0px 5px 0px 0px #C71585;
-        }
-
-        .magenta:hover {
-            background-color: #FF80AB;
-        }
-
-        .dark-blue {
-            background-color: #1976D2;
-            box-shadow: 0px 5px 0px 0px #1565C0;
-        }
-
-        .dark-blue:hover {
-            background-color: #42A5F5;
-        }
-
-        .dark-gray {
-            background-color: #616161;
-            box-shadow: 0px 5px 0px 0px #424242;
-        }
-
-        .dark-gray:hover {
-            background-color: #757575;
-        }
-
-        .dark-orange {
-            background-color: #FF6D00;
-            box-shadow: 0px 5px 0px 0px #E65100;
-        }
-
-        .dark-orange:hover {
-            background-color: #FFA726;
-        }
-
-
-        /* copyright stuffs.. */
-        p {
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             text-align: center;
-            color: #55acee;
-            padding-top: 20px;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .linea-negra {
-            height: 5px;
-            background-color: gray;
-            margin: 0px 15px;
-            /* border: 2px solid gray;*/
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--card-color, #4776E6);
+            opacity: 0.8;
+        }
+
+        .stat-card.blue {
+            --card-color: #4776E6;
+        }
+
+        .stat-card.green {
+            --card-color: #2ecc71;
+        }
+
+        .stat-card.red {
+            --card-color: #e74c3c;
+        }
+
+        .stat-card.gray {
+            --card-color: #95a5a6;
+        }
+
+        .stat-card.purple {
+            --card-color: #9b59b6;
+        }
+
+        .stat-card.orange {
+            --card-color: #e67e22;
+        }
+
+        .stat-card.yellow {
+            --card-color: #f1c40f;
+        }
+
+        .stat-card.pink {
+            --card-color: #FF33CC;
+        }
+
+        .stat-card.soft-purple {
+            --card-color: #CBC3E3;
+        }
+
+        .stat-card.cyan {
+            --card-color: #00BCD4;
+        }
+
+        .stat-card.dark-yellow {
+            --card-color: #FFD600;
+        }
+
+        .stat-card.lime {
+            --card-color: #CDDC39;
+        }
+
+        .stat-card.magenta {
+            --card-color: #FF00FF;
+        }
+
+        .stat-card.dark-blue {
+            --card-color: #1976D2;
+        }
+
+        .stat-card.dark-gray {
+            --card-color: #616161;
+        }
+
+        .stat-card.dark-orange {
+            --card-color: #FF6D00;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-top: 0.7rem;
+            white-space: normal;
+            /* Cambiado de nowrap a normal */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 0.5rem;
+            word-wrap: break-word;
+            /* Esto permite que el texto se divida si es necesario */
         }
 
 
-        @media screen and (max-width:870px) {
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--card-color, #4776E6);
+        }
 
-            body {
-                background-color: black;
+        .stat-icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1rem;
+            color: var(--card-color, #4776E6);
+            opacity: 0.2;
+        }
+
+        .section-divider {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #dee2e6, transparent);
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .section-divider .title {
+            position: absolute;
+            top: -10px;
+            /* Ajusta la posición vertical del título */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            /* Color de fondo para el título (puedes cambiarlo) */
+            padding: 0 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            /* Tamaño del texto */
+            color: var(--gray);
+            /* Color del texto */
+        }
+
+
+        @media (min-width: 1400px) {
+            :root {
+                --cards-per-row: 8;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            :root {
+                --cards-per-row: 4;
+            }
+        }
+
+        @media (max-width: 992px) {
+            :root {
+                --cards-per-row: 3;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --cards-per-row: 2;
             }
 
-            .btn {
-                width: 45%;
-                font-size: 18px;
-                margin: 5px;
+            .stat-card {
+                height: 100px;
             }
 
-            .linea-negra {
-                height: 15px;
-                margin: 10px 25px;
+            .stat-value {
+                font-size: 1.2rem;
             }
 
+            .stat-title {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <?php include('menu.php');  ?>
-
-    <div id="buttons">
-        <a href="../?busqueda=&buscar=&accion=Busqueda" class="btn blue">Total Mangas<br><?= $totalMangas ?></a>
-        <a href="../Tachiyomi/?busqueda=&buscar=" class="btn gray">Tachiyomi<br><?= $totalTachiyomi ?></a>
-        <a href="../Webtoon/?borrar=&accion=HOY" class="btn green">Webtoon<br><?= $totalWebtoon ?></a>
-
-        <!--Si la consulta da 0 no se muestra-->
-        <?php if ($totalFaltantes > 0) : ?>
-            <a href="../" class="btn red">Faltantes<br><?= $totalFaltantes ?></a>
-
-        <?php endif; ?>
-
-        <a href="../Pendientes/" class="btn orange">Pendientes<br><?= $totalPendientes ?></a>
-        <a href="../Finalizados/" class="btn yellow">Finalizados<br><?= $totalFinalizados ?></a>
-
-        <br>
-        <div class="linea-negra"></div><!--LINEA DE LISTAS -->
-
-        <a href="../?todos=Al+dia&accion=Filtro1" class="btn blue">Al dia<br><?= $lista1 ?></a>
-
-        <a href="../?todos=Al+dia+2&accion=Filtro1&filtrar=" class="btn blue">Al dia 2<br><?= $lista2 ?></a>
-
-
-        <a href="../?todos=Al+dia+3&accion=Filtro1&filtrar=" class="btn blue">Al dia 3<br><?= $lista3 ?></a>
-
-
-        <a href="../?todos=Mangas&accion=Filtro1&filtrar=" class="btn green">Mangas<br><?= $lista4 ?></a>
-
-        <a href="../?todos=Echii&accion=Filtro1&filtrar=" class="btn red">Echii<br><?= $lista5 ?></a>
-
-        <a href="../?todos=Mangas+2&accion=Filtro1&filtrar=" class="btn green">Mangas 2<br><?= $lista6 ?></a>
-
-        <a href="../?todos=Echii+2&accion=Filtro1&filtrar=" class="btn red">Echii 2<br><?= $lista7 ?></a>
-
-        <a href="../?todos=Mangas+3&accion=Filtro1&filtrar=" class="btn green">Mangas 3<br><?= $lista8 ?></a>
-
-        <a href="../?todos=Los+que+le+faltan+50+o+mas&accion=Filtro1&filtrar=" class="btn purple">Los que le faltan 50 o mas<br><?= $lista9 ?></a>
-
-        <a href="../?todos=Otros&accion=Filtro1&filtrar=" class="btn yellow">Otros<br><?= $lista10 ?></a>
-
-        <?php if ($lista11 > 0) : ?>
-
-            <a href="../?todos=Sin+Lista&accion=Filtro1&filtrar=" class="btn orange">Sin Lista<br><?= $lista11 ?></a>
-
-        <?php endif; ?>
-
-
-        <br>
-
-        <div class="linea-negra"></div><!--LINEA DE MANGA -->
-
-        <?php if ($sinver1 > 0) : ?>
-            <a href="../?sin-fechas=" class="btn green">Sin Verificar<br><?= $sinver1 ?></a>
-
-        <?php endif; ?>
-
-        <?php if ($sinact1 > 0) : ?>
-            <a href="../?sin-actividad=" class="btn blue">Sin Actividad Reciente (3 Años)<br><?= $sinact1 ?></a>
-
-        <?php endif; ?>
-
-        <?php if ($max_50 > 0) : ?>
-            <a class="btn purple">+50<br><?= $max_50 ?></a>
-
-        <?php endif; ?>
-
-        <?php if ($min_50 > 0) : ?>
-            <a class="btn soft-purple">-50<br><?= $min_50 ?></a>
-
-        <?php endif; ?>
-
-        <?php if ($min_50_final > 0) : ?>
-            <a class="btn yellow">-50 Finalizados<br><?= $min_50_final ?></a>
-
-        <?php endif; ?>
-
-        <?php if ($min_50_emision > 0) : ?>
-            <a class="btn green">-50 Emision<br><?= $min_50_emision ?></a>
-
-        <?php endif; ?>
-
-        <?php if ($finalizados > 0) : ?>
-            <a href="../?estado=Finalizado&accion=Filtro&filtrar4=" class="btn yellow">Finalizados<br><?= $finalizados ?></a>
-
-        <?php endif; ?>
-
-        <?php if ($pausados > 0) : ?>
-            <a href="../?estado=Pausado&accion=Filtro&filtrar4=" class="btn orange">Pausados<br><?= $pausados ?></a>
-
-        <?php endif; ?>
-
-
-
-        <a class="btn cyan">Leidos Sin Faltantes<br><?= $sin_faltantes ?></a>
-
-        <?php
-        $query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM manga;");
-        while ($valores = mysqli_fetch_array($query)) {
-            $totalcaps_faltantes = $valores['conteo'];
-        }
-        ?>
-
-
-        <?php if ($totalcaps_faltantes > 0) : ?>
-            <a class="btn gray">Total de Capitulos Faltantes<br><?= $totalcaps_faltantes ?></a>
-
-        <?php endif; ?>
-
-
-
-        <a href="../?anime=" class="btn dark-gray">Mangas con Anime<br><?= $mangas_anime ?></a>
-
-        <?php
-        $query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM manga WHERE Faltantes<=3;");
-        while ($valores = mysqli_fetch_array($query)) {
-            $sinact6 = $valores['conteo'];
-        }
-
-        if ($sinact6 == 0) {
-            $sinact6 = "4";
-        }
-
-        ?>
-
-
-        <a href="../?capitulos=1&accion=Filtro3" class="btn dark-blue">Capitulos por Leer<br><?= $sinact6 ?></a>
-
-        <div class="linea-negra"></div><!--LINEA DE TACHIYOMI -->
-
-        <?php if ($sinact2 > 0) : ?>
-
-            <a href="../Tachiyomi/?sin-actividad=" class="btn blue">Sin Actividad Reciente Tachiyomi<br>(3 Meses)<br><?= $sinact2 ?></a>
-
-        <?php endif; ?>
-
-        <?php if ($faltantes_tachiyomi > 0) : ?>
-
-            <a href="../Tachiyomi" class="btn red">Faltantes<br><?= $faltantes_tachiyomi ?></a>
-
-        <?php endif; ?>
-
-
-        <div class="linea-negra"></div><!--LINEA DE PENDIENTES -->
-
-        <?php if ($sinver2 > 0) : ?>
-
-            <a href="../Pendientes/?sin-fechas=" class="btn green">Sin Verificar Pendientes <br><?= $sinver2 ?></a>
-
-        <?php endif; ?>
-
-
-        <?php if ($sinact3 > 0) : ?>
-
-            <a href="../Pendientes/?sin-actividad=" class="btn blue">Sin Actividad Reciente Pendientes<br> (3 Años)<br><?= $sinact3 ?></a>
-
-        <?php endif; ?>
-
-
-        <a href="../Pendientes/?anime=" class="btn dark-gray">Pendientes con Anime<br><?= $pendientes_anime ?></a>
-
-
+    <?php include('menu.php'); ?>
+
+    <div class="dashboard-container">
+        <div class="section-divider">
+            <span class="title">General</span>
+        </div>
+        <div class="cards-grid">
+            <a href="../?busqueda=&buscar=&accion=Busqueda" class="stat-card blue">
+                <i class="fas fa-book stat-icon"></i>
+                <div class="stat-title">Total Mangas</div>
+                <div class="stat-value"><?= $totalMangas ?></div>
+            </a>
+
+            <a href="../Tachiyomi/?busqueda_tachi=&buscar=" class="stat-card purple">
+                <i class="fas fa-mobile-alt stat-icon"></i>
+                <div class="stat-title">Tachiyomi</div>
+                <div class="stat-value"><?= $totalTachiyomi ?></div>
+            </a>
+
+            <a href="../Webtoon/?busqueda_webtoon=&buscar=" class="stat-card green">
+                <i class="fas  fa-book-open stat-icon"></i>
+                <div class="stat-title">Webtoon</div>
+                <div class="stat-value"><?= $totalWebtoon ?></div>
+            </a>
+
+            <?php if ($totalFaltantes > 0): ?>
+                <a href="../" class="stat-card red">
+                    <i class="fas fa-exclamation-circle stat-icon"></i>
+                    <div class="stat-title">Faltantes</div>
+                    <div class="stat-value"><?= $totalFaltantes ?></div>
+                </a>
+            <?php endif; ?>
+
+            <a href="../Pendientes/" class="stat-card orange">
+                <i class="fas fa-clock stat-icon"></i>
+                <div class="stat-title">Pendientes</div>
+                <div class="stat-value"><?= $totalPendientes ?></div>
+            </a>
+
+            <a href="../Finalizados/" class="stat-card green">
+                <i class="fas fa-check-circle stat-icon"></i>
+                <div class="stat-title">Finalizados</div>
+                <div class="stat-value"><?= $totalWebtoon ?></div>
+            </a>
+
+        </div>
+        <div class="section-divider">
+            <span class="title">Listas</span>
+        </div>
+
+        <div class="cards-grid">
+
+            <a href="../?busqueda_manga=&todos=Al+dia&capitulos=&estado=&buscar=" class="stat-card cyan">
+                <i class="fas fa-sync-alt stat-icon"></i>
+                <div class="stat-title">Al dia</div>
+                <div class="stat-value"><?= $lista1 ?></div>
+            </a>
+
+            <a href="../?busqueda_manga=&todos=Al+dia+2&capitulos=&estado=&buscar=" class="stat-card lime">
+                <i class="fas fa-check-circle stat-icon"></i>
+                <div class="stat-title">Al dia 2</div>
+                <div class="stat-value"><?= $lista2 ?></div>
+            </a>
+
+            <a href="../?busqueda_manga=&todos=Al+dia+3&capitulos=&estado=&buscar=" class="stat-card cyan">
+                <i class="fas fa-sync-alt stat-icon"></i>
+                <div class="stat-title">Al dia 3</div>
+                <div class="stat-value"><?= $lista3 ?></div>
+            </a>
+
+            <a href="../?busqueda_manga=&todos=Mangas&capitulos=&estado=&buscar=" class="stat-card purple">
+                <i class="fas fa-book stat-icon"></i>
+                <div class="stat-title">Mangas</div>
+                <div class="stat-value"><?= $lista4 ?></div>
+            </a>
+
+            <a href="../?busqueda_manga=&todos=Echii&capitulos=&estado=&buscar=" class="stat-card pink">
+                <i class="fas fa-heart stat-icon"></i>
+                <div class="stat-title">Echii</div>
+                <div class="stat-value"><?= $lista5 ?></div>
+            </a>
+
+            <a href="../?busqueda_manga=&todos=Mangas+2&capitulos=&estado=&buscar=" class="stat-card green">
+                <i class="fas fa-book-open stat-icon"></i>
+                <div class="stat-title">Mangas 2</div>
+                <div class="stat-value"><?= $lista6 ?></div>
+            </a>
+
+            <a href="../?busqueda_manga=&todos=Echii+2&capitulos=&estado=&buscar=" class="stat-card pink">
+                <i class="fas fa-heart stat-icon"></i>
+                <div class="stat-title">Echii 2</div>
+                <div class="stat-value"><?= $lista7 ?></div>
+            </a>
+
+            <a href="../?busqueda_manga=&todos=Mangas+3&capitulos=&estado=&buscar=" class="stat-card purple">
+                <i class="fas fa-book stat-icon"></i>
+                <div class="stat-title">Mangas 3</div>
+                <div class="stat-value"><?= $lista8 ?></div>
+            </a>
+
+            <a href="../?busqueda_manga=&todos=Los+que+le+faltan+50+o+mas&capitulos=&estado=&buscar=" class="stat-card orange">
+                <i class="fas fa-bolt stat-icon"></i>
+                <div class="stat-title">Los que le faltan 50 o mas</div>
+                <div class="stat-value"><?= $lista9 ?></div>
+            </a>
+
+            <a href="../?busqueda_manga=&todos=Otros&capitulos=&estado=&buscar=" class="stat-card gray">
+                <i class="fas fa-ellipsis-h stat-icon"></i>
+                <div class="stat-title">Otros</div>
+                <div class="stat-value"><?= $lista10 ?></div>
+            </a>
+
+            <?php if ($lista11 > 0): ?>
+                <a href="../?busqueda_manga=&todos=Sin+Lista&capitulos=&estado=&buscar=" class="stat-card dark-gray">
+                    <i class="fas fa-ban stat-icon"></i>
+                    <div class="stat-title">Sin Lista</div>
+                    <div class="stat-value"><?= $lista11 ?></div>
+                </a>
+            <?php endif; ?>
+        </div>
+
+        <div class="section-divider">
+            <span class="title">Mangas</span>
+        </div>
+
+        <div class="cards-grid">
+
+            <?php if ($sinver1 > 0): ?>
+                <a href="../?sin-fechas=" class="stat-card dark-orange">
+                    <i class="fas fa-exclamation-triangle stat-icon"></i>
+                    <div class="stat-title">Sin Verificar</div>
+                    <div class="stat-value"><?= $sinver1 ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($sinact1 > 0): ?>
+                <a href="../?sin-actividad=" class="stat-card gray">
+                    <i class="fas fa-hourglass stat-icon"></i>
+                    <div class="stat-title">Sin Actividad Reciente (3 Años)</div>
+                    <div class="stat-value"><?= $sinact1 ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($max_50 > 0): ?>
+                <a  class="stat-card yellow">
+                    <i class="fas fa-star stat-icon"></i>
+                    <div class="stat-title">+50</div>
+                    <div class="stat-value"><?= $max_50 ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($min_50 > 0): ?>
+                <a  class="stat-card orange">
+                    <i class="fas fa-minus stat-icon"></i>
+                    <div class="stat-title">-50</div>
+                    <div class="stat-value"><?= $min_50 ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($min_50_final > 0): ?>
+                <a class="stat-card blue">
+                    <i class="fas fa-thumbs-up stat-icon"></i>
+                    <div class="stat-title">-50 Finalizados</div>
+                    <div class="stat-value"><?= $min_50_final ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($min_50_emision > 0): ?>
+                <a class="stat-card yellow">
+                    <i class="fas fa-play-circle stat-icon"></i>
+                    <div class="stat-title">-50 Emision</div>
+                    <div class="stat-value"><?= $min_50_emision ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($finalizados > 0): ?>
+                <a href="../?busqueda_manga=&todos=&capitulos=&estado=Finalizado&buscar=" class="stat-card green">
+                    <i class="fas fa-check-circle stat-icon"></i>
+                    <div class="stat-title">Finalizados</div>
+                    <div class="stat-value"><?= $finalizados ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($pausados > 0): ?>
+                <a href="../?busqueda_manga=&todos=&capitulos=&estado=Pausado&buscar=" class="stat-card cyan">
+                    <i class="fas fa-clock stat-icon"></i>
+                    <div class="stat-title">Pausados</div>
+                    <div class="stat-value"><?= $pausados ?></div>
+                </a>
+            <?php endif; ?>
+
+            <a class="stat-card purple">
+                <i class="fas fa-check stat-icon"></i>
+                <div class="stat-title">Leidos Sin Faltantes</div>
+                <div class="stat-value"><?= $sin_faltantes ?></div>
+            </a>
+
+
+            <?php if ($totalcaps_faltantes > 0): ?>
+                <a href="../" class="stat-card red">
+                    <i class="fas fa-times-circle stat-icon"></i>
+                    <div class="stat-title">Total de Capitulos Faltantes</div>
+                    <div class="stat-value"><?= $totalcaps_faltantes ?></div>
+                </a>
+            <?php endif; ?>
+
+
+            <a href="../?anime=" class="stat-card purple">
+                <i class="fas fa-tv stat-icon"></i>
+                <div class="stat-title">Mangas con Anime</div>
+                <div class="stat-value"><?= $mangas_anime ?></div>
+            </a>
+
+
+            <a href="../?busqueda_manga=&todos=&capitulos=1&estado=&buscar=" class="stat-card orange">
+                <i class="fas fa-book stat-icon"></i>
+                <div class="stat-title">Capitulos por Leer</div>
+                <div class="stat-value"><?= $sinact6 ?></div>
+            </a>
+
+        </div>
+
+        <div class="section-divider">
+            <span class="title">Tachiyomi</span>
+        </div>
+
+        <div class="cards-grid">
+            <?php if ($sinact2 > 0): ?>
+                <a href="../Tachiyomi/?sin-actividad=" class="stat-card gray">
+                    <i class="fas fa-pause stat-icon"></i>
+                    <div class="stat-title">Sin Actividad Reciente Tachiyomi(3 Meses)</div>
+                    <div class="stat-value"><?= $sinact2 ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($faltantes_tachiyomi > 0): ?>
+                <a href="../Tachiyomi/" class="stat-card orange">
+                    <i class="fas fa-exclamation-circle stat-icon"></i>
+                    <div class="stat-title">Faltantes</div>
+                    <div class="stat-value"><?= $faltantes_tachiyomi ?></div>
+                </a>
+            <?php endif; ?>
+
+        </div>
+
+        <div class="section-divider">
+            <span class="title">Pendientes</span>
+        </div>
+
+        <div class="cards-grid">
+            <?php if ($sinver2 > 0): ?>
+                <a href="../Pendientes/" class="stat-card gray">
+                    <i class="fas fa-hourglass-half stat-icon"></i>
+                    <div class="stat-title">Sin Verificar Pendientes</div>
+                    <div class="stat-value"><?= $sinver2 ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($sinact3 > 0): ?>
+                <a href="../Pendientes/?sin-actividad=" class="stat-card dark-gray">
+                    <i class="fas fa-times-circle stat-icon"></i>
+                    <div class="stat-title">Sin Actividad Reciente Pendientes (3 Años)</div>
+                    <div class="stat-value"><?= $sinact3 ?></div>
+                </a>
+            <?php endif; ?>
+
+            <a href="../Pendientes/?anime=" class="stat-card cyan">
+                <i class="fas fa-tv stat-icon"></i>
+                <div class="stat-title">Pendientes con Anime</div>
+                <div class="stat-value"><?= $pendientes_anime ?></div>
+            </a>
+        </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
-
-    <script src="../js/popper.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

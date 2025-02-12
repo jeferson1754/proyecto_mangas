@@ -111,7 +111,7 @@ $sizebtn = "sm";
                 <select class="form-select" style="max-width: 200px;" name="estado">
                     <option value="">Seleccione Estado:</option>
                     <?php
-                    $query = $conexion->query("SELECT DISTINCT $fila8 FROM $tabla WHERE $fila5 > 0 ORDER BY $fila8 ASC");
+                    $query = $conexion->query("SELECT DISTINCT $fila8 FROM $tabla ORDER BY $fila8 ASC");
                     while ($valores = mysqli_fetch_array($query)) {
                         $valor = htmlspecialchars($valores[$fila8], ENT_QUOTES);
                         $selected = (isset($_GET['estado']) && $_GET['estado'] === $valor) ? 'selected' : '';
@@ -208,11 +208,12 @@ $sizebtn = "sm";
             if (!empty($capitulos)) {
                 $conditions[] = " $fila5='$capitulos'";
                 $titulo = "Capitulos - " . $capitulos;
+                $capi = $capitulos;
             } else {
-                $titulo = "Todos";
+                $capi = "1";
             }
 
-            $capi = "1";
+
 
             $where = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) . " $order limit 50" : "$order limit 50";
         } else {
@@ -242,7 +243,7 @@ $sizebtn = "sm";
 
 
         <h1 class="text-center text-primary fw-bold">
-            <?php echo ucfirst($titulo) ?><span class="text-secondary"><?php echo $conteo ?></span>
+            <?php echo ucfirst($titulo) . "" . $valor ?><span class="text-secondary"><?php echo $conteo ?></span>
         </h1>
 
         <div class="content-card">
