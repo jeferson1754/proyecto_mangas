@@ -170,30 +170,6 @@ if ($cantidad <= 0) {
 }
 echo "<br>";
 
-//Hace la actualizacion general de faltantes de mangas
-try {
-    $sql = "UPDATE $tabla SET `$fila5`= (`$fila4`-`$fila3`);";
-    $resultado = mysqli_query($conexion, $sql);
-    echo $sql;
-} catch (PDOException $e) {
-    echo $e;
-    echo "<br>";
-    echo $sql;
-}
-
-echo "<br>";
-
-//Hace la actualizacion general de faltantes de tachiyomi
-try {
-    $sql = "UPDATE $tabla4 SET `$fila5`= (`$fila4`-`$fila3`);";
-    $resultado = mysqli_query($conexion, $sql);
-    echo $sql;
-} catch (PDOException $e) {
-    echo $e;
-    echo "<br>";
-    echo $sql;
-}
-
 echo "<br>";
 
 //Hace una actualizacion general de las cantidad de diferencias con el ID Manga
@@ -203,7 +179,6 @@ $consulta3 = mysqli_query($conexion, $sql3);
 echo "<br>";
 echo $link;
 echo "<br>";
-
 
 try {
     // Verificar si el nombre ya existe en la tabla
@@ -244,6 +219,10 @@ if ($listen < 101) {
     WHERE `$fila7`='" . $idRegistros . "'";
         $resultado = mysqli_query($conexion, $sql);
         echo $sql;
+
+
+
+        echo "<br>";
     } catch (PDOException $e) {
         echo $e;
         echo "<br>";
@@ -257,6 +236,20 @@ if ($listen < 101) {
         alerta($alertTitle, $alertText, $alertType, $redireccion);
         die();
     }
+
+
+    //Hace la actualizacion general de faltantes de mangas
+    try {
+        $sql = "UPDATE $tabla SET `$fila5`= (`$fila4`-`$fila3`);";
+        $resultado = mysqli_query($conexion, $sql);
+        echo $sql;
+    } catch (PDOException $e) {
+        echo $e;
+        echo "<br>";
+        echo $sql;
+    }
+
+
 
     if (mysqli_num_rows($consulta1) > 0) {
         echo "Existe en $tabla4 y en $tabla";
@@ -287,6 +280,18 @@ if ($listen < 101) {
 
             alerta($alertTitle, $alertText, $alertType, $redireccion);
             die();
+        }
+
+
+        //Hace la actualizacion general de faltantes de tachiyomi
+        try {
+            $sql = "UPDATE $tabla4 SET `$fila5`= (`$fila4`-`$fila3`);";
+            $resultado = mysqli_query($conexion, $sql);
+            echo $sql;
+        } catch (PDOException $e) {
+            echo $e;
+            echo "<br>";
+            echo $sql;
         }
 
 

@@ -193,6 +193,8 @@ $sizebtn = "sm";
             if (!empty($busqueda)) {
                 $conditions[] = "$fila1 COLLATE utf8mb4_general_ci LIKE '%$busqueda%'";
                 $titulo = "Busqueda";
+            } else {
+                $titulo = "Todos";
             }
 
             if (!empty($listas)) {

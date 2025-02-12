@@ -122,12 +122,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt_delete->bind_param("i", $idRegistros);
             $stmt_delete->execute();
 
-            // Elimina el manga de la tabla diferencias
-            $sql_delete_diferencias = "DELETE FROM `$tabla7` WHERE $fila9 = ?";
-            $stmt_delete_diferencias = $conexion->prepare($sql_delete_diferencias);
-            $stmt_delete_diferencias->bind_param("i", $idRegistros);
-            $stmt_delete_diferencias->execute();
-
             // Elimina el manga de la tabla nombres_mangas
             $sql_delete_nombres = "DELETE FROM `nombres_mangas` WHERE $fila9 = ?";
             $stmt_delete_nombres = $conexion->prepare($sql_delete_nombres);

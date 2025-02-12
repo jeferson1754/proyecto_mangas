@@ -11,21 +11,21 @@
 
       <form method="POST" action="recib_Restaurar.php">
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
-        <input type="hidden" name="name" value="<?php echo $mostrar[$fila1]; ?>">
+        <input type="hidden" name="modulo" value="<?php echo $mostrar[$fila16]; ?>">
         <input type="hidden" name="id_manga" value="<?php echo $mostrar[$fila14]; ?>">
 
         <div class="modal-body">
           <div class="text-center mb-4">
-            <div class="detail-title fw-bold text-decoration-underline">Nombre:</div>
+            <div class="detail-title fw-bold">Nombre:</div>
             <div class="detail-value"><?php echo $mostrar[$fila1]; ?></div>
 
-            <div class="detail-title fw-bold text-decoration-underline">Estado:</div>
+            <div class="detail-title fw-bold">Estado:</div>
             <div class="detail-value"><?php echo $mostrar[$fila8]; ?></div>
 
-            <div class="detail-title fw-bold text-decoration-underline">Lista:</div>
+            <div class="detail-title fw-bold">Lista:</div>
             <div class="detail-value"><?php echo $mostrar[$fila6]; ?></div>
 
-            <div class="detail-title fw-bold text-decoration-underline">Módulo:</div>
+            <div class="detail-title fw-bold">Módulo:</div>
             <div class="detail-value"><?php echo $mostrar[$fila16]; ?></div>
           </div>
 
