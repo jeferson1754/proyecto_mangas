@@ -89,19 +89,7 @@ if($dato16=="manga"){
     echo "Modulo - Manga";
      echo "<br>";
 
-    try {
-        $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "UPDATE `diferencias` SET $fila9='$iden' where diferencias.ID_Manga = $ID_Manga;";
-        //$conn->exec($sql);
-        echo $sql;
-        echo "<br>";
-    } catch (PDOException $e) {
-        $conn = null;
-        echo $e;
-        echo "<br>";
-        echo $sql;
-    }
+
 
     //Hace una actualizacion general de las cantidad de diferencias con el ID Manga
     $sql3 = ("UPDATE manga SET Cantidad = ( SELECT COUNT(*) AS cantidad_productos FROM diferencias WHERE manga.ID = diferencias.ID_Manga) ;");
@@ -156,7 +144,7 @@ try {
 echo '<script>
     Swal.fire({
     icon: "success",
-    title: "Recuperando Manga de ' . $nombre . ' en ' . $dato16 . '",
+    title: "Recuperando ' . $nombre . ' en ' . $dato16 . '",
     confirmButtonText: "OK"
     }).then(function() {
         window.location = "index.php";

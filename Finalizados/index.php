@@ -84,7 +84,7 @@ require 'bd.php';
                                 <td data-label="Acciones">
                                     <div class="action-buttons">
                                         <button type="button"
-                                            class="action-button bg-primary" data-toggle="modal" data-target="#resta<?php echo $mostrar[$fila7]; ?>">
+                                            class="action-button bg-primary" data-bs-toggle="modal" data-bs-target="#resta<?php echo $mostrar[$fila7]; ?>">
                                             <i class="fa-solid fa-arrow-rotate-left"></i> Restaurar
                                         </button>
                                         <button type="button"
