@@ -140,7 +140,7 @@ $sizebtn = "sm";
         if (isset($_GET['borrar'])) {
             $titulo = "Todos";
             $capi = "1";
-            $where = "WHERE Faltantes>0 $order limit 10";
+            $where = "WHERE Faltantes>0 ORDER BY `manga`.`Hora_Cambio` DESC limit 10";
             $link = "";
         } else if (isset($_GET['linkeado'])) {
             $where = "where $fila2 ='' OR $fila13='Erroneo/Inexistente' OR $fila13='Faltante' $order limit 10";
