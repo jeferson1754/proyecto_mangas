@@ -156,7 +156,7 @@ if ($variable) {
                     while ($mostrar = mysqli_fetch_array($result)) {
                         $id = $mostrar['ID']; ?>
                         <tr>
-                            <td><?php echo $mostrar['Fecha'] ?></td>
+                            <td class="fecha"><?php echo $mostrar['Fecha'] ?></td>
                             <td><?php echo $mostrar['Diferencia'] ?></td>
                             <td><?php echo $mostrar['Dia'] ?></td>
                             <td class="actions-cell">
