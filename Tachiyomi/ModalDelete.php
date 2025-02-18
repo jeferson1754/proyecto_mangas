@@ -12,7 +12,11 @@
       <form action="recib_Delete.php" method="POST">
         <?php include('regreso-modal.php');  ?>
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
+        <input type="hidden" name="id_manga" value="<?php echo $mostrar['ID_Manga']; ?>">
         <input type="hidden" name="name" value="<?php echo $mostrar[$fila1]; ?>">
+        <input type="hidden" name="faltantes" value="<?php echo $mostrar['Faltantes']; ?>">
+
+        <input type="hidden" name="lista" value="<?php echo $mostrar['Lista']; ?>">
 
         <div class="modal-body text-center py-4">
           <div class="mb-4">

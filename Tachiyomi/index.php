@@ -175,6 +175,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
                                             aria-label="Aprobar">
                                             <i class="fa fa-eye"></i>
                                         </button>
+                                        <!--
                                         <button type="button"
                                             class="action-button btn-success"
                                             data-toggle="modal"
@@ -182,6 +183,7 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
                                             aria-label="Editar">
                                             <i class="fas fa-plus"></i>
                                         </button>
+                                        -->
                                         <button type="button"
                                             class="action-button bg-primary"
                                             data-tooltip="Editar"
