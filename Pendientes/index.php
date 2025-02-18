@@ -130,13 +130,6 @@ $sizebtn = "m";
 
         $order = "ORDER BY `$tabla`.`Hora_Cambio` DESC";
 
-        $where = "ORDER BY `$tabla`.`ID` DESC limit 10";
-        $link = "";
-        $titulo = "Todos";
-        $capi = "1";
-
-
-
         $busqueda = isset($_GET['busqueda_manga']) ? mysqli_real_escape_string($conexion, $_GET['busqueda_manga']) : '';
         $listas = isset($_GET['todos']) ? mysqli_real_escape_string($conexion, $_GET['todos']) : '';
         $capitulos = isset($_GET['capitulos']) ? mysqli_real_escape_string($conexion, $_GET['capitulos']) : '';
@@ -178,6 +171,8 @@ $sizebtn = "m";
             if (!empty($busqueda)) {
                 $conditions[] = "$fila1 COLLATE utf8mb4_general_ci LIKE '%$busqueda%'";
                 $titulo = "Busqueda";
+            } else {
+                $titulo = "Todos";
             }
 
             if (!empty($listas)) {
@@ -193,13 +188,17 @@ $sizebtn = "m";
             if (!empty($capitulos)) {
                 $conditions[] = " $fila5='$capitulos'";
                 $titulo = "Capitulos - " . $capitulos;
-            } else {
-                $titulo = "Todos";
             }
 
             $capi = "1";
 
             $where = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) . " $order limit 50" : "$order limit 50";
+        } else {
+
+            $titulo = "Todos";
+            $capi = "1";
+            $where = "ORDER BY `$tabla`.`ID` DESC limit 10";
+            $link = "";
         }
 
         // Consulta SQL para contar registros
