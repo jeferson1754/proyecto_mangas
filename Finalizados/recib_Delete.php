@@ -15,7 +15,7 @@ $ID_Manga         = $_REQUEST['id_manga'];
 
 // Realizar la conexión a la base de datos una sola vez
 try {
-    $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
+    $conn = new PDO("mysql:host={$servidor};dbname={$basededatos}", $usuario, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Conexión fallida: " . $e->getMessage());
@@ -88,15 +88,22 @@ if ($modulo == "manga") {
 
 // Lógica para Calificar
 if (isset($_POST['Calificar_Ahora'])) {
-    $sql = "INSERT INTO calificaciones_mangas (`Nombre`,`Link`, `Capitulos_Totales`) VALUES (:nombre, :enlace, :caps_total)";
+    $sql = "INSERT INTO calificaciones_mangas (`Nombre`, `Link`, `Capitulos_Totales`) 
+    VALUES (:nombre, :enlace, :caps_total)";
     $stmt = $conn->prepare($sql);
     $stmt->execute([
         'nombre' => $nombre,
         'enlace' => $link,
         'caps_total' => $caps_total
     ]);
-    echo "Calificación insertada correctamente.";
-    header("location:../Calificaciones/editar_stars.php?id=&nombre=$nombre");
+
+    // Obtener el ID de la última inserción
+    $iden = $conn->lastInsertId();
+
+    // Redirigir sin imprimir antes para evitar errores
+    header("Location: ../Calificaciones/editar_stars.php?id=" . urlencode($iden) . "&nombre=" . urlencode($nombre));
+
+    exit;
 } else if (isset($_POST['Calificar_Luego'])) {
     try {
         $sql = "INSERT INTO calificaciones_mangas (`Nombre`,`Link`, `Capitulos_Totales`) VALUES (:nombre, :enlace, :caps_total)";

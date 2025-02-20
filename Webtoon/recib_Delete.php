@@ -72,6 +72,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Error: " . $e->getMessage() . "<br>";
         }
 
+        $sql_delete = "DELETE FROM `webtoon` WHERE ID = ?";
+        $stmt_delete = $conexion->prepare($sql_delete);
+        $stmt_delete->bind_param("i", $idRegistros);
+        $stmt_delete->execute();
+
         $alertTitle = 'Webtoon Eliminado!';
         $alertText = 'Eliminando ' . $nombre . ' de ' . ucfirst($tabla) . '  y insertando en Finalizados';
         $alertType = 'success';
