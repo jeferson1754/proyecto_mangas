@@ -200,7 +200,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             try {
                 // Preparar la consulta de inserción
-                $insertQuery = "INSERT INTO $tabla9 ($fila15, $fila12, $titulo4, $fila18) VALUES (?, ?, ?, ?)";
+                $insertQuery = "INSERT INTO `diferencias_pendientes` (ID_Pendientes, Diferencia, Fecha, Dia) VALUES (?, ?, ?, ?)";
 
                 // Preparar la declaración
                 $stmt = $conexion->prepare($insertQuery);
@@ -212,7 +212,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $columna3 = $fila['Dia'];
 
                     // Vincular los parámetros y ejecutar la consulta para cada fila
-                    $stmt->bind_param("ssss", $iden, $columna1, $columna2, $columna3);
+                    $stmt->bind_param("isss", $iden, $columna1, $columna2, $columna3);
                     $stmt->execute();
                 }
 
