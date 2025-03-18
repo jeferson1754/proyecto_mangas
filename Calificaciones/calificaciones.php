@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Calificaciones de Animes</title>
+    <title>Calificaciones de Mangas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 
@@ -63,11 +63,11 @@
     }
 
     .rating-box {
-        background: #fff;
-        padding: 15px;
-        border-radius: 8px;
-        text-align: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
     .rating-box:hover {
@@ -94,22 +94,6 @@
         width: 100%;
         height: 250px;
         object-fit: cover;
-    }
-
-    .imagen {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-    }
-
-    .no-image {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #f3f3f3;
-        padding: 20px;
-        border-radius: 8px;
     }
 
     @media (min-width: 576px) {
@@ -173,7 +157,6 @@
         font-weight: 500;
         color: var(--primary-color);
         border-top: 1px solid #eee;
-        margin-top: auto;
         font-size: 0.9rem;
     }
 
@@ -292,6 +275,7 @@
         margin-top: 10px;
         font-size: 14px;
         color: #555;
+        text-align: center;
     }
 </style>
 
@@ -323,37 +307,98 @@
                         <?php
                         $id_anime = $fila['ID'];
                         $images = $fila['Link_Imagen'];
-                        $total_capitulos = $fila['Capitulos_Totales']; // Suponiendo que este campo existe en la base de datos
+                        $total_capitulos = $fila['Capitulos_Totales'];
 
-                        // Verificar si la URL de la imagen es válida y no está vacía
-                        if (!empty($images) && filter_var($images, FILTER_VALIDATE_URL)) {
-                            echo "<img class='imagen' src='{$images}' alt='Imagen de {$id_anime}'>";
+                        // Consulta SQL para obtener las imágenes relacionadas con el ID_Anime
+                        $imageQuery = "SELECT DISTINCT Link_Imagen 
+                                       FROM calificaciones_mangas 
+                                       WHERE ID = $id_anime";
+
+                        $result = $conexion->query($imageQuery);
+
+                        // Verificar si hay resultados
+                        if ($result->num_rows > 0) {
+                            $images = [];
+                            // Recorrer los resultados y almacenar las imágenes
+                            while ($row = $result->fetch_assoc()) {
+                                if (!empty($row['Link_Imagen'])) {
+                                    $images[] = htmlspecialchars($row['Link_Imagen'], ENT_QUOTES, 'UTF-8'); // Sanitizar el link y agregar al array
+                                }
+                            }
+
+                            // Solo mostrar el carrusel si hay más de una imagen
+                            if (count($images) > 1) {
+                        ?>
+                                <!-- Componente Carrusel de Bootstrap -->
+                                <div id="animeCarousel<?php echo $id_anime; ?>" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <?php
+                                        $isActive = true; // Variable para marcar el primer elemento como activo
+
+                                        // Recorrer las imágenes y agregar cada una al carrusel
+                                        foreach ($images as $imageLink) {
+                                        ?>
+                                            <div class="carousel-item <?php echo $isActive ? 'active' : ''; ?>">
+                                                <img src="<?php echo $imageLink; ?>" alt="Imagen de <?php echo $id_anime; ?>" class="imagen d-block w-100">
+                                            </div>
+                                        <?php
+                                            $isActive = false; // Desactivar "active" para los siguientes elementos
+                                        }
+                                        ?>
+                                    </div>
+
+                                </div>
+                        <?php
+                            } else {
+                                // Si hay solo una imagen, mostrar la imagen sin carrusel
+                                if (count($images) == 1) {
+                                    echo "<img class='imagen d-block w-100' src='" . $images[0] . "' alt='Imagen de {$id_anime}'>";
+                                } else {
+                                    echo "     
+                                     <div class='no-image'>
+                                        <i class='fas fa-film'></i>
+                                        ID:{$fila['ID']}
+                                    </div>";
+                                }
+                            }
                         } else {
-                            // Si no hay imagen, mostrar una imagen por defecto
                             echo "     
                             <div class='no-image'>
-                                <i class='fa-solid fa-bookmark'></i>
-                                ID: {$fila['ID']}
-                            </div>";
+                               <i class='fas fa-film'></i>
+                               ID:{$fila['ID']}
+                           </div>";
                         }
                         ?>
+
+
+
+
+
                         <header class="text-center">
                             <?php
-                            echo mb_strimwidth($fila["Nombre"], 0, 40, "...");
+                            if (strlen($fila["Anime"]) > 35) {
+                                echo substr($fila["Anime"], 0, length: 35) . "...";
+                            } else {
+                                echo $fila["Anime"];
+                            }
                             ?>
                         </header>
 
                         <div class="stars product-stars">
                             <?php
                             $calificacion = $fila["Promedio"];
-                            foreach (range(1, 5) as $i) {
-                                echo $i <= $calificacion ? '<i class="fa-solid fa-star active"></i>' : '<i class="fa-solid fa-star"></i>';
+                            for ($i = 1; $i <= 5; $i++) {
+                                if ($i <= $calificacion) {
+                                    echo '<i class="fa-solid fa-star active"></i>';
+                                } else {
+                                    echo '<i class="fa-solid fa-star"></i>';
+                                }
                             }
                             ?>
                         </div>
 
                         <div class="rating-text product-rating">
-                            Promedio: <span class="product-rating-value"><?php echo number_format($calificacion, 2); ?></span>
+                            Promedio: <span class="product-rating-value"><?php echo number_format($calificacion, 2) ?></span>
                         </div>
 
                         <div class="episode-count">
@@ -362,12 +407,10 @@
                     </div>
 
 
-
-
             <?php
                 }
             } else {
-                echo '<div class="text-center">No se encontraron resultados.</div>';
+                echo '<div class="col-12 text-center">No se encontraron resultados.</div>';
             }
             ?>
 
