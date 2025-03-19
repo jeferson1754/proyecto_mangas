@@ -227,7 +227,7 @@ if ($variable) {
             },
             xAxis: [{
                 type: 'category',
-                data: <?php echo json_encode($labels) ?>,
+                data: <?php echo json_encode(array_reverse($labels)); ?>,
                 axisTick: {
                     alignWithLabel: true
                 },
@@ -243,7 +243,7 @@ if ($variable) {
                 name: 'Diferencia',
                 type: 'bar',
                 barWidth: '60%',
-                data: <?php echo json_encode($data) ?>,
+                data: <?php echo json_encode(array_reverse($data)); ?>,
                 itemStyle: {
                     color: '#4a90e2'
                 }
