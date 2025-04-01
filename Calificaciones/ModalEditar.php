@@ -42,6 +42,20 @@
             </div>
           </div>
 
+          <div class="form-group mb-4">
+            <label for="chapters" class="form-label">
+              <i class="fas fa-hashtag me-2"></i>Capítulos Totales
+            </label>
+            <div class="input-group">
+              <input type="number"
+                id="chapters"
+                name="caps_total"
+                class="form-control"
+                value="<?php echo $mostrar['Capitulos_Totales']; ?>"
+                required>
+            </div>
+          </div>
+
           <!-- Calificación actual -->
           <div class="rating-display">
             <h6 class="text-center mb-3">
