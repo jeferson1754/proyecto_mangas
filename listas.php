@@ -40,7 +40,6 @@ $sinver2          = getCountFromTableWithCondition($conexion, 'pendientes_manga'
 $sinact3          = getCountFromTableWithCondition($conexion, 'pendientes_manga', 'Fecha_Cambio1 < DATE_SUB(CURDATE(), INTERVAL 36 MONTH) AND Faltantes=0');
 $pendientes_anime = getCountFromTableWithCondition($conexion, 'pendientes_manga', 'Anime="SI";');
 
-$sinact4             = getCountFromTableWithCondition($conexion, 'webtoon', 'Fecha_Ultimo_Capitulo < DATE_SUB(CURDATE(), INTERVAL 3 YEAR) AND Faltantes=0');
 $faltantes_webtoon = getCountFromTableWithCondition($conexion, 'webtoon', 'Faltantes>0;');
 
 function getCountFromTable($connection, $table)
@@ -67,6 +66,11 @@ while ($valores = mysqli_fetch_array($query)) {
 
 if ($sinact6 == 0) {
     $sinact6 = "4";
+}
+
+$query = $conexion->query("SELECT COUNT(*) AS conteo  FROM webtoon WHERE Fecha_Ultimo_Capitulo < DATE_SUB(CURDATE(), INTERVAL 3 YEAR)");
+while ($valores = mysqli_fetch_array($query)) {
+    $sinact_webtoon = $valores['conteo'];
 }
 
 ?>
@@ -540,11 +544,11 @@ if ($sinact6 == 0) {
         </div>
 
         <div class="cards-grid">
-            <?php if ($sinact4 > 0): ?>
-                <a href="../Tachiyomi/?sin-actividad=" class="stat-card red">
+            <?php if ($sinact_webtoon > 0): ?>
+                <a href="../Webtoon/?sin-actividad=" class="stat-card red">
                     <i class="fas fa-book-open stat-icon"></i>
                     <div class="stat-title">Sin Actividad Reciente Webtoon(3 Años)</div>
-                    <div class="stat-value"><?= $sinact4 ?></div>
+                    <div class="stat-value"><?= $sinact_webtoon ?></div>
                 </a>
             <?php endif; ?>
 

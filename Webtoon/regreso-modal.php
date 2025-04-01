@@ -1,31 +1,31 @@
 <?php
 if (isset($_GET['borrar'])) {
-   $link = "./?borrar=&accion=HOY";
+   $link = "./?borrar=";
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
 } else if (isset($_GET['enviar'])) {
-   $link = "./?enviar=&accion=HOY";
+   $link = "./?enviar=";
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "";
    $valor = "";
 } else if (isset($_GET['buscar'])) {
-   $link = "./?busqueda_webtoon=$busqueda&buscar=";
-   echo "<input type='hidden' name='link' value='$link'>";
-   $lista = "Seleccione";
-   $valor = "";
-} else if (isset($_GET['filtrar'])) {
-   $link = "./?estado=$estado&accion=Filtro&filtrar=";
+   $link = "./?estado=$estado_manga&busqueda_webtoon=$busqueda&buscar=";
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
 } else if (isset($_GET['link'])) {
-   $link = "./?accion=HOY&link=";
+   $link = "./?link=";
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
 } else if (isset($_GET['faltantes'])) {
    $link = "./?faltantes=";
+   echo "<input type='hidden' name='link' value='$link'>";
+   $lista = "Seleccione";
+   $valor = "";
+} else if (isset($_GET['sin-actividad'])) {
+   $link = "./?sin-actividad=";
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";

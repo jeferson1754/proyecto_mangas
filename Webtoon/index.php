@@ -114,13 +114,11 @@ $sizebtn = "m";
                 <span>Hoy</span>
             </button>
 
-            <button type="button" class="btn btn-custom btn-info btn-<?php echo $sizebtn ?>" onclick="toggleFilter('myDIV')">
-                <i class="fas fa-filter"></i>
-                <span>Filtrar</span>
-            </button>
-
-            <button type="button" class="btn btn-info btn-custom btn-<?php echo $sizebtn ?>" onclick="toggleFilter('myDIV2')">
-                <i class="fas fa-search"></i> Buscar
+            <button type="button" class="btn btn-<?php echo $sizebtn ?> btn-custom btn-outline-secondary" onclick="toggleFilter('myDIV')">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                </svg>
+                Filtros
             </button>
             <button type="submit" name="link" class="btn btn-warning btn-custom btn-<?php echo $sizebtn ?>" style="text-decoration: none;">
                 <i class="fas fa-unlink"></i> Sin Link
@@ -129,6 +127,9 @@ $sizebtn = "m";
             <button class="btn btn-custom btn-warning btn-<?php echo $sizebtn ?> " type="submit" name="faltantes">
                 <i class="fas fa-clock"></i>
                 <span>Pendientes</span>
+            </button>
+            <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-warning vista-celu" type="submit" name="sin-actividad">
+                <i class="fas fa-pause-circle"></i> Sin Actividad
             </button>
             <button class="btn btn-info btn-custom btn-<?php echo $sizebtn ?>" type="button" onclick="vistos()" name="marcar-vistos">
                 <i class="far fa-check-square"></i>
@@ -153,36 +154,21 @@ $sizebtn = "m";
                         <?php
                         $query = $conexion->query("SELECT * FROM $tabla4;");
                         while ($valores = mysqli_fetch_array($query)) {
-                            echo '<option value="' . $valores['Estado'] . '">' . $valores['Estado'] . '</option>';
+                            $valor = htmlspecialchars($valores['Estado'], ENT_QUOTES);
+                            $selected = (isset($_GET['estado']) && $_GET['estado'] === $valor) ? 'selected' : '';
+                            echo "<option value=\"$valor\" $selected>$valor</option>";
                         }
                         ?>
                     </select>
                 </div>
-                <input type="hidden" name="accion" value="Filtro">
-                <br>
-
                 <div class="col-md-4">
-                    <button class="btn btn-primary" type="submit" name="filtrar">
-                        <i class="fas fa-check"></i> Aplicar Filtro
-                    </button>
-                    <button class="btn btn-secondary" type="submit" name="borrar">
-                        <i class="fas fa-times"></i> Borrar
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div class="filter-section" id="myDIV2" style="display:none;">
-            <form action="" method="GET" class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" class="form-control" name="busqueda_webtoon" placeholder="Nombre del Webtoon...">
+                    <input type="text" class="form-control" name="busqueda_webtoon" placeholder="Nombre del Webtoon..."
+                        value="<?= htmlspecialchars($_GET['busqueda_webtoon'] ?? '', ENT_QUOTES) ?>">
                 </div>
 
                 <div class="col-md-4">
                     <button class="btn btn-primary" type="submit" name="buscar">
                         <i class="fas fa-search"></i> Buscar
-                    </button>
-                    <button class="btn btn-secondary" type="submit" name="borrar">
-                        <i class="fas fa-times"></i> Limpiar
                     </button>
                 </div>
             </form>
@@ -192,8 +178,8 @@ $sizebtn = "m";
 
         include('./ModalCrear.php');
 
-        $busqueda = "";
-
+        $busqueda = isset($_GET['busqueda_webtoon']) ? mysqli_real_escape_string($conexion, $_GET['busqueda_webtoon']) : '';
+        $estado_manga = isset($_GET['estado']) ? mysqli_real_escape_string($conexion, $_GET['estado']) : '';
 
 
         if (isset($_GET['enviar'])) {
@@ -202,21 +188,26 @@ $sizebtn = "m";
         } else if (isset($_GET['borrar'])) {
             $busqueda = "";
             $where = "WHERE `$tabla`.`$fila6` LIKE'%" . $day . "%'AND $fila8 ='Emision' ORDER BY `$tabla`.`$fila7` DESC limit 100;";
-        } else if (isset($_GET['filtrar'])) {
-            if (isset($_GET['estado'])) {
-                $estado   = $_REQUEST['estado'];
-
-                $where = "WHERE $fila8='$estado' ORDER BY `$tabla`.`$fila7` DESC  limit 100";
-            }
         } else if (isset($_GET['buscar'])) {
-            if (isset($_GET['busqueda_webtoon'])) {
-                $busqueda   = $_REQUEST['busqueda_webtoon'];
+            $conditions = [];
 
-                $where = "WHERE $fila1 LIKE '%$busqueda%' ORDER BY `$tabla`.`$fila7` DESC  limit 100";
+            if (!empty($busqueda)) {
+                $conditions[] = "$fila1 COLLATE utf8mb4_general_ci LIKE '%$busqueda%'";
             }
+
+            if (!empty($estado)) {
+                $conditions[] = " $fila8='$estado_manga'";
+            }
+
+            $where = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) . " ORDER BY `$tabla`.`$fila7` DESC limit 50" : "ORDER BY `$tabla`.`$fila7` DESC limit 50";
         } else if (isset($_GET['link'])) {
 
             $where = "WHERE $fila2='' OR $fila13='Faltante' OR $fila13='' ORDER BY `$tabla`.`$fila7` DESC  limit 100";
+        } else if (isset($_GET['sin-actividad'])) {
+
+            $where = "WHERE Fecha_Ultimo_Capitulo < DATE_SUB(CURDATE(), INTERVAL 3 YEAR) ORDER BY `webtoon`.`ID` DESC;";
+            $capi = "1";
+            $titulo = "Sin Actividad Reciente";
         } else if (isset($_GET['faltantes'])) {
             $where = "WHERE `$tabla`.`$fila5`>0 ORDER BY `$tabla`.`$fila5` ASC  limit 100";
         } else {
