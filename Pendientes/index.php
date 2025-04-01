@@ -293,11 +293,10 @@ $sizebtn = "sm";
                                     <div class="action-buttons">
                                         <?php
                                         $variable = $mostrar[$fila7];
-                                        $busqueda = $mostrar[$fila1];
                                         ?>
 
                                         <button type="button" class="action-button btn-info">
-                                            <a href="./?busqueda_manga=<?php echo urlencode($busqueda); ?>&todos=&capitulos=&estado=&buscar="
+                                            <a href="./?busqueda_manga=<?php echo urlencode($mostrar[$fila1]); ?>&todos=&capitulos=&estado=&buscar="
                                                 style="color:white" target="_blanck">
                                                 <i class="fa-solid fa-magnifying-glass"></i>
                                             </a>
