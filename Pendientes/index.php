@@ -5,7 +5,7 @@ include '../upa.php';
 $fecha_actual = date('Y-m-d');
 $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
 
-$sizebtn = "m";
+$sizebtn = "sm";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,7 +56,9 @@ $sizebtn = "m";
                 <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-warning vista-celu" type="submit" name="sin-actividad">
                     <i class="fas fa-pause-circle"></i> Sin Actividad
                 </button>
-
+                <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-warning" type="submit" name="tmo">
+                    <i class="fa-solid fa-triangle-exclamation"></i> No TMO
+                </button>
                 <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-success" type="submit" name="mayor-actividad">
                     <i class="fas fa-play-circle"></i> Mayor Actividad
                 </button>
@@ -160,6 +162,10 @@ $sizebtn = "m";
             $where = "ORDER BY `$tabla`.Cantidad DESC, `$tabla`.`Fecha_Cambio1` DESC, `$tabla`.`Hora_Cambio` DESC limit 30";
             $capi = "1";
             $titulo = "Mayor Actividad Reciente";
+        } else if (isset($_GET['tmo'])) {
+            $where = "WHERE Link NOT LIKE '%zonatmo.com%' ORDER BY `$tabla`.`Faltantes` ASC limit 10";
+            $capi = "1";
+            $titulo = "Sin Link TMO";
         } else if (isset($_GET['anime'])) {
             $where = "where Anime='SI' AND Faltantes>0 ORDER BY `$tabla`.`Capitulos Vistos` ASC limit 50";
             $capi = "1";

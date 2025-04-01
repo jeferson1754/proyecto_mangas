@@ -59,6 +59,9 @@ $sizebtn = "sm";
                 <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-warning" type="submit" name="tachiyomi">
                     <i class="fas fa-ban"></i> No Tachiyomi
                 </button>
+                <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-warning" type="submit" name="tmo">
+                    <i class="fa-solid fa-triangle-exclamation"></i> No TMO
+                </button>
                 <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-success" type="submit" name="mayor-actividad">
                     <i class="fas fa-play-circle"></i> Mayor Actividad
                 </button>
@@ -165,6 +168,10 @@ $sizebtn = "sm";
             $where = "where Anime='SI' AND Faltantes>0 ORDER BY `manga`.`Capitulos Vistos` ASC limit 10";
             $capi = "1";
             $titulo = "Tienen Anime";
+        } else if (isset($_GET['tmo'])) {
+            $where = "WHERE Link NOT LIKE '%zonatmo.com%' ORDER BY `manga`.`Faltantes` ASC limit 10";
+            $capi = "1";
+            $titulo = "Sin Link TMO";
         } else if (isset($_GET['tachiyomi'])) {
             $where = " LEFT JOIN `tachiyomi` ON manga.ID = tachiyomi.ID_Manga WHERE tachiyomi.ID_Manga IS NULL AND manga.Faltantes > 0 $order LIMIT 10;";
             $capi = "1";
