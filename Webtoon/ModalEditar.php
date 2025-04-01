@@ -70,7 +70,7 @@
             </div>
 
             <!-- Estado -->
-            <div class="col-md-12">
+            <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label fw-bold"><?php echo $fila8 ?></label>
                 <select name="fila8" class="form-select" required>
@@ -95,6 +95,16 @@
                 </select>
               </div>
             </div>
+            <!-- Fecha Ultima Actualizacion -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="fecha_ultima" class="form-label fw-bold">Fecha Ultima Actualizacion</label>
+                <input type="datetime-local" id="fecha_ultima" name="fecha_ultima" class="form-control"
+                  value="<?php echo isset($mostrar['Fecha_Ultimo_Capitulo']) ? date('Y-m-d\TH:i', strtotime($mostrar['Fecha_Ultimo_Capitulo'])) : ''; ?>">
+              </div>
+
+
+            </div>
           </div>
 
 
@@ -109,30 +119,30 @@
 
           ?>
 
-            <div class="form-group">
-              <label class="form-label fw-bold"><?php echo $fila6 ?></label>
-              <div class="grid-container">
-                <?php
-                // Mostrar los checkboxes para cada día
-                foreach ($dias as $dia) {
-                ?>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="check_<?php echo $dia ?>_<?php echo $mostrar[$fila7]; ?>" name="check_lista[]" value="<?php echo $dia ?>"
-                      <?php
-                      // Verificar si el día está en el arreglo de días seleccionados
-                      if (in_array($dia, $seleccionadosArray)) {
-                        echo 'checked';  // Marcar el checkbox si el día está en la lista de seleccionados
-                      }
-                      ?>>
-                    <label class="form-check-label" for="check_<?php echo $dia ?>_<?php echo $mostrar[$fila7]; ?>">
-                      <?php echo $dia ?>
-                    </label>
-                  </div>
-                <?php
-                }
-                ?>
-              </div>
+          <div class="form-group">
+            <label class="form-label fw-bold"><?php echo $fila6 ?></label>
+            <div class="grid-container">
+              <?php
+              // Mostrar los checkboxes para cada día
+              foreach ($dias as $dia) {
+              ?>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="check_<?php echo $dia ?>_<?php echo $mostrar[$fila7]; ?>" name="check_lista[]" value="<?php echo $dia ?>"
+                    <?php
+                    // Verificar si el día está en el arreglo de días seleccionados
+                    if (in_array($dia, $seleccionadosArray)) {
+                      echo 'checked';  // Marcar el checkbox si el día está en la lista de seleccionados
+                    }
+                    ?>>
+                  <label class="form-check-label" for="check_<?php echo $dia ?>_<?php echo $mostrar[$fila7]; ?>">
+                    <?php echo $dia ?>
+                  </label>
+                </div>
+              <?php
+              }
+              ?>
             </div>
+          </div>
 
 
         </div>

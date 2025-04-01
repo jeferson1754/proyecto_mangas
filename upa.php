@@ -69,6 +69,9 @@ if ($count >= 1 && $num_queries_last_hour < $max_queries_per_hour) {
 
     $sql2 = "UPDATE `webtoon` SET `Faltantes` = `Capitulos Totales` - `Capitulos Vistos`";
     mysqli_query($conexion, $sql2);
+
+    $sql3 = "UPDATE `webtoon` SET `Fecha_Ultimo_Capitulo` = '$current_time' WHERE `Dias Emision`LIKE '%$day%' AND Estado='Emision'";
+    mysqli_query($conexion, $sql3);
 }
 
 if ($new_time == $Hoy) {

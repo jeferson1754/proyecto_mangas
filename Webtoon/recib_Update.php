@@ -12,6 +12,7 @@ $dato2      = $_REQUEST['fila2'];
 $dato3      = $_REQUEST['fila3'];
 $dato4      = $_REQUEST['fila4'];
 $dato8      = $_REQUEST['fila8'];
+$fecha_ultima  = $_REQUEST['fecha_ultima'];
 
 if (isset($_POST['check_lista']) && is_array(value: $_POST['check_lista']) && !empty($_POST['check_lista'])) {
     $dato6 = addslashes(implode(", ", $_POST['check_lista']));
@@ -62,7 +63,8 @@ if (mysqli_num_rows($consulta) == 0) {
             `$fila3` = :dato3,
             `$fila4` = :dato4,
             `$fila8` = :dato8,
-            `$fila6` = :dato6
+            `$fila6` = :dato6,
+            `Fecha_Ultimo_Capitulo` = :dato7
         WHERE `$fila7` = :idRegistros";
 
         $stmt = $conn->prepare($sql);
@@ -73,6 +75,7 @@ if (mysqli_num_rows($consulta) == 0) {
             ':dato4' => $dato4,
             ':dato8' => $dato8,
             ':dato6' => $dato6,
+            ':dato7' => $fecha_ultima,
             ':idRegistros' => $idRegistros
         ]);
 

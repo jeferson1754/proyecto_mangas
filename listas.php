@@ -40,6 +40,9 @@ $sinver2          = getCountFromTableWithCondition($conexion, 'pendientes_manga'
 $sinact3          = getCountFromTableWithCondition($conexion, 'pendientes_manga', 'Fecha_Cambio1 < DATE_SUB(CURDATE(), INTERVAL 36 MONTH) AND Faltantes=0');
 $pendientes_anime = getCountFromTableWithCondition($conexion, 'pendientes_manga', 'Anime="SI";');
 
+$sinact4             = getCountFromTableWithCondition($conexion, 'webtoon', 'Fecha_Ultimo_Capitulo < DATE_SUB(CURDATE(), INTERVAL 3 YEAR) AND Faltantes=0');
+$faltantes_webtoon = getCountFromTableWithCondition($conexion, 'webtoon', 'Faltantes>0;');
+
 function getCountFromTable($connection, $table)
 {
     $query = $connection->query("SELECT COUNT(*) AS conteo FROM $table;");
@@ -431,7 +434,7 @@ if ($sinact6 == 0) {
             <?php endif; ?>
 
             <?php if ($max_50 > 0): ?>
-                <a  class="stat-card yellow">
+                <a class="stat-card yellow">
                     <i class="fas fa-star stat-icon"></i>
                     <div class="stat-title">+50</div>
                     <div class="stat-value"><?= $max_50 ?></div>
@@ -439,7 +442,7 @@ if ($sinact6 == 0) {
             <?php endif; ?>
 
             <?php if ($min_50 > 0): ?>
-                <a  class="stat-card orange">
+                <a class="stat-card orange">
                     <i class="fas fa-minus stat-icon"></i>
                     <div class="stat-title">-50</div>
                     <div class="stat-value"><?= $min_50 ?></div>
@@ -533,12 +536,35 @@ if ($sinact6 == 0) {
         </div>
 
         <div class="section-divider">
+            <span class="title">Webtoon</span>
+        </div>
+
+        <div class="cards-grid">
+            <?php if ($sinact4 > 0): ?>
+                <a href="../Tachiyomi/?sin-actividad=" class="stat-card red">
+                    <i class="fas fa-book-open stat-icon"></i>
+                    <div class="stat-title">Sin Actividad Reciente Webtoon(3 Años)</div>
+                    <div class="stat-value"><?= $sinact4 ?></div>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($faltantes_webtoon > 0): ?>
+                <a href="../Webtoon/?faltantes=" class="stat-card purple">
+                    <i class="fas fa-exclamation-circle stat-icon"></i>
+                    <div class="stat-title">Faltantes</div>
+                    <div class="stat-value"><?= $faltantes_webtoon ?></div>
+                </a>
+            <?php endif; ?>
+
+        </div>
+
+        <div class="section-divider">
             <span class="title">Pendientes</span>
         </div>
 
         <div class="cards-grid">
             <?php if ($sinver2 > 0): ?>
-                <a href="../Pendientes/" class="stat-card gray">
+                <a href="../Pendientes/?sin-fechas=" class="stat-card gray">
                     <i class="fas fa-hourglass-half stat-icon"></i>
                     <div class="stat-title">Sin Verificar Pendientes</div>
                     <div class="stat-value"><?= $sinver2 ?></div>

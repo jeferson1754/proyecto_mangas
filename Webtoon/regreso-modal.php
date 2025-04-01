@@ -7,8 +7,8 @@ if (isset($_GET['borrar'])) {
 } else if (isset($_GET['enviar'])) {
    $link = "./?enviar=&accion=HOY";
    echo "<input type='hidden' name='link' value='$link'>";
-   $lista = $estado;
-   $valor = $estado;
+   $lista = "";
+   $valor = "";
 } else if (isset($_GET['buscar'])) {
    $link = "./?busqueda_webtoon=$busqueda&buscar=";
    echo "<input type='hidden' name='link' value='$link'>";
