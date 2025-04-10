@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fecha_nueva  = $_REQUEST['fila10'];
     $fecha_ultima = $_REQUEST['fila11'];
     $link       = $_REQUEST['link'];
+    $nombre_anime       = $_REQUEST['animeInput'];
 
     // Verificar si 'Anime' está presente en la solicitud
     $checkbox = isset($_REQUEST["Anime"]) ? $_REQUEST["Anime"] : "NO";
@@ -76,6 +77,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo $estado;
     echo "<br>";
 
+    if ($nombre_anime != null || $nombre_anime = '') {
+        $sql3 = "SELECT id FROM `anime` WHERE Nombre='$nombre_anime'";
+        $resultado3 = mysqli_query($conexion, $sql3);
+        echo $sql3 . "<br>";
+
+        $id_anime = ($fila = mysqli_fetch_assoc($resultado3)) ? $fila['id'] : 0;
+    } else {
+        $id_anime = '';
+    }
+
 
 
     if (mysqli_num_rows($consulta) == 0) {
@@ -87,8 +98,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Menor a 100";
 
             try {
-                $sql = "INSERT INTO $tabla(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$ver`,`Anime`,`Hora_Cambio`) 
-                        VALUES ('$dato1', '$dato2', '$dato3', '$dato4', '$dato6', '$dato8', '$fecha_nueva', '$fecha_ultima', '$estado', 'NO', '$checkbox', NOW())";
+                $sql = "INSERT INTO $tabla(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$ver`,`Anime`,`Hora_Cambio`,`ID_Anime`) 
+                        VALUES ('$dato1', '$dato2', '$dato3', '$dato4', '$dato6', '$dato8', '$fecha_nueva', '$fecha_ultima', '$estado', 'NO', '$checkbox', NOW(),$id_anime)";
 
                 $resultado = mysqli_query($conexion, $sql);
 
