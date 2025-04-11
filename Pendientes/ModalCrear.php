@@ -100,6 +100,20 @@
               </div>
 
             </div>
+
+            <div class="col-12 mt-3" id="animeSearchDiv" style="display: none;">
+              <label for="animeList">Buscar Anime:</label>
+              <input class="form-control" list="animeList" id="animeInput" name="animeInput" placeholder="Escribe el nombre del anime...">
+              <datalist id="animeList">
+                <?php
+                $query_list = "SELECT * FROM `anime` ORDER BY `anime`.`Nombre` ASC";
+                $result_list = mysqli_query($conexion, $query_list);
+                while ($row_list = mysqli_fetch_assoc($result_list)) {
+                  echo "<option value='" . htmlspecialchars($row_list['Nombre']) . "'>";
+                }
+                ?>
+              </datalist>
+            </div>
           </div>
         </div>
 
@@ -114,3 +128,11 @@
     </div>
   </div>
 </div>
+<script>
+  const checkbox = document.getElementById('animeCheck');
+  const animeDiv = document.getElementById('animeSearchDiv');
+
+  checkbox.addEventListener('change', function() {
+    animeDiv.style.display = this.checked ? 'block' : 'none';
+  });
+</script>

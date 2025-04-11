@@ -38,6 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fecha_nueva  = $_REQUEST['fila10'];
     $fecha_ultima = $_REQUEST['fila11'];
     $link         = $_REQUEST['link'];
+    $nombre_anime       = $_REQUEST['animeInput'] ?? '';
 
     // Verificar si la casilla "Anime" está marcada
     $checkbox = isset($_REQUEST["Anime"]) ? $_REQUEST['Anime'] : "NO";
@@ -68,14 +69,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $Tabla = ucfirst($tabla);
 
+
+    if ($nombre_anime != null && $nombre_anime != '') {
+        $sql3 = "SELECT id FROM `anime` WHERE Nombre='$nombre_anime'";
+        $resultado3 = mysqli_query($conexion, $sql3);
+        echo $sql3 . "<br>";
+
+        $id_anime = ($fila = mysqli_fetch_assoc($resultado3)) ? $fila['id'] : 0;
+    } else {
+        $id_anime = '0';
+    }
+
     if (mysqli_num_rows($consulta) == 0) {
         // Registro no existe, realizar inserción y otras operaciones
 
         echo "$dato1 no existe en $tabla<br>";
 
         try {
-            $sql = "INSERT INTO $tabla(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$ver`,`Anime`,`$fila17`) 
-                VALUES('$dato1', '$dato2', '$dato3', '$dato4', '$dato6', '$dato8', '$fecha_nueva', '$fecha_ultima', '$estado', 'SI', '$checkbox', NOW())";
+            $sql = "INSERT INTO $tabla(`$fila1`,`$fila2`,`$fila3`, `$fila4`, `$fila6`,`$fila8`,`$fila10`,`$fila11`,`$fila13`,`$ver`,`Anime`,`$fila17`,`ID_Anime`) 
+                VALUES('$dato1', '$dato2', '$dato3', '$dato4', '$dato6', '$dato8', '$fecha_nueva', '$fecha_ultima', '$estado', 'SI', '$checkbox', NOW() ,$id_anime)";
 
             $resultado = mysqli_query($conexion, $sql);
             echo $sql . "<br>";

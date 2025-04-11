@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fecha_nueva  = $_REQUEST['fila10'];
     $fecha_ultima = $_REQUEST['fila11'];
     $link       = $_REQUEST['link'];
-    $nombre_anime       = $_REQUEST['animeInput'];
+    $nombre_anime       = $_REQUEST['animeInput'] ?? null;
 
     // Verificar si 'Anime' está presente en la solicitud
     $checkbox = isset($_REQUEST["Anime"]) ? $_REQUEST["Anime"] : "NO";
@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $id_anime = ($fila = mysqli_fetch_assoc($resultado3)) ? $fila['id'] : 0;
     } else {
-        $id_anime = '';
+        $id_anime = '0';
     }
 
 
