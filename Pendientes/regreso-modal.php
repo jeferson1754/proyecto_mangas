@@ -34,8 +34,13 @@ if (isset($_GET['borrar'])) {
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
-} else if (isset($_GET['buscar'])) { 
-   $link = "./?busqueda_manga=$busqueda&todos=$listas&capitulos=$capitulos&estado=$estado&buscar="; 
+} else if (isset($_GET['buscar'])) {
+   $link = "./?busqueda_manga=$busqueda&todos=$listas&capitulos=$capitulos&estado=$estado&buscar=";
+   echo "<input type='hidden' name='link' value='$link'>";
+   $lista = "Seleccione";
+   $valor = "";
+} else if (isset($_GET['tmo'])) {
+   $link = "./?tmo=";
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
