@@ -176,20 +176,57 @@
 
           <!-- Anime Switch -->
           <div class="form-check form-switch mt-4" style="margin-left: 120px;">
-            <input class="form-check-input" type="checkbox" name="Anime" value="SI" id="animeCheck" style="transform: scale(1.5);"
+            <input class="form-check-input" type="checkbox" name="Anime" value="SI" id="animeCheck-<?php echo $mostrar[$fila7]; ?>" style="transform: scale(1.5);"
               <?php echo ($mostrar['Anime'] == "SI") ? "checked" : ""; ?>>
-            <label class="form-check-label ms-2" for="animeCheck">¿Tiene Anime?</label>
+            <label class="form-check-label ms-2" for="animeCheck-<?php echo $mostrar[$fila7]; ?>">¿Tiene Anime?</label>
           </div>
-        </div>
 
-        <div class="modal-footer border-top">
-          <button type="button" class="btn btn-light" data-dismiss="modal">
-            <i class="fas fa-times me-2"></i>Cerrar
-          </button>
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save me-2"></i>Guardar Cambios
-          </button>
-        </div>
+          <!-- Este div se mostrará solo si el checkbox está marcado -->
+          <div class="col-12 mt-3" id="animeSearchDiv-<?php echo $mostrar[$fila7]; ?>" style="display: <?php echo ($mostrar['Anime'] == "SI") ? 'block' : 'none'; ?>;">
+            <label for="animeList-<?php echo $mostrar[$fila7]; ?>">Buscar Anime:</label>
+
+            <?php
+            // Escapa el valor de ID_Anime para evitar SQL Injection
+            $id_anime = intval($mostrar['ID_Anime']);
+
+            if (!empty($id_anime)) {
+              // Si el ID_Anime no está vacío, se muestra el valor directamente
+              echo "<input type='text' name='animeid' id='animeInput-{$mostrar[$fila7]}' value='{$mostrar['ID_Anime']}' class='form-control'>";
+            } else {
+              // Si no hay un ID_Anime, mostramos un input con datalist para buscar
+              echo "<input class='form-control' list='animeList-{$mostrar[$fila7]}' id='animeInput-{$mostrar[$fila7]}' name='animeInput' placeholder='Escribe el nombre del anime...'>";
+
+              // Consulta para obtener los nombres de anime
+              $query_list = "SELECT `Nombre` FROM `anime` ORDER BY `Nombre` ASC";
+              $result_list = mysqli_query($conexion, $query_list);
+
+              if ($result_list) {
+                echo "<datalist id='animeList-{$mostrar[$fila7]}'>";
+                while ($row_list = mysqli_fetch_assoc($result_list)) {
+                  // Usamos htmlspecialchars para prevenir inyecciones XSS
+                  echo "<option value='" . htmlspecialchars($row_list['Nombre'], ENT_QUOTES, 'UTF-8') . "'>";
+                }
+                echo "</datalist>";
+              } else {
+                // Si no hay resultados, mostrar una opción por defecto
+                echo "<datalist id='animeList-{$mostrar[$fila7]}'>
+                  <option value='No hay anime disponible'>
+                </datalist>";
+              }
+            }
+            ?>
+          </div>
+
+
+
+          <div class="modal-footer border-top">
+            <button type="button" class="btn btn-light" data-dismiss="modal">
+              <i class="fas fa-times me-2"></i>Cerrar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-2"></i>Guardar Cambios
+            </button>
+          </div>
       </form>
     </div>
   </div>
@@ -280,5 +317,22 @@
         }
       });
     });
+  });
+</script>
+<script>
+  // Usamos el ID único para cada elemento
+  const checkbox = document.getElementById('animeCheck-<?php echo $mostrar[$fila7]; ?>');
+  const animeDiv = document.getElementById('animeSearchDiv-<?php echo $mostrar[$fila7]; ?>');
+
+  // Asegurarse de que el div esté visible si el checkbox está marcado al cargar la página
+  if (checkbox.checked) {
+    animeDiv.style.display = 'block';
+  } else {
+    animeDiv.style.display = 'none';
+  }
+
+  // Escuchar el cambio en el checkbox para mostrar/ocultar el div
+  checkbox.addEventListener('change', function() {
+    animeDiv.style.display = this.checked ? 'block' : 'none';
   });
 </script>

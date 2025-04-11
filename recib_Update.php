@@ -39,6 +39,8 @@ $link        = $_REQUEST['link'];
 $fecha_nueva = $_REQUEST['fila10'];
 $fecha_ultima = $_REQUEST['fila11'];
 $cantidad    = $_REQUEST['cantidad'];
+$nombre_anime       = $_REQUEST['animeInput'] ?? null;
+$id_tabla_anime       = $_REQUEST['animeid'] ?? null;
 
 
 $checkbox = $_REQUEST["Anime"] ?? "NO";
@@ -108,6 +110,18 @@ echo "<br>";
 echo "$dato1 existe en $tabla";
 echo "<br>";
 
+if ($nombre_anime != null && $nombre_anime != '') {
+    $sql4 = "SELECT id FROM `anime` WHERE Nombre='$nombre_anime'";
+    $resultado3 = mysqli_query($conexion, $sql4);
+    echo $sql4 . "<br>";
+
+    $id_anime = ($fila = mysqli_fetch_assoc($resultado3)) ? $fila['id'] : 0;
+} else if ($id_tabla_anime != null && $id_tabla_anime != '') {
+    
+    $id_anime = $id_tabla_anime;
+} else {
+    $id_anime = '';
+}
 
 $nombreDiaEspañol = obtenerDiaSemana($fecha_nueva); // Salida: Miércoles
 
@@ -215,7 +229,8 @@ if ($listen < 101) {
     `$fila10`='" . $fecha_nueva . "',
     `$fila11`='" . $fecha_ultima . "',
     `Anime`='" . $checkbox . "',
-    `$fila17`=NOW()
+    `$fila17`=NOW(),
+    `ID_Anime`='" . $id_anime . "'
     WHERE `$fila7`='" . $idRegistros . "'";
         $resultado = mysqli_query($conexion, $sql);
         echo $sql;

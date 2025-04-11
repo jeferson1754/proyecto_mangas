@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo $estado;
     echo "<br>";
 
-    if ($nombre_anime != null || $nombre_anime = '') {
+    if ($nombre_anime != null && $nombre_anime != '') {
         $sql3 = "SELECT id FROM `anime` WHERE Nombre='$nombre_anime'";
         $resultado3 = mysqli_query($conexion, $sql3);
         echo $sql3 . "<br>";
