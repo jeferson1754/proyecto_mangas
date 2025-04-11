@@ -429,7 +429,7 @@ while ($valores = mysqli_fetch_array($query)) {
                 </a>
             <?php endif; ?>
 
-            <?php if ($sinact1 > 0): ?>
+            <?php if ($sinact1 > 15): ?>
                 <a href="../?sin-actividad=" class="stat-card gray">
                     <i class="fas fa-hourglass stat-icon"></i>
                     <div class="stat-title">Sin Actividad Reciente (3 Años)</div>
@@ -515,53 +515,54 @@ while ($valores = mysqli_fetch_array($query)) {
             </a>
 
         </div>
+        <?php if (($sinact2 > 0) || ($faltantes_tachiyomi > 0)): ?>
+            <div class="section-divider">
+                <span class="title">Tachiyomi</span>
+            </div>
 
-        <div class="section-divider">
-            <span class="title">Tachiyomi</span>
-        </div>
+            <div class="cards-grid">
+                <?php if ($sinact2 > 0): ?>
+                    <a href="../Tachiyomi/?sin-actividad=" class="stat-card gray">
+                        <i class="fas fa-pause stat-icon"></i>
+                        <div class="stat-title">Sin Actividad Reciente Tachiyomi(3 Meses)</div>
+                        <div class="stat-value"><?= $sinact2 ?></div>
+                    </a>
+                <?php endif; ?>
 
-        <div class="cards-grid">
-            <?php if ($sinact2 > 0): ?>
-                <a href="../Tachiyomi/?sin-actividad=" class="stat-card gray">
-                    <i class="fas fa-pause stat-icon"></i>
-                    <div class="stat-title">Sin Actividad Reciente Tachiyomi(3 Meses)</div>
-                    <div class="stat-value"><?= $sinact2 ?></div>
-                </a>
-            <?php endif; ?>
+                <?php if ($faltantes_tachiyomi > 0): ?>
+                    <a href="../Tachiyomi/" class="stat-card orange">
+                        <i class="fas fa-exclamation-circle stat-icon"></i>
+                        <div class="stat-title">Faltantes</div>
+                        <div class="stat-value"><?= $faltantes_tachiyomi ?></div>
+                    </a>
+                <?php endif; ?>
 
-            <?php if ($faltantes_tachiyomi > 0): ?>
-                <a href="../Tachiyomi/" class="stat-card orange">
-                    <i class="fas fa-exclamation-circle stat-icon"></i>
-                    <div class="stat-title">Faltantes</div>
-                    <div class="stat-value"><?= $faltantes_tachiyomi ?></div>
-                </a>
-            <?php endif; ?>
+            </div>
+        <?php endif; ?>
+        <?php if (($sinact_webtoon > 0) || ($faltantes_webtoon > 0)): ?>
+            <div class="section-divider">
+                <span class="title">Webtoon</span>
+            </div>
 
-        </div>
+            <div class="cards-grid">
+                <?php if ($sinact_webtoon > 0): ?>
+                    <a href="../Webtoon/?sin-actividad=" class="stat-card red">
+                        <i class="fas fa-book-open stat-icon"></i>
+                        <div class="stat-title">Sin Actividad Reciente Webtoon(3 Años)</div>
+                        <div class="stat-value"><?= $sinact_webtoon ?></div>
+                    </a>
+                <?php endif; ?>
 
-        <div class="section-divider">
-            <span class="title">Webtoon</span>
-        </div>
+                <?php if ($faltantes_webtoon > 0): ?>
+                    <a href="../Webtoon/?faltantes=" class="stat-card purple">
+                        <i class="fas fa-exclamation-circle stat-icon"></i>
+                        <div class="stat-title">Faltantes</div>
+                        <div class="stat-value"><?= $faltantes_webtoon ?></div>
+                    </a>
+                <?php endif; ?>
 
-        <div class="cards-grid">
-            <?php if ($sinact_webtoon > 0): ?>
-                <a href="../Webtoon/?sin-actividad=" class="stat-card red">
-                    <i class="fas fa-book-open stat-icon"></i>
-                    <div class="stat-title">Sin Actividad Reciente Webtoon(3 Años)</div>
-                    <div class="stat-value"><?= $sinact_webtoon ?></div>
-                </a>
-            <?php endif; ?>
-
-            <?php if ($faltantes_webtoon > 0): ?>
-                <a href="../Webtoon/?faltantes=" class="stat-card purple">
-                    <i class="fas fa-exclamation-circle stat-icon"></i>
-                    <div class="stat-title">Faltantes</div>
-                    <div class="stat-value"><?= $faltantes_webtoon ?></div>
-                </a>
-            <?php endif; ?>
-
-        </div>
-
+            </div>
+        <?php endif; ?>
         <div class="section-divider">
             <span class="title">Pendientes</span>
         </div>
