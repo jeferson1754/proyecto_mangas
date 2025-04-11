@@ -165,9 +165,17 @@ $sizebtn = "sm";
             $capi = "1";
             $titulo = "Mayor Actividad Reciente";
         } else if (isset($_GET['anime'])) {
-            $where = "where Anime='SI' AND Faltantes>0 ORDER BY `manga`.`Capitulos Vistos` ASC limit 10";
+            $columnas = "manga.*";
+            $where = "LEFT JOIN anime ON manga.ID_Anime = anime.id
+                    WHERE manga.Anime = 'SI' AND manga.Faltantes > 0
+                    ORDER BY 
+                    CASE WHEN anime.id IS NULL THEN 1 ELSE 0 END,
+                    FIELD(anime.Estado, 'Emision', 'Pausado', 'Pendiente', 'Finalizado'),
+                    manga.Faltantes ASC
+                    LIMIT 10";
             $capi = "1";
             $titulo = "Tienen Anime";
+
         } else if (isset($_GET['tmo'])) {
             $where = "WHERE Link NOT LIKE '%zonatmo.com%' ORDER BY `manga`.`Faltantes` ASC limit 10";
             $capi = "1";

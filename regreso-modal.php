@@ -39,6 +39,11 @@ if (isset($_GET['borrar'])) {
    echo "<input type='hidden' name='link' value='$link'>";
    $lista = "Seleccione";
    $valor = "";
+} else if (isset($_GET['tmo'])) {
+   $link = "./?tmo=";
+   echo "<input type='hidden' name='link' value='$link'>";
+   $lista = "Seleccione";
+   $valor = "";
 } else {
    $link = "./";
    echo "<input type='hidden' name='link' value='$link'>";
