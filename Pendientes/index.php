@@ -131,6 +131,8 @@ $sizebtn = "sm";
 
 
         $order = "ORDER BY `$tabla`.`Hora_Cambio` DESC";
+        $columnas = "*";
+
 
         $busqueda = isset($_GET['busqueda_manga']) ? mysqli_real_escape_string($conexion, $_GET['busqueda_manga']) : '';
         $listas = isset($_GET['todos']) ? mysqli_real_escape_string($conexion, $_GET['todos']) : '';
@@ -167,7 +169,14 @@ $sizebtn = "sm";
             $capi = "1";
             $titulo = "Sin Link TMO";
         } else if (isset($_GET['anime'])) {
-            $where = "where Anime='SI' AND Faltantes>0 ORDER BY `$tabla`.`Capitulos Vistos` ASC limit 50";
+            $columnas = "pendientes_manga.*";
+            $where = "LEFT JOIN anime ON pendientes_manga.ID_Anime = anime.id
+                    WHERE pendientes_manga.Anime = 'SI' AND pendientes_manga.Faltantes > 0
+                    ORDER BY 
+                    CASE WHEN anime.id IS NULL THEN 1 ELSE 0 END,
+                    FIELD(anime.Estado, 'Emision', 'Pausado', 'Pendiente', 'Finalizado'),
+                    pendientes_manga.Faltantes ASC
+                    LIMIT 10";
             $capi = "1";
             $titulo = "Tienen Anime";
         } else if (isset($_GET['buscar'])) {
@@ -246,7 +255,7 @@ $sizebtn = "sm";
                     </thead>
                     <tbody>
                         <?php
-                        $sql1 = "SELECT * FROM $tabla $where";
+                        $sql1 = "SELECT $columnas FROM $tabla $where";
 
                         $result = mysqli_query($conexion, $sql1);
                         //echo $sql1;
