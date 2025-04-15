@@ -64,6 +64,16 @@ while ($valores = mysqli_fetch_array($query)) {
     $sinact6 = $valores['conteo'];
 }
 
+$query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM tachiyomi");
+while ($valores = mysqli_fetch_array($query)) {
+    $sum_faltantes_tachi = $valores['conteo'];
+}
+
+$query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM webtoon");
+while ($valores = mysqli_fetch_array($query)) {
+    $sum_faltantes_webtoon = $valores['conteo'];
+}
+
 if ($sinact6 == 0) {
     $sinact6 = "4";
 }
@@ -537,6 +547,14 @@ while ($valores = mysqli_fetch_array($query)) {
                     </a>
                 <?php endif; ?>
 
+                <?php if ($sum_faltantes_tachi > 0): ?>
+                    <a href="../Tachiyomi/" class="stat-card gray">
+                        <i class="fas fa-pause stat-icon"></i>
+                        <div class="stat-title">Total Capitulos Faltantes</div>
+                        <div class="stat-value"><?= $sum_faltantes_tachi ?></div>
+                    </a>
+                <?php endif; ?>
+
             </div>
         <?php endif; ?>
         <?php if (($sinact_webtoon > 0) || ($faltantes_webtoon > 0)): ?>
@@ -558,6 +576,14 @@ while ($valores = mysqli_fetch_array($query)) {
                         <i class="fas fa-exclamation-circle stat-icon"></i>
                         <div class="stat-title">Faltantes</div>
                         <div class="stat-value"><?= $faltantes_webtoon ?></div>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($sum_faltantes_webtoon > 0): ?>
+                    <a href="../Webtoon/" class="stat-card dark-gray">
+                        <i class="fas fa-pause stat-icon"></i>
+                        <div class="stat-title">Total Capitulos Faltantes</div>
+                        <div class="stat-value"><?= $sum_faltantes_webtoon ?></div>
                     </a>
                 <?php endif; ?>
 
