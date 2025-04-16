@@ -227,6 +227,7 @@
               <i class="fas fa-save me-2"></i>Guardar Cambios
             </button>
           </div>
+        </div>
       </form>
     </div>
   </div>
@@ -317,22 +318,5 @@
         }
       });
     });
-  });
-</script>
-<script>
-  // Usamos el ID único para cada elemento
-  const checkbox = document.getElementById('animeCheck-<?php echo $mostrar[$fila7]; ?>');
-  const animeDiv = document.getElementById('animeSearchDiv-<?php echo $mostrar[$fila7]; ?>');
-
-  // Asegurarse de que el div esté visible si el checkbox está marcado al cargar la página
-  if (checkbox.checked) {
-    animeDiv.style.display = 'block';
-  } else {
-    animeDiv.style.display = 'none';
-  }
-
-  // Escuchar el cambio en el checkbox para mostrar/ocultar el div
-  checkbox.addEventListener('change', function() {
-    animeDiv.style.display = this.checked ? 'block' : 'none';
   });
 </script>
