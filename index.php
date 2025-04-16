@@ -80,7 +80,7 @@ $sizebtn = "sm";
             <div class="search-filters" id="filtersContainer" style="display: none;">
                 <div class="flex-grow-1">
                     <input
-                        type="text"
+                        type="search"
                         class="form-control"
                         placeholder="Buscar manga..."
                         name="busqueda_manga"

@@ -162,7 +162,7 @@ $sizebtn = "m";
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" name="busqueda_webtoon" placeholder="Nombre del Webtoon..."
+                    <input type="search" class="form-control" name="busqueda_webtoon" placeholder="Nombre del Webtoon..."
                         value="<?= htmlspecialchars($_GET['busqueda_webtoon'] ?? '', ENT_QUOTES) ?>">
                 </div>
 
