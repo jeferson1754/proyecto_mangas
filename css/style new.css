@@ -584,7 +584,7 @@ body {
                 @media (max-width: 767px) {
                     .color-dot {
                         font-size: 30px;
-                        /* Tamaño en vista celular */
+                        margin-left: 3px;
                     }
                 }
 
