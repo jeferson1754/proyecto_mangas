@@ -79,6 +79,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $anime = $mostrar['Anime'];
     }
 
+    $sin_lista="Sin Lista";
+
     // Consulta para verificar si hay datos en la tabla tachiyomi
     $sql = "SELECT 1 FROM $tabla4 WHERE $fila9 = ?";
     $consulta_tachiyomi = $conexion->prepare($sql);
@@ -168,7 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = $conexion->prepare($sql);
-            $stmt->bind_param("ssiiissssssss", $dato1, $dato2, $dato3, $dato4, $dato5, $dato6, $dato8, $dato10, $dato11, $dato13, $verificado, $dato17, $anime);
+            $stmt->bind_param("ssiiissssssss", $dato1, $dato2, $dato3, $dato4, $dato5, $sin_lista, $dato8, $dato10, $dato11, $dato13, $verificado, $dato17, $anime);
 
             if ($stmt->execute()) {
                 $iden = $conexion->insert_id;
