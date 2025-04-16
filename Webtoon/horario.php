@@ -54,11 +54,18 @@ foreach ($dias as $dia) {
 }
 
 
-$total_anime_query = "SELECT COUNT(*) AS Total_Registros FROM webtoon WHERE Estado='Emisión' AND `Dias Emision`!='Indefinido'";
+$total_anime_query = "SELECT 
+        COUNT(*) AS Total_Registros, 
+        SUM(Faltantes) AS Total_Faltantes
+        FROM webtoon
+        WHERE Estado = 'Emisión' 
+        AND `Dias Emision` != 'Indefinido';
+        ";
 $total_anime_result = mysqli_query($conexion, $total_anime_query);
 $total_anime_row = mysqli_fetch_assoc($total_anime_result);
 $total_anime = $total_anime_row['Total_Registros'];
-$total_faltantes = 0;
+
+$total_faltantes =  $total_anime_row['Total_Faltantes'];;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -145,7 +152,6 @@ $total_faltantes = 0;
 
                                 <!-- Mostrar el círculo solo si faltantes > 0 -->
                                 <?php if ($faltantes > 0):
-                                    $total_faltantes += $faltantes; // Acumular faltantes
                                 ?>
                                     <div
                                         class="circle-count flex items-center justify-center border border-<?php echo $color; ?>-500 bg-<?php echo $color; ?>-100 hover:bg-<?php echo $color; ?>-200 text-<?php echo $color; ?>-600 font-bold"
