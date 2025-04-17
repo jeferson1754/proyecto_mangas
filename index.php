@@ -177,7 +177,7 @@ $sizebtn = "sm";
             $titulo = "Tienen Anime";
 
         } else if (isset($_GET['tmo'])) {
-            $where = "WHERE Link NOT LIKE '%zonatmo.com%' ORDER BY `manga`.`Faltantes` ASC limit 10";
+            $where = "WHERE Link NOT LIKE '%https://zonatmo.com/%' AND Link != '' ORDER BY `manga`.`Faltantes` ASC limit 10";
             $capi = "1";
             $titulo = "Sin Link TMO";
         } else if (isset($_GET['tachiyomi'])) {
