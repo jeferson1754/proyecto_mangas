@@ -173,7 +173,7 @@ $sizebtn = "sm";
             $capi = "1";
             $titulo = "Mayor Actividad Reciente";
         } else if (isset($_GET['tmo'])) {
-            $where = "WHERE Link NOT LIKE '%https://zonatmo.com/%' AND Link != '' ORDER BY `$tabla`.`Faltantes` ASC limit 10";
+            $where = "WHERE Link NOT LIKE '%https://zonatmo.com/%' AND Link != '' AND Estado != 'Finalizado' ORDER BY `$tabla`.`Faltantes` ASC limit 30";
             $capi = "1";
             $titulo = "Sin Link TMO";
         } else if (isset($_GET['anime'])) {
