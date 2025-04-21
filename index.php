@@ -78,14 +78,24 @@ $sizebtn = "sm";
         </div>
         <form method="GET">
             <div class="search-filters" id="filtersContainer" style="display: none;">
-                <div class="flex-grow-1">
+
+                <div class="flex-grow-1 position-relative">
                     <input
-                        type="search"
-                        class="form-control"
+                        type="text"
+                        class="form-control pe-5"
                         placeholder="Buscar manga..."
                         name="busqueda_manga"
+                        id="busqueda_manga"
                         value="<?= htmlspecialchars($_GET['busqueda_manga'] ?? '', ENT_QUOTES) ?>">
+
+                    <!-- Botón personalizado para limpiar -->
+                    <button type="button" class="btn btn-outline-secondary position-absolute top-50 end-0 translate-middle-y"
+                        onclick="document.getElementById('busqueda_manga').value = '';"
+                        style="z-index: 5;">
+                        ✕
+                    </button>
                 </div>
+
 
                 <select class="form-select" style="max-width: 200px;" name="todos">
                     <option value="">Seleccione Todos:</option>
@@ -175,7 +185,6 @@ $sizebtn = "sm";
                     LIMIT 10";
             $capi = "1";
             $titulo = "Tienen Anime";
-
         } else if (isset($_GET['tmo'])) {
             $where = "WHERE Link NOT LIKE '%https://zonatmo.com/%' AND Link != '' ORDER BY `manga`.`Faltantes` ASC limit 10";
             $capi = "1";

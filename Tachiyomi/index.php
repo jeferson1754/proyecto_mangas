@@ -89,7 +89,22 @@ $fecha_futura = date('Y-m-d', strtotime($fecha_actual . ' +1 day'));
         <div class="filter-section" id="searchFilter" style="display:none;">
             <form action="" method="GET" class="row g-3">
                 <div class="col-md-4">
-                    <input type="search" class="form-control" name="busqueda_tachi" placeholder="Nombre del Manga...">
+                    <div class="flex-grow-1 position-relative">
+                        <input
+                            type="text"
+                            class="form-control pe-5"
+                            placeholder="Nombre del Manga..."
+                            name="busqueda_tachi"
+                            id="busqueda_tachi"
+                            value="<?= htmlspecialchars($_GET['busqueda_tachi'] ?? '', ENT_QUOTES) ?>">
+
+                        <!-- Botón personalizado para limpiar -->
+                        <button type="button" class="btn btn-outline-secondary position-absolute top-50 end-0 translate-middle-y"
+                            onclick="document.getElementById('busqueda_tachi').value = '';"
+                            style="z-index: 5;">
+                            ✕
+                        </button>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <button class="btn btn-primary" type="submit" name="buscar">

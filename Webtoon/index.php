@@ -162,8 +162,22 @@ $sizebtn = "m";
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <input type="search" class="form-control" name="busqueda_webtoon" placeholder="Nombre del Webtoon..."
-                        value="<?= htmlspecialchars($_GET['busqueda_webtoon'] ?? '', ENT_QUOTES) ?>">
+                    <div class="flex-grow-1 position-relative">
+                        <input
+                            type="text"
+                            class="form-control pe-5"
+                            placeholder="Nombre del Webtoon..."
+                            name="busqueda_webtoon"
+                            id="busqueda_webtoon"
+                            value="<?= htmlspecialchars($_GET['busqueda_webtoon'] ?? '', ENT_QUOTES) ?>">
+
+                        <!-- Botón personalizado para limpiar -->
+                        <button type="button" class="btn btn-outline-secondary position-absolute top-50 end-0 translate-middle-y"
+                            onclick="document.getElementById('busqueda_webtoon').value = '';"
+                            style="z-index: 5;">
+                            ✕
+                        </button>
+                    </div>
                 </div>
 
                 <div class="col-md-4">
