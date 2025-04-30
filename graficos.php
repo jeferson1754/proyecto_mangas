@@ -1,8 +1,8 @@
 <?php
-include('../bd.php');
+include('./bd.php');
 
 $pdo = new PDO('mysql:host=localhost;dbname=epiz_32740026_r_user', 'root', '');
-#$pdo = new PDO('mysql:host='.$servidor.';dbname='.$servidor, $usuario, $password);
+#$pdo = new PDO('mysql:host='.$servidor.';dbname='.$basededatos, $usuario, $password);
 
 
 // Consulta de mangas descargados agrupados por dominio
