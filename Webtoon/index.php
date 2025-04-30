@@ -209,11 +209,12 @@ $sizebtn = "m";
                 $conditions[] = "$fila1 COLLATE utf8mb4_general_ci LIKE '%$busqueda%'";
             }
 
-            if (!empty($estado)) {
-                $conditions[] = " $fila8='$estado_manga'";
+            if (!empty($estado_manga)) {
+                $conditions[] = "$fila8='$estado_manga'";
             }
 
             $where = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) . " ORDER BY `$tabla`.`$fila7` DESC limit 50" : "ORDER BY `$tabla`.`$fila7` DESC limit 50";
+
         } else if (isset($_GET['link'])) {
 
             $where = "WHERE $fila2='' OR $fila13='Faltante' OR $fila13='' ORDER BY `$tabla`.`$fila7` DESC  limit 100";
