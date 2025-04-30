@@ -264,6 +264,17 @@ while ($valores = mysqli_fetch_array($query)) {
             /* Color del texto */
         }
 
+        #iframe-container {
+            display: none;
+            /* Oculto por defecto */
+            margin-top: 20px;
+            height: max-content;
+        }
+
+        iframe {
+            width: 1100px;
+            height: 600px;
+        }
 
         @media (min-width: 1400px) {
             :root {
@@ -299,6 +310,12 @@ while ($valores = mysqli_fetch_array($query)) {
             .stat-title {
                 font-size: 0.8rem;
             }
+
+            iframe {
+                width: 400px;
+                height: 600px;
+            }
+
         }
     </style>
 </head>
@@ -617,7 +634,30 @@ while ($valores = mysqli_fetch_array($query)) {
             </a>
         </div>
     </div>
+
+    <div class="section-divider text-center">
+
+        <!-- Botón para mostrar/ocultar iframe -->
+        <button id="toggle-btn" class="btn btn-primary">Mostrar Graficos</button>
+
+        <!-- Contenedor para el iframe -->
+        <div id="iframe-container">
+            <iframe src="../graficos.php"></iframe>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('toggle-btn').addEventListener('click', function() {
+            var iframeContainer = document.getElementById('iframe-container');
+            if (iframeContainer.style.display === 'none') {
+                iframeContainer.style.display = 'block';
+                this.textContent = 'Ocultar Graficos'; // Cambiar texto del botón
+            } else {
+                iframeContainer.style.display = 'none';
+                this.textContent = 'Mostrar Graficos'; // Cambiar texto del botón
+            }
+        });
+    </script>
 </body>
 
 </html>
