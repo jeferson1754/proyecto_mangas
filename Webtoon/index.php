@@ -91,6 +91,38 @@ $sizebtn = "m";
             /* 1 columna en pantallas muy pequeñas */
         }
     }
+
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .status-en-emision {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-finalizado {
+        background-color: #f1f5f9;
+        color: #475569;
+    }
+
+    .status-pendiente {
+        background-color: #fffbeb;
+        /* Un fondo amarillo claro */
+        color: #9a6b00;
+        /* Un color de texto marrón oscuro */
+    }
+
+    .status-pausado {
+        background-color: #e1e7ff;
+        /* Un fondo azul claro */
+        color: #4c6b8a;
+        /* Un color de texto gris azulado */
+    }
 </style>
 
 <body>
@@ -214,7 +246,6 @@ $sizebtn = "m";
             }
 
             $where = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) . " ORDER BY `$tabla`.`$fila7` DESC limit 50" : "ORDER BY `$tabla`.`$fila7` DESC limit 50";
-
         } else if (isset($_GET['link'])) {
 
             $where = "WHERE $fila2='' OR $fila13='Faltante' OR $fila13='' ORDER BY `$tabla`.`$fila7` DESC  limit 100";
@@ -264,7 +295,23 @@ $sizebtn = "m";
                                 <td class="fw-500"><?php echo $mostrar[$fila3] ?></td>
                                 <td class="fw-500"><?php echo $mostrar[$fila4] ?></td>
                                 <td class="fw-500"><?php echo $mostrar[$fila5] ?></td>
-                                <td><?php echo $mostrar[$fila8] ?></td>
+                                <td>
+                                    <span class="status-badge 
+                                    <?php
+                                    if ($mostrar[$fila8] == 'Emision' or $mostrar[$fila8] == 'Viendo') {
+                                        echo 'status-en-emision';
+                                    } elseif ($mostrar[$fila8] == 'Finalizado') {
+                                        echo 'status-finalizado';
+                                    } elseif ($mostrar[$fila8] == 'Pendiente') {
+                                        echo 'status-pendiente';
+                                    } elseif ($mostrar[$fila8] == 'Pausado') {
+                                        echo 'status-pausado';
+                                    }
+                                    ?>">
+                                        <?php echo $mostrar[$fila8] ?>
+                                    </span>
+
+                                </td>
                                 <td><?php echo $mostrar[$fila6] ?></td>
 
 

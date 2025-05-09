@@ -321,7 +321,7 @@ $sizebtn = "sm";
                                 <td>
                                     <span class="status-badge 
                                     <?php
-                                    if ($mostrar[$fila8] == 'Emision') {
+                                    if ($mostrar[$fila8] == 'Emision' OR $mostrar[$fila8] == 'Viendo') {
                                         echo 'status-en-emision';
                                     } elseif ($mostrar[$fila8] == 'Finalizado') {
                                         echo 'status-finalizado';
