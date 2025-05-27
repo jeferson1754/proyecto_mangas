@@ -170,8 +170,8 @@ $sizebtn = "sm";
             $capi = "1";
             $titulo = "Sin Actividad Reciente";
         } else if (isset($_GET['mayor-actividad'])) {
-
-            $where = "ORDER BY manga.Cantidad DESC, `manga`.`Fecha_Cambio1` DESC, `manga`.`Hora_Cambio` DESC limit 30";
+            $columnas = "manga.*";
+            $where = "LEFT JOIN anime ON manga.ID_Anime = anime.id WHERE anime.id IS NULL OR anime.Estado != 'Emision' ORDER BY manga.Cantidad DESC, manga.Fecha_Cambio1 DESC, manga.Hora_Cambio DESC LIMIT 30";
             $capi = "1";
             $titulo = "Mayor Actividad Reciente";
         } else if (isset($_GET['anime'])) {
@@ -186,7 +186,7 @@ $sizebtn = "sm";
             $capi = "1";
             $titulo = "Tienen Anime";
         } else if (isset($_GET['tmo'])) {
-            $where = "WHERE Link NOT LIKE '%https://zonatmo.com/%' AND Link != '' AND Estado != 'Finalizado' ORDER BY `manga`.`Faltantes` ASC limit 30";
+            $where = "WHERE Link NOT LIKE '%https://zonatmo.com/%' AND Link != '' AND Estado != 'Finalizado' ORDER BY manga.Fecha_Cambio1 DESC, manga.Hora_Cambio DESC limit 30";
             $capi = "1";
             $titulo = "Sin Link TMO";
         } else if (isset($_GET['tachiyomi'])) {
@@ -321,7 +321,7 @@ $sizebtn = "sm";
                                 <td>
                                     <span class="status-badge 
                                     <?php
-                                    if ($mostrar[$fila8] == 'Emision' OR $mostrar[$fila8] == 'Viendo') {
+                                    if ($mostrar[$fila8] == 'Emision' or $mostrar[$fila8] == 'Viendo') {
                                         echo 'status-en-emision';
                                     } elseif ($mostrar[$fila8] == 'Finalizado') {
                                         echo 'status-finalizado';
