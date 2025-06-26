@@ -230,14 +230,19 @@ $sizebtn = "sm";
                 $conditions[] = " $fila8='$estado'";
                 $titulo = $estado;
             }
-
             if (!empty($capitulos)) {
-                $conditions[] = " $fila5='$capitulos'";
+                $conditions[] = " $fila5 = '$capitulos'";
                 $titulo = "Capitulos - " . $capitulos;
-                $capi = $capitulos;
+
+                if ((int)$capitulos > 3) {
+                    $capi = "2";
+                } else {
+                    $capi = $capitulos;
+                }
             } else {
                 $capi = "1";
             }
+
 
 
 
