@@ -339,7 +339,11 @@
                                         foreach ($images as $imageLink) {
                                         ?>
                                             <div class="carousel-item <?php echo $isActive ? 'active' : ''; ?>">
-                                                <img src="<?php echo $imageLink; ?>" alt="Imagen de <?php echo $id_anime; ?>" class="imagen d-block w-100">
+                                                <img src="<?php echo $imageLink; ?>"
+                                                    alt="Imagen de <?php echo $id_anime; ?>"
+                                                    class="imagen d-block w-100"
+                                                    style="height: 300px; object-fit: cover;"
+                                                    onerror="this.outerHTML='<div class=\'no-image\'><i class=\'fas fa-book\'></i>ID:<?php echo $id_anime; ?></div>';">
                                             </div>
                                         <?php
                                             $isActive = false; // Desactivar "active" para los siguientes elementos
@@ -349,24 +353,20 @@
 
                                 </div>
                         <?php
+                            } elseif (count($images) == 1) {
+                                // 🔹 Una sola imagen con fallback en caso de error
+                                echo "<img class='imagen d-block w-100' 
+                                    src='{$images[0]}' 
+                                    alt='Imagen de {$id_anime}' 
+                                    style='height: 300px; object-fit: cover;' 
+                                    onerror=\"this.outerHTML='<div class=\'no-image\'><i class=\'fas fa-book\'></i>ID:{$id_anime}</div>'\">";
                             } else {
-                                // Si hay solo una imagen, mostrar la imagen sin carrusel
-                                if (count($images) == 1) {
-                                    echo "<img class='imagen d-block w-100' src='" . $images[0] . "' alt='Imagen de {$id_anime}'>";
-                                } else {
-                                    echo "     
-                                     <div class='no-image'>
-                                        <i class='fas fa-film'></i>
-                                        ID:{$fila['ID']}
-                                    </div>";
-                                }
+                                // 🔹 No hay imágenes válidas
+                                echo "<div class='no-image'><i class='fas fa-book'></i>ID:{$id_anime}</div>";
                             }
                         } else {
-                            echo "     
-                            <div class='no-image'>
-                               <i class='fas fa-film'></i>
-                               ID:{$fila['ID']}
-                           </div>";
+                            // 🔹 No se encontraron resultados
+                            echo "<div class='no-image'><i class='fas fa-book'></i>ID:{$id_anime}</div>";
                         }
                         ?>
 
