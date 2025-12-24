@@ -229,6 +229,8 @@ $sizebtn = "sm";
             if (!empty($estado)) {
                 $conditions[] = " $fila8='$estado'";
                 $titulo = $estado;
+            } else {
+                $estado = "";
             }
             if (!empty($capitulos)) {
                 $conditions[] = " $fila5 = '$capitulos'";
