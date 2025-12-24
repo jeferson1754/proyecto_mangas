@@ -320,7 +320,7 @@ if ($actual && $anterior) {
 
                                             <div class="text-center my-2">
                                                 <h3 class="fw-bold mb-0" style="color: #2c3e50;"><?php echo $hito['dia_frecuente']; ?></h3>
-                                                <small class="text-muted text-uppercase" style="font-size: 0.65rem; ls: 1px;">Día de actualizacion</small>
+                                                <small class="text-muted text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Día de actualizacion</small>
                                             </div>
 
                                             <div class="mt-3">
