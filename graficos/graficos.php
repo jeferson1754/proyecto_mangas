@@ -1,5 +1,4 @@
 <?php
-include('./bd.php');
 
 $pdo = new PDO('mysql:host=localhost;dbname=epiz_32740026_r_user', 'root', '');
 #$pdo = new PDO('mysql:host='.$servidor.';dbname='.$basededatos, $usuario, $password);

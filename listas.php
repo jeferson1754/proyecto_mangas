@@ -642,7 +642,7 @@ while ($valores = mysqli_fetch_array($query)) {
 
         <!-- Contenedor para el iframe -->
         <div id="iframe-container">
-            <iframe src="../graficos.php"></iframe>
+            <iframe src="../graficos/graficos.php"></iframe>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
