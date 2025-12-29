@@ -1,8 +1,6 @@
-<!-- Modal para Incrementar Episodios -->
 <div class="modal fade" id="aumentar<?php echo $mostrar[$fila7]; ?>" tabindex="-1" role="dialog" aria-labelledby="episodeIncrementModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content shadow-lg border-0">
-      <!-- Header -->
       <div class="modal-header bg-gradient-primary border-0">
         <div class="d-flex align-items-center">
           <i class="fas fa-plus-circle text-white mr-2 fa-lg"></i>
@@ -13,16 +11,21 @@
         </button>
       </div>
 
-      <!-- Body -->
       <form method="POST" action="recib_Update-Aumentar.php">
-        <?php include('regreso-modal.php');
-        $total = $mostrar[$fila4];
-        $valor = $total + 1;
+        <?php
+        include('regreso-modal.php');
+
+        // Convertimos a float para limpiar decimales innecesarios en la vista
+        $total_actual = (float)$mostrar[$fila4];
+        $vistos_actual = (float)$mostrar[$fila3];
+
+        // Sugerencia: Si es un número entero, sumamos 1. Si ya tiene decimales, lo dejamos igual para que el usuario defina la parte.
+        $valor_sugerido = (floor($total_actual) == $total_actual) ? $total_actual + 1 : $total_actual;
         ?>
 
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
         <input type="hidden" name="nombre" value="<?php echo $mostrar[$fila1]; ?>">
-        <input type="hidden" name="capitulos" value="<?php echo $mostrar[$fila3]; ?>">
+        <input type="hidden" name="capitulos" value="<?php echo $vistos_actual; ?>">
         <input type="hidden" name="fecha" value="<?php echo $mostrar[$fila10]; ?>">
         <input type="hidden" name="cantidad" value="<?php echo $mostrar[$titulo3]; ?>">
 
@@ -37,7 +40,7 @@
               <div class="card border-0 bg-light">
                 <div class="card-body">
                   <h6 class="text-muted mb-2">Episodios Vistos</h6>
-                  <h3 class="mb-0 font-weight-bold"><?php echo $mostrar[$fila3]; ?></h3>
+                  <h3 class="mb-0 font-weight-bold"><?php echo $vistos_actual; ?></h3>
                 </div>
               </div>
             </div>
@@ -45,7 +48,7 @@
               <div class="card border-0 bg-light">
                 <div class="card-body">
                   <h6 class="text-muted mb-2">Total Episodios</h6>
-                  <h3 class="mb-0 font-weight-bold"><?php echo $mostrar[$fila4]; ?></h3>
+                  <h3 class="mb-0 font-weight-bold"><?php echo $total_actual; ?></h3>
                 </div>
               </div>
             </div>
@@ -62,10 +65,12 @@
               <input type="number"
                 name="total"
                 class="form-control border-left-0 text-center font-weight-bold"
-                min="<?php echo $mostrar[$fila4]; ?>"
-                value="<?php echo $valor; ?>"
+                step="any"
+                min="<?php echo $total_actual; ?>"
+                value="<?php echo $valor_sugerido; ?>"
                 required>
             </div>
+            <small class="text-muted">Puedes usar decimales (ej. 22.30)</small>
           </div>
 
           <div class="form-group mb-0">
@@ -86,7 +91,6 @@
           </div>
         </div>
 
-        <!-- Footer -->
         <div class="modal-footer border-top-0">
           <button type="button" class="btn btn-light font-weight-bold px-4" data-dismiss="modal">
             Cancelar

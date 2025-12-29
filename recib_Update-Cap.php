@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $idRegistros  = $_REQUEST['id'];
     $nombre       = $_REQUEST['nombre'];
-    $caps         = $_REQUEST['capitulos'];
+    $caps         = (float)$_REQUEST['capitulos'];
     $link         = $_REQUEST['link'];
     $id_manga     = $_REQUEST['id_manga'] ?? null;
     $vistos       = $_REQUEST['vistos'];

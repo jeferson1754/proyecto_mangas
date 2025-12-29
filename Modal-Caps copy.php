@@ -4,7 +4,7 @@
       <div class="modal-header bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
         <div class="d-flex align-items-center">
           <i class="fas fa-tv me-2"></i>
-          <h5 class="modal-title fw-bold">Actualizar Episodios</h5>
+          <h5 class="modal-title fw-bold">Actualizar Episodios Vistos</h5>
         </div>
         <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Cerrar"></button>
       </div>
@@ -12,8 +12,12 @@
       <form method="POST" action="recib_Update-Cap.php" class="needs-validation" id="modal_caps<?php echo $mostrar[$fila7]; ?>" novalidate>
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
         <input type="hidden" name="nombre" value="<?php echo $mostrar[$fila1]; ?>">
-        <input type="hidden" name="capitulos" value="<?php echo $mostrar[$fila3]; ?>">
-        <?php include('regreso-modal.php'); ?>
+        <input type="hidden" name="capitulos" value="<?php echo (float)$mostrar[$fila3]; ?>">
+        <?php include('regreso-modal.php');
+        // Limpiamos decimales para la vista
+        $vistos_view = (float)$mostrar[$fila3];
+        $total_view = (float)$mostrar[$fila4];
+        ?>
 
         <div class="modal-body p-4">
           <div class="text-center">
@@ -25,26 +29,26 @@
             <div class="row g-4 mt-2">
               <div class="col-6">
                 <div class="card border-0 bg-light hover-shadow transition-all h-100">
-                  <div class="card-body">
-                    <i class="fas fa-eye text-primary mb-3 fs-4"></i>
-                    <h6 class="text-muted mb-2">Episodios Vistos</h6>
-                    <div class="fs-3 fw-bold text-dark"><?php echo $mostrar[$fila3]; ?></div>
+                  <div class="card-body p-3">
+                    <i class="fas fa-eye text-primary mb-2 fs-4"></i>
+                    <h6 class="text-muted small mb-1">Actualmente Vistos</h6>
+                    <div class="fs-4 fw-bold text-dark"><?php echo $vistos_view; ?></div>
                   </div>
                 </div>
               </div>
               <div class="col-6">
                 <div class="card border-0 bg-light hover-shadow transition-all h-100">
-                  <div class="card-body">
-                    <i class="fas fa-list-ol text-primary mb-3 fs-4"></i>
-                    <h6 class="text-muted mb-2">Total Episodios</h6>
-                    <div class="fs-3 fw-bold text-dark"><?php echo $mostrar[$fila4]; ?></div>
+                  <div class="card-body p-3">
+                    <i class="fas fa-list-ol text-primary mb-2 fs-4"></i>
+                    <h6 class="text-muted small mb-1">Total de la Obra</h6>
+                    <div class="fs-4 fw-bold text-dark"><?php echo $total_view; ?></div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="mt-4">
-              <label class="form-label fw-bold mb-3">Actualizar Episodios Vistos</label>
+              <label class="form-label fw-bold mb-2">¿Cuántos has visto en total?</label>
               <div class="input-group">
                 <input type="number"
                   id="episodesWatched<?php echo $mostrar[$fila7]; ?>"
@@ -53,11 +57,12 @@
                   step="any"
                   min="0"
                   value="<?php echo $capi; ?>"
-                  max="<?php echo $mostrar[$fila5]; ?>"
+                  max="<?php echo $total_view; ?>"
                   required>
               </div>
+              <small class="text-muted d-block mt-2">Puedes ingresar decimales (ej. 191.5)</small>
               <div id="vistosError<?php echo $mostrar[$fila7]; ?>" class="invalid-feedback">
-                Por favor ingrese un número válido de episodios
+                El número no puede ser mayor al total (<?php echo $total_view; ?>)
               </div>
             </div>
           </div>
@@ -65,9 +70,9 @@
 
         <div class="modal-footer border-0">
           <button type="button" class="btn btn-light fw-medium" data-dismiss="modal">
-            <i class="fas fa-times me-2"></i>Cancelar
+            Cancelar
           </button>
-          <button type="submit" class="btn btn-primary fw-medium">
+          <button type="submit" class="btn btn-primary fw-medium px-4">
             <i class="fas fa-save me-2"></i>Guardar Cambios
           </button>
         </div>
@@ -75,26 +80,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const forms = document.querySelectorAll('.needs-validation');
-    forms.forEach(form => {
-      form.addEventListener('submit', function(event) {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-
-        const formId = form.getAttribute('id').replace('modal_caps', '');
-        const input = document.getElementById(`episodesWatched${formId}`);
-        const errorElement = document.getElementById(`vistosError${formId}`);
-
-        if (input && errorElement) {
-          errorElement.style.display = input.validity.valid ? 'none' : 'block';
-        }
-      }, false);
-    });
-  });
-</script>

@@ -112,11 +112,21 @@ $sizebtn = "sm";
                 <select class="form-select" style="max-width: 200px;" name="capitulos">
                     <option value="">Seleccione Capitulo:</option>
                     <?php
+                    // Consulta para obtener capítulos únicos mayores a 0
                     $query = $conexion->query("SELECT DISTINCT $fila5 FROM $tabla WHERE $fila5 > 0 ORDER BY $fila5 ASC LIMIT 5");
+
                     while ($valores = mysqli_fetch_array($query)) {
-                        $valor = htmlspecialchars($valores[$fila5], ENT_QUOTES);
-                        $selected = (isset($_GET['capitulos']) && strval($_GET['capitulos']) === strval($valor)) ? 'selected' : '';
-                        echo "<option value=\"$valor\" $selected>$valor</option>";
+                        // 1. Convertimos a float para limpiar ceros (26.00 -> 26, 22.30 -> 22.3)
+                        $valor_limpio = (float)$valores[$fila5];
+
+                        // 2. Escapamos para seguridad en el atributo value
+                        $valor_attr = htmlspecialchars($valor_limpio, ENT_QUOTES);
+
+                        // 3. Comparamos de forma segura para marcar la opción seleccionada
+                        $selected = (isset($_GET['capitulos']) && strval($_GET['capitulos']) === strval($valor_attr)) ? 'selected' : '';
+
+                        // 4. Imprimimos la opción
+                        echo "<option value=\"$valor_attr\" $selected>$valor_attr</option>";
                     }
                     ?>
                 </select>
@@ -306,107 +316,105 @@ $sizebtn = "sm";
 
                         //echo $sql1;
 
+
                         while ($mostrar = mysqli_fetch_array($result)) {
-
-
+                            // 1. LÓGICA DE TACHIYOMI (Existente)
                             $query_result = mysqli_query($conexion, "SELECT * FROM tachiyomi WHERE ID_Manga = " . $mostrar['ID']);
                             $is_successful = ($query_result !== false && mysqli_num_rows($query_result) > 0);
-
-                            // Determinar la clase del punto de color según el resultado de la consulta
                             $colorClass = $is_successful ? 'blue' : 'white';
                             $tachiyomi = $is_successful ? 'Tachiyomi y ' : '';
 
+                            // 2. LÓGICA DE CONTEO REAL DE CAPÍTULOS FALTANTES
+                            // Contamos registros en la tabla diferencias que sean mayores al último capítulo visto
+                            $cap_visto = $mostrar[$fila3]; // Asumiendo que $fila3 es 'Capitulos Vistos'
+                            $id_manga = $mostrar['ID'];
+
+                            $query_faltantes = mysqli_query($conexion, "SELECT COUNT(*) as total FROM diferencias WHERE ID_Manga = '$id_manga' AND Numero_Capitulo > '$cap_visto'");
+                            $datos_faltantes = mysqli_fetch_assoc($query_faltantes);
+
+                            // Si tienes registros en diferencias, usamos el conteo. Si no, usamos la resta matemática como respaldo.
+                            $faltantes_reales = ($datos_faltantes['total'] > 0) ? $datos_faltantes['total'] : ($mostrar[$fila4] - $mostrar[$fila3]);
+
+                            // 3. FORMATEO DINÁMICO DE DECIMALES (Para que 26.00 sea 26 y 22.30 sea 22.30)
+                            $vista_vistos = (float)$mostrar[$fila3];
+                            $vista_totales = (float)$mostrar[$fila4];
+                            $vista_faltantes = (float)$faltantes_reales;
+
+                            // 4. OTROS ESTADOS (Existente)
                             $verificado = ($mostrar['verificado'] == 'SI') ? 'green' : 'red';
                             $anime = ($mostrar['Anime'] == 'SI') ? 'orange' : 'white';
                         ?>
                             <tr>
-                                <td class="fw-500"><a href="<?php echo $mostrar[$fila2] ?>" title="<?php echo $mostrar[$fila13] ?>" target="_blanck" class="link" style="text-decoration: none;"><?php echo $mostrar[$fila1] ?></a></td>
-                                <td class="fw-500"><?php echo $mostrar[$fila3] ?></td>
-                                <td class="fw-500"><?php echo $mostrar[$fila4] ?></td>
-                                <td class="fw-500"><?php echo $mostrar[$fila5] ?></td>
+                                <td class="fw-500">
+                                    <a href="<?php echo $mostrar[$fila2] ?>" title="<?php echo $mostrar[$fila13] ?>" target="_blanck" class="link" style="text-decoration: none;">
+                                        <?php echo $mostrar[$fila1] ?>
+                                    </a>
+                                </td>
+
+                                <td class="fw-500"><?php echo $vista_vistos ?></td>
+
+                                <td class="fw-500"><?php echo $vista_totales ?></td>
+
+                                <td class="fw-500"><?php echo $vista_faltantes ?></td>
 
                                 <td>
                                     <span class="status-badge 
-                                    <?php
-                                    if ($mostrar[$fila8] == 'Emision' or $mostrar[$fila8] == 'Viendo') {
-                                        echo 'status-en-emision';
-                                    } elseif ($mostrar[$fila8] == 'Finalizado') {
-                                        echo 'status-finalizado';
-                                    } elseif ($mostrar[$fila8] == 'Pendiente') {
-                                        echo 'status-pendiente';
-                                    } elseif ($mostrar[$fila8] == 'Pausado') {
-                                        echo 'status-pausado';
-                                    }
-                                    ?>">
+            <?php
+                            if ($mostrar[$fila8] == 'Emision' or $mostrar[$fila8] == 'Viendo') {
+                                echo 'status-en-emision';
+                            } elseif ($mostrar[$fila8] == 'Finalizado') {
+                                echo 'status-finalizado';
+                            } elseif ($mostrar[$fila8] == 'Pendiente') {
+                                echo 'status-pendiente';
+                            } elseif ($mostrar[$fila8] == 'Pausado') {
+                                echo 'status-pausado';
+                            }
+            ?>">
                                         <?php echo $mostrar[$fila8] ?>
                                     </span>
-
                                 </td>
+
                                 <td><?php echo $mostrar[$fila6] ?></td>
 
-                                <?php
-                                echo '<td style="text-align:center;">' . $mostrar[$titulo3] . '
-                                    <span title="Verificado-' . $mostrar[$ver] . '" class="color-dot ' . $verificado . '">&bull;</span>
-                                    <span title="Anime-' . $mostrar['Anime'] . '" class="color-dot ' . $anime . '">&bull;</span>
-                                    <span title="Tachiyomi-SI"class="color-dot ' . $colorClass . '">&bull;</span>
-                                    </td>';
-                                ?>
+                                <td style="text-align:center;">
+                                    <?php echo $mostrar[$titulo3] ?>
+                                    <span title="Verificado-<?php echo $mostrar[$ver] ?>" class="color-dot <?php echo $verificado ?>">&bull;</span>
+                                    <span title="Anime-<?php echo $mostrar['Anime'] ?>" class="color-dot <?php echo $anime ?>">&bull;</span>
+                                    <span title="Tachiyomi-SI" class="color-dot <?php echo $colorClass ?>">&bull;</span>
+                                </td>
 
                                 <td style="text-align:center;"><?php echo $mostrar[$fila10] ?></td>
 
-
                                 <td data-label="Acciones">
                                     <div class="action-buttons">
-                                        <button type="button"
-                                            class="action-button bg-info"
-                                            data-toggle="modal"
-                                            data-target="#caps<?php echo $mostrar[$fila7]; ?>"
-                                            aria-label="Aprobar">
+                                        <button type="button" class="action-button bg-info" data-toggle="modal" data-target="#caps<?php echo $mostrar[$fila7]; ?>">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <button type="button"
-                                            class="action-button btn-success"
-                                            data-toggle="modal"
-                                            data-target="#aumentar<?php echo $mostrar[$fila7]; ?>"
-                                            aria-label="Editar">
+                                        <button type="button" class="action-button btn-success" data-toggle="modal" data-target="#aumentar<?php echo $mostrar[$fila7]; ?>">
                                             <i class="fas fa-plus"></i>
                                         </button>
-                                        <button type="button"
-                                            class="action-button bg-primary"
-                                            data-tooltip="Editar"
-                                            data-toggle="modal"
-                                            data-target="#edit<?php echo $mostrar[$fila7]; ?>"
-                                            aria-label="Editar">
+                                        <button type="button" class="action-button bg-primary" data-toggle="modal" data-target="#edit<?php echo $mostrar[$fila7]; ?>">
                                             <i class="fas fa-edit"></i>
                                         </button>
-
-                                        <button type="button"
-                                            class="action-button bg-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#delete<?php echo $mostrar[$fila7]; ?>">
+                                        <button type="button" class="action-button bg-danger" data-bs-toggle="modal" data-bs-target="#delete<?php echo $mostrar[$fila7]; ?>">
                                             <i class="fas fa-trash"></i>
                                         </button>
-
-                                        <?php
-                                        $variable = $mostrar[$fila7];
-                                        ?>
-
                                         <button type="button" class="action-button btn-secondary">
-                                            <a href="./ejemplo-barra.php?variable=<?php echo urlencode($variable); ?>" target="_blanck" style="color:white" class="chart">
+                                            <a href="./ejemplo-barra.php?variable=<?php echo urlencode($mostrar[$fila7]); ?>" target="_blanck" style="color:white" class="chart">
                                                 <i class="fas fa-chart-bar"></i>
                                             </a>
                                         </button>
                                     </div>
                                 </td>
+                            </tr>
 
-
-                            <?php
+                        <?php
                             include('Modal-Caps.php');
                             include('Modal-Aumentar.php');
                             include('ModalEditar.php');
                             include('ModalDelete.php');
-                        }
-                            ?>
+                        } // Fin del while
+                        ?>
                     </tbody>
                 </table>
             </div>
