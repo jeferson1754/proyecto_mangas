@@ -117,7 +117,7 @@ if ($nombre_anime != null && $nombre_anime != '') {
 
     $id_anime = ($fila = mysqli_fetch_assoc($resultado3)) ? $fila['id'] : 0;
 } else if ($id_tabla_anime != null && $id_tabla_anime != '') {
-    
+
     $id_anime = $id_tabla_anime;
 } else {
     $id_anime = '';
@@ -211,6 +211,32 @@ try {
     $conn = null;
     echo "Error: " . $e->getMessage();
 }
+
+if ($dato8 == "Viendo") {
+    // 1. Obtener el total combinado en una sola consulta
+    $sql = "
+    SELECT 
+        (SELECT SUM(CEIL(Faltantes / 50)) FROM manga WHERE Faltantes > 0) +
+        (SELECT SUM(CEIL(Faltantes / 50)) FROM webtoon WHERE Faltantes > 0) 
+    AS total_calculado";
+
+    $result = mysqli_query($conexion, $sql);
+    $fila = mysqli_fetch_assoc($result);
+    $total_actual = (int) $fila['total_calculado'];
+
+    // 1. Crear metadata del manga si no existe
+    $stmt = $db->prepare("
+        INSERT INTO estadisticas_historial (categoria, total_anterior, fecha_actualizacion)
+        VALUES ('mangas', ?, NOW())
+    ");
+    $stmt->execute([
+        $total_actual
+    ]);
+} else {
+    echo "El estado no es viendo";
+    echo "<br>";
+}
+
 
 
 if ($listen < 101) {
