@@ -213,25 +213,34 @@ try {
 }
 
 if ($dato8 == "Viendo") {
-    // 1. Obtener el total combinado en una sola consulta
-    $sql = "
-    SELECT 
+    // 1. Obtener el total actual de animes pendientes/viendo
+    $sql = " SELECT 
         (SELECT SUM(CEIL(Faltantes / 50)) FROM manga WHERE Faltantes > 0) +
         (SELECT SUM(CEIL(Faltantes / 50)) FROM webtoon WHERE Faltantes > 0) 
     AS total_calculado";
-
     $result = mysqli_query($conexion, $sql);
-    $fila = mysqli_fetch_assoc($result);
-    $total_actual = (int) $fila['total_calculado'];
+    $fila = mysqli_fetch_row($result);
+    $total_actual = (int) $fila[0];
 
-    // 1. Crear metadata del manga si no existe
-    $stmt = $db->prepare("
-        INSERT INTO estadisticas_historial (categoria, total_anterior, fecha_actualizacion)
-        VALUES ('mangas', ?, NOW())
+    // 2. Consultar el ÚLTIMO valor insertado en la tabla de historial
+    $stmt_check = $connect->prepare("
+        SELECT total_anterior 
+        FROM estadisticas_historial 
+        WHERE categoria = 'mangas' 
+        ORDER BY fecha_actualizacion DESC LIMIT 1
     ");
-    $stmt->execute([
-        $total_actual
-    ]);
+    $stmt_check->execute();
+    $ultimo_registro = $stmt_check->fetchColumn();
+
+    // 3. Insertar una NUEVA FILA solo si el valor cambió o si no hay registros previos
+    if ($ultimo_registro === false || $total_actual != $ultimo_registro) {
+        $stmt = $connect->prepare("
+            INSERT INTO estadisticas_historial (categoria, total_anterior, fecha_actualizacion)
+            VALUES ('mangas', ?, NOW())
+        ");
+        $stmt->execute([$total_actual]);
+    }
+
 } else {
     echo "El estado no es viendo";
     echo "<br>";
