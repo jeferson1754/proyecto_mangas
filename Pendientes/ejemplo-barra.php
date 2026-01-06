@@ -408,6 +408,7 @@ if ($actual && $anterior) {
                         <th>Fecha</th>
                         <th>Diferencia</th>
                         <th>Día</th>
+                        <th>N° Capitulo</th>
                         <th class="actions-cell">Acciones</th>
                     </tr>
                 </thead>
@@ -430,6 +431,7 @@ if ($actual && $anterior) {
                             </td>
                             <td><?php echo $mostrar['Diferencia'] ?></td>
                             <td><?php echo $mostrar['Dia'] ?></td>
+                            <td><?php echo $mostrar['Numero_Capitulo'] ?? 'N/A'; ?></td>
                             <td class="actions-cell">
                                 <button class="action-btn edit-btn" title="Editar" data-bs-toggle="modal" data-bs-target="#edit-dif<?php echo $id; ?>">
                                     <i class="fas fa-edit"></i>
