@@ -41,7 +41,7 @@ $fecha_ultima = $_REQUEST['fila11'];
 $cantidad    = $_REQUEST['cantidad'];
 $nombre_anime       = $_REQUEST['animeInput'] ?? null;
 $id_tabla_anime       = $_REQUEST['animeid'] ?? null;
-$decimales_input = $_REQUEST['decimales_extra']; // "431.5"
+
 
 $checkbox = $_REQUEST["Anime"] ?? "NO";
 echo ($checkbox === "SI") ? "Anime_Verdadero<br>$checkbox<br>" : "Anime_Falso<br>$checkbox<br>";
@@ -56,12 +56,6 @@ $Tabla = ucfirst($tabla);
 //Busca el registro en manga
 $sql = ("SELECT * FROM $tabla where $fila7='$idRegistros';");
 $consulta = mysqli_query($conexion, $sql);
-
-// Extraemos la fila como un array asociativo
-if ($fila_manga = mysqli_fetch_assoc($consulta)) {
-    // El valor de vistos está en la columna representada por $fila4
-    $vistos_anteriores_bd = (float)$fila_manga[$fila4];
-}
 
 //Busca el registro en tachiyomi
 $sql1 = ("SELECT * FROM $tabla4 where $fila9='$idRegistros';");
@@ -94,10 +88,6 @@ $fecha_now = date('Y-m-d H:i:s', strtotime($fecha_nueva . ' ' . $hora_actual));
 echo $sql;
 echo "<br>";
 echo $sql1;
-echo "<br>";
-echo "Vistos: " . $dato3;
-echo "<br>";
-echo "Visto en BD: " . $vistos_anteriores_bd;
 echo "<br>";
 echo $sql2;
 echo "<br>";
@@ -193,66 +183,13 @@ if ($cantidad <= 0) {
     echo "mayor a cero:" . $cantidad;
 }
 echo "<br>";
-echo $dato4 . ">" . $vistos_anteriores_bd;
+
 echo "<br>";
-if ($dato4 > $vistos_anteriores_bd) { // $vistos_anteriores_bd debe ser el valor de $fila3 antes del update
 
-
-
-    // 1. Contar registros sin número de capítulo para este manga
-    $sql_check_vacios = "SELECT * FROM $tabla7 WHERE $fila9 = '$idRegistros' ORDER BY `Fecha` DESC LIMIT 1;";
-    $res_vacios = mysqli_query($conexion, $sql_check_vacios);
-    $fila_v = mysqli_fetch_assoc($res_vacios);
-    $cantidad_vacios = $fila_v['Numero_Capitulo'];
-
-    echo $cantidad_vacios;
-
-    if ($cantidad_vacios == null) {
-        // CASO A: Tienes registros vacíos. 
-        // Actualizamos el registro más antiguo que esté vacío con el progreso actual.
-        $sql_update_historial = "UPDATE $tabla7 SET Numero_Capitulo = '$dato4', `$titulo4` = '$fecha_now', `Dia` = '$nombreDiaEspañol'
-                                 WHERE $fila9 = '$idRegistros'
-                                 ORDER BY `$titulo4` DESC LIMIT 1";
-
-        echo $sql_update_historial;
-
-        mysqli_query($conexion, $sql_update_historial);
-        echo "Se vinculó el capítulo $dato4 a un registro antiguo vacío.<br>";
-    } else {
-        // CASO B: No hay registros vacíos, calculamos el salto real
-
-        // 1. Convertimos el texto de decimales en un array
-        $extras = !empty($decimales_input) ? array_map('trim', explode(',', $decimales_input)) : [];
-        // Aquí usamos la diferencia entre lo que había y lo que hay ahora
-        $salto = ceil($dato4 - $vistos_anteriores_bd);
-
-        for ($i = 1; $i <= $salto; $i++) {
-            $cap_entero = floor($vistos_anteriores_bd + $i);
-
-            // --- NUEVA LÓGICA DE DETECCIÓN ---
-            // Si el entero actual es 431 y en extras tenemos 431.5, registramos el decimal primero
-            foreach ($extras as $key => $ex) {
-                if (floor((float)$ex) == $cap_entero && (float)$ex < $dato4) {
-                    mysqli_query($conexion, "INSERT INTO $tabla7 (`$fila9`,`$fila12`,  `Numero_Capitulo`, `$titulo4`, `Dia`) 
-                             VALUES ('$idRegistros',  '$dias', '$ex', '$fecha_now', '$nombreDiaEspañol')");
-                    unset($extras[$key]); // Lo quitamos para no duplicar
-                }
-            }
-
-            // Luego registramos el entero o el valor final
-            $cap_final = ($i == $salto) ? $dato4 : $cap_entero;
-
-            mysqli_query($conexion, "INSERT INTO $tabla7 (`$fila9`, `$fila12`,`Numero_Capitulo`, `$titulo4`, `Dia`) 
-                   VALUES ('$idRegistros', '$dias', '$cap_final', '$fecha_now', '$nombreDiaEspañol')");
-        }
-        echo "No se vinculó el capítulo $dato4 a un registro antiguo vacío.<br>";
-    }
-
-    // Sincronización de la columna Cantidad
-    $sql_sync_cantidad = "UPDATE manga SET Cantidad = (SELECT COUNT(*) FROM $tabla7 WHERE $fila9 = '$idRegistros') WHERE $fila7 = '$idRegistros'";
-    mysqli_query($conexion, $sql_sync_cantidad);
-}
-
+//Hace una actualizacion general de las cantidad de diferencias con el ID Manga
+$sql3 = ("UPDATE manga SET Cantidad = ( SELECT COUNT(*) AS cantidad_productos FROM diferencias WHERE manga.ID = diferencias.ID_Manga) ;");
+echo $sql3;
+$consulta3 = mysqli_query($conexion, $sql3);
 echo "<br>";
 echo $link;
 echo "<br>";
@@ -286,7 +223,7 @@ if ($dato8 == "Viendo") {
     $total_actual = (int) $fila[0];
 
     // 2. Consultar el ÚLTIMO valor insertado en la tabla de historial
-    $stmt_check = $db->prepare("
+    $stmt_check = $connect->prepare("
         SELECT total_anterior 
         FROM estadisticas_historial 
         WHERE categoria = 'mangas' 
@@ -297,12 +234,13 @@ if ($dato8 == "Viendo") {
 
     // 3. Insertar una NUEVA FILA solo si el valor cambió o si no hay registros previos
     if ($ultimo_registro === false || $total_actual != $ultimo_registro) {
-        $stmt = $db->prepare("
+        $stmt = $connect->prepare("
             INSERT INTO estadisticas_historial (categoria, total_anterior, fecha_actualizacion)
             VALUES ('mangas', ?, NOW())
         ");
         $stmt->execute([$total_actual]);
     }
+
 } else {
     echo "El estado no es viendo";
     echo "<br>";

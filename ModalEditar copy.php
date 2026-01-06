@@ -48,6 +48,7 @@
 
           <!-- Info Grid -->
           <div class="row g-3">
+            <!-- Autor -->
             <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label fw-bold"><?php echo $fila2 ?></label>
@@ -55,6 +56,7 @@
               </div>
             </div>
 
+            <!-- Estado Link -->
             <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label fw-bold"><?php echo $titulo1 ?></label>
@@ -64,54 +66,38 @@
                   $stmt = $db->prepare($query);
                   $stmt->execute();
                   $estados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                  if (empty($mostrar[$fila13])) echo "<option value=''>Selecciona un Estado Link</option>";
-                  foreach ($estados as $estado) {
-                    $selected = ($estado[$fila8] === $mostrar[$fila13]) ? 'selected' : '';
-                    echo "<option value='{$estado[$fila8]}' $selected>{$estado[$fila8]}</option>";
+
+                  if (empty($mostrar[$fila13])) {
+                    echo "<option value=''>Selecciona un Estado Link</option>";
+                  }
+
+                  if ($estados) {
+                    foreach ($estados as $estado) {
+                      echo "<option value='{$estado[$fila8]}' " .
+                        ($estado[$fila8] === $mostrar[$fila13] ? 'selected' : '') .
+                        ">{$estado[$fila8]}</option>";
+                    }
                   }
                   ?>
                 </select>
               </div>
             </div>
 
+            <!-- Capítulos -->
             <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label fw-bold"><?php echo $fila3 ?></label>
-                <input type="number"
-                  name="fila3"
-                  class="form-control"
-                  step="any"
-                  value="<?php echo (float)$mostrar[$fila3]; ?>"
-                  placeholder="Ej: 191.5">
-                <small class="text-muted">Capítulo actual leído</small>
+                <input type="number" name="fila3" class="form-control" value="<?php echo $mostrar[$fila3]; ?>">
               </div>
             </div>
 
+            <!-- Total -->
             <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label fw-bold"><?php echo $fila4 ?></label>
-                <input type="number"
-                  name="fila4"
-                  class="form-control"
-                  step="any"
-                  value="<?php echo (float)$mostrar[$fila4]; ?>"
-                  placeholder="Ej: 191.5">
-                <small class="text-muted">Total publicado</small>
+                <input type="number" name="fila4" class="form-control" value="<?php echo $mostrar[$fila4]; ?>">
               </div>
             </div>
-            <div class="col-12 mt-3">
-              <div class="form-group bg-light p-2 rounded border">
-                <label class="form-label fw-bold text-primary">
-                  <i class="fas fa-puzzle-piece me-1"></i> ¿Hubo capítulos decimales intermedios?
-                </label>
-                <input type="text"
-                  name="decimales_extra"
-                  class="form-control form-control-sm"
-                  placeholder="Ejemplo: 431.5, 432.2">
-                <small class="text-muted">Si salieron varios decimales antes del ultimo capitulo, anótalos separados por coma.</small>
-              </div>
-            </div>
-
 
             <!-- Estado -->
             <div class="col-md-6">
