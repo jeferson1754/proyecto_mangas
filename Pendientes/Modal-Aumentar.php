@@ -16,8 +16,13 @@
       <!-- Body -->
       <form method="POST" action="recib_Update-Aumentar.php">
         <?php include('regreso-modal.php');
-        $total = $mostrar[$fila4];
-        $valor = $total + 1;
+
+        // Convertimos a float para limpiar decimales innecesarios en la vista
+        $total_actual = (float)$mostrar[$fila4];
+        $vistos_actual = (float)$mostrar[$fila3];
+
+        // Sugerencia: Si es un número entero, sumamos 1. Si ya tiene decimales, lo dejamos igual para que el usuario defina la parte.
+        $valor_sugerido = (floor($total_actual) == $total_actual) ? $total_actual + 1 : $total_actual;
         ?>
 
         <input type="hidden" name="id" value="<?php echo $mostrar[$fila7]; ?>">
@@ -62,10 +67,12 @@
               <input type="number"
                 name="total"
                 class="form-control border-left-0 text-center font-weight-bold"
-                min="<?php echo $mostrar[$fila4]; ?>"
-                value="<?php echo $valor; ?>"
+                step="any"
+                min="<?php echo $total_actual; ?>"
+                value="<?php echo $valor_sugerido; ?>"
                 required>
             </div>
+            <small class="text-muted">Puedes usar decimales (ej. 22.30)</small>
           </div>
 
           <div class="form-group mb-0">

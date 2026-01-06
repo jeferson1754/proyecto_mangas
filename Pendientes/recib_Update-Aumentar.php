@@ -33,23 +33,7 @@ while ($fila1 = mysqli_fetch_assoc($consulta2)) {
     $fecha_antigua = $fila1[$fila10];
 }
 
-// Convierte la fecha a un timestamp
-$timestamp = strtotime(str_replace('-', '/', $fecha_actual));
-
-// Array asociativo para traducir nombres de días
-$diasSemana = array(
-    'Monday'    => 'Lunes',
-    'Tuesday'   => 'Martes',
-    'Wednesday' => 'Miercoles',
-    'Thursday'  => 'Jueves',
-    'Friday'    => 'Viernes',
-    'Saturday'  => 'Sabado',
-    'Sunday'    => 'Domingo'
-);
-
-// Obtiene el nombre del día en español
-$nombreDia = date('l', $timestamp);
-$nombreDiaEspañol = $diasSemana[$nombreDia];
+$nombreDiaEspañol = obtenerDiaSemana($fecha_actual);
 
 
 echo $nombreDiaEspañol;
@@ -87,11 +71,9 @@ echo "Fecha Nuevo Capitulo : " . $fecha_actual;
 echo "<br>";
 
 //Hacer la resta de dias
-$fechaInicio = new DateTime($nueva_fecha);
-$fechaFin = new DateTime($fecha_ultima);
-$diferencia = $fechaInicio->diff($fechaFin);
 
-$dias = $diferencia->days;
+$dias = calcularDiferenciaDias($fecha_actual, $fecha_ultima);
+
 echo "Dias :" . $dias;
 echo "<br>";
 echo "$nombre existe en $tabla";
@@ -103,15 +85,16 @@ if ($fecha_antigua == $fecha_actual) {
     echo "Las ultimas dos fechas  no son iguales";
     echo "<br>";
 
-    //Hace el ingreso de datos en diferencias
+
     try {
-        $sql = "INSERT INTO $tabla7 (`$fila9`, `$fila12`,`$titulo4`,`Dia`) VALUES ('" . $idRegistros . "', '" . $dias . "', '" . $nueva_fecha . "','" . $nombreDiaEspañol . "');";
-        $resultado = mysqli_query($conexion, $sql);
-        echo $sql;
+        $sql_historial = "INSERT INTO $tabla7 (`$fila9`, `$fila12`, `Numero_Capitulo`, `$titulo4`, `Dia`) 
+                             VALUES ('$idRegistros', '$dias', '$total', '$nueva_fecha', '$nombreDiaEspañol')";
+        mysqli_query($conexion, $sql_historial);
+        echo $sql . "<br>";
     } catch (PDOException $e) {
         echo $e;
         echo "<br>";
-        echo $sql;
+        echo $sql_historial;
     }
 
     if ($nueva_cantidad % 5 == 0) {
