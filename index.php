@@ -330,10 +330,18 @@ $sizebtn = "sm";
                             $id_manga = $mostrar['ID'];
 
                             $query_faltantes = mysqli_query($conexion, "SELECT COUNT(*) as total FROM diferencias WHERE ID_Manga = '$id_manga' AND Numero_Capitulo > '$cap_visto'");
+
                             $datos_faltantes = mysqli_fetch_assoc($query_faltantes);
 
-                            // Si tienes registros en diferencias, usamos el conteo. Si no, usamos la resta matemática como respaldo.
-                            $faltantes_reales = ($datos_faltantes['total'] > 0) ? $datos_faltantes['total'] : ($mostrar[$fila4] - $mostrar[$fila3]);
+                            // 1. Obtenemos el conteo de registros (filas en diferencias)
+                            $conteo_registros = (float)$datos_faltantes['total'];
+
+                            // 2. Obtenemos el cálculo matemático de la tabla manga
+                            $resta_matematica = (float)$mostrar[$fila5];
+
+                            // 3. LOGICA: Se elige el valor más alto. 
+                            // Esto asegura que si falta el capítulo 191.5, el sistema cuente "1" registro o "0.5" según cuál sea mayor o más preciso.
+                            $faltantes_reales = ($conteo_registros >= $resta_matematica) ? $conteo_registros : $resta_matematica;
 
                             // 3. FORMATEO DINÁMICO DE DECIMALES (Para que 26.00 sea 26 y 22.30 sea 22.30)
                             $vista_vistos = (float)$mostrar[$fila3];
@@ -355,7 +363,15 @@ $sizebtn = "sm";
 
                                 <td class="fw-500"><?php echo $vista_totales ?></td>
 
-                                <td class="fw-500"><?php echo $vista_faltantes ?></td>
+                                <td class="text-center align-middle">
+                                    <span class="fw-500"><?php echo (float)$faltantes_reales; ?></span>
+                                    <?php if (floor($faltantes_reales) != $faltantes_reales): ?>
+                                        <i class="fas fa-puzzle-piece text-info ms-1"
+                                            style="font-size: 0.85rem;"
+                                            data-bs-toggle="tooltip"
+                                            title="Este manga tiene capítulos fraccionados"></i>
+                                    <?php endif; ?>
+                                </td>
 
                                 <td>
                                     <span class="status-badge 
