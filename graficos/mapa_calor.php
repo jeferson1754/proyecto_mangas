@@ -97,11 +97,15 @@ foreach ($data_heatmap as $row) {
                 show: true
             },
             dayLabel: {
-                nameMap: 'es'
+                nameMap: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
             },
             monthLabel: {
-                nameMap: 'es'
+                nameMap: [
+                    'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+                    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+                ]
             }
+
         },
         series: {
             type: 'heatmap',
