@@ -13,28 +13,28 @@ $sql_scatter = "
     HAVING Total_Capitulos > 0
 ";
 
-echo $sql_scatter . "<br>";
-try {
-    $stmt_scatter = $connect->query($sql_scatter);
-    $data_scatter = $stmt_scatter->fetchAll(PDO::FETCH_ASSOC);
+$stmt_scatter = $connect->query($sql_scatter);
+$data_scatter = $stmt_scatter->fetchAll(PDO::FETCH_ASSOC);
 
-    $scatter_values = [];
-    foreach ($data_scatter as $row) {
-        $scatter_values[] = [
-            (int)$row['Total_Capitulos'],
-            (int)$row['Dias_Retraso'],
-            $row['Nombre']
-        ];
-    }
-
-    echo json_encode($scatter_values ?? []);
-} catch (PDOException $e) {
-    echo json_encode([
-        'error' => true,
-        'message' => $e->getMessage()
-    ]);
+// Formateamos para ECharts: [[capitulos, retraso, nombre], ...]
+$scatter_values = [];
+foreach ($data_scatter as $row) {
+    $scatter_values[] = [
+        (int)$row['Total_Capitulos'],
+        (int)$row['Dias_Retraso'],
+        mb_convert_encoding($row['Nombre'], 'UTF-8', 'UTF-8')
+    ];
 }
 
+
+try {
+    $jsonScatter = json_encode(
+        $scatter_values,
+        JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
+    );
+} catch (JsonException $e) {
+    $jsonScatter = '[]';
+}
 
 ?>
 
@@ -47,31 +47,26 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://echarts.apache.org/en/js/vendors/echarts/dist/echarts.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/echarts-stat@1.2.0/dist/ecStat.min.js"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<style>
-    .w-completo {
-        width: 600px;
-    }
-</style>
 
 
 <body>
-    <div class="bg-white shadow-xl w-completo p-6 rounded-lg mt-6">
+    <div class="bg-white shadow-xl w-full p-6 rounded-lg mt-6">
         <h2 class="text-xl font-semibold text-center text-gray-800 mb-2">Relación: Esfuerzo (Caps) vs. Retraso (Días)</h2>
         <p class="text-sm text-gray-500 text-center mb-4">Ayuda a identificar si el parón es por abandono del scan o pausa del autor</p>
-        <div id="scatterChart" class="w-completo h-[500px]"></div>
+        <div id="scatterChart" class="w-full h-[500px]"></div>
     </div>
 </body>
 <script>
     // 1. Registrar el transformador estadístico
     echarts.registerTransform(ecStat.transform.regression);
 
-    const dataScatter = <?php echo json_encode($scatter_values); ?>;
+    const dataScatter = <?= $jsonScatter ?>;
     const scatterDom = document.getElementById('scatterChart');
     const myScatterChart = echarts.init(scatterDom);
 
