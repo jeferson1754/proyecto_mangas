@@ -57,7 +57,7 @@
             </ul>
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="dashboard.php">
+                    <a class="nav-link" href="/Manga/dashboard.php/">
                         Graficos
                     </a>
                 </li>

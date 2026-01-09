@@ -10,7 +10,7 @@ $sql_heatmap = "
     GROUP BY DATE(Fecha)
 ";
 
-$stmt_heatmap = $db->query($sql_heatmap);
+$stmt_heatmap = $connect->query($sql_heatmap);
 $data_heatmap = $stmt_heatmap->fetchAll(PDO::FETCH_ASSOC);
 
 // Formateamos los datos para ECharts: [[fecha, valor], [fecha, valor]]

@@ -8,24 +8,37 @@ $sql_scatter = "
         DATEDIFF(CURDATE(), MAX(d.Fecha)) AS Dias_Retraso
     FROM manga m
     JOIN diferencias d ON m.ID = d.ID_Manga
-    WHERE m.Estado <> 'Finalizado'
+    WHERE m.Estado != 'Finalizado'
     GROUP BY m.ID
     HAVING Total_Capitulos > 0
 ";
 
-$stmt_scatter = $db->query($sql_scatter);
-$data_scatter = $stmt_scatter->fetchAll(PDO::FETCH_ASSOC);
+echo $sql_scatter . "<br>";
+try {
+    $stmt_scatter = $connect->query($sql_scatter);
+    $data_scatter = $stmt_scatter->fetchAll(PDO::FETCH_ASSOC);
 
-// Formateamos para ECharts: [[capitulos, retraso, nombre], ...]
-$scatter_values = [];
-foreach ($data_scatter as $row) {
-    $scatter_values[] = [
-        (int)$row['Total_Capitulos'],
-        (int)$row['Dias_Retraso'],
-        $row['Nombre']
-    ];
+    $scatter_values = [];
+    foreach ($data_scatter as $row) {
+        $scatter_values[] = [
+            (int)$row['Total_Capitulos'],
+            (int)$row['Dias_Retraso'],
+            $row['Nombre']
+        ];
+    }
+
+    echo json_encode($scatter_values ?? []);
+} catch (PDOException $e) {
+    echo json_encode([
+        'error' => true,
+        'message' => $e->getMessage()
+    ]);
 }
+
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,12 +53,18 @@ foreach ($data_scatter as $row) {
 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<style>
+    .w-completo {
+        width: 600px;
+    }
+</style>
+
 
 <body>
-    <div class="bg-white shadow-xl w-full p-6 rounded-lg mt-6">
+    <div class="bg-white shadow-xl w-completo p-6 rounded-lg mt-6">
         <h2 class="text-xl font-semibold text-center text-gray-800 mb-2">Relación: Esfuerzo (Caps) vs. Retraso (Días)</h2>
         <p class="text-sm text-gray-500 text-center mb-4">Ayuda a identificar si el parón es por abandono del scan o pausa del autor</p>
-        <div id="scatterChart" class="w-full h-[500px]"></div>
+        <div id="scatterChart" class="w-completo h-[500px]"></div>
     </div>
 </body>
 <script>

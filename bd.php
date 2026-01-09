@@ -16,6 +16,13 @@ if (!mysqli_set_charset($conexion, "utf8")) {
     exit();
 }
 
+try {
+    $connect = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
+    $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Error de conexión: " . $e->getMessage());
+}
+
 
 try {
     $db = new PDO("mysql:host={$servidor};dbname={$basededatos}", $usuario, $password);
