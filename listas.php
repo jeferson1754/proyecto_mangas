@@ -54,24 +54,96 @@ function getCountFromTableWithCondition($connection, $table, $condition)
     return mysqli_fetch_assoc($query)['conteo'];
 }
 
-$query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM manga;");
-while ($valores = mysqli_fetch_array($query)) {
-    $totalcaps_faltantes = $valores['conteo'];
+// Función para obtener la tendencia comparando con ayer
+function obtenerTendencia($connect, $columna, $valorActual)
+{
+    $fecha_hoy = date("Y-m-d");
+
+    // 1. Buscamos si ya existe un registro de HOY para esta categoría
+    $sql_hoy = "SELECT id, total_anterior FROM estadisticas_historial 
+                WHERE categoria = :columna AND DATE(fecha_actualizacion) = :fecha_hoy 
+                LIMIT 1";
+    $stmt_hoy = $connect->prepare($sql_hoy);
+    $stmt_hoy->execute(['columna' => $columna, 'fecha_hoy' => $fecha_hoy]);
+    $registro_hoy = $stmt_hoy->fetch(PDO::FETCH_ASSOC);
+
+    // 2. Buscamos el valor de AYER (o el último antes de hoy) para la comparación de la flecha
+    $sql_ayer = "SELECT total_anterior FROM estadisticas_historial 
+                 WHERE categoria = :columna AND DATE(fecha_actualizacion) < :fecha_hoy 
+                 ORDER BY fecha_actualizacion DESC LIMIT 1";
+    $stmt_ayer = $connect->prepare($sql_ayer);
+    $stmt_ayer->execute(['columna' => $columna, 'fecha_hoy' => $fecha_hoy]);
+    $resultado_ayer = $stmt_ayer->fetch(PDO::FETCH_ASSOC);
+    $valor_comparar = ($resultado_ayer) ? (float)$resultado_ayer['total_anterior'] : null;
+
+    // 3. Lógica de Inserción o Actualización del día
+    if ($registro_hoy) {
+        // Si ya existe hoy pero el valor cambió, actualizamos el registro de hoy
+        if ((float)$valorActual != (float)$registro_hoy['total_anterior']) {
+            $sql_update = "UPDATE estadisticas_historial SET total_anterior = :valor, fecha_actualizacion = NOW() 
+                           WHERE id = :id";
+            $stmt_up = $connect->prepare($sql_update);
+            $stmt_up->execute(['valor' => $valorActual, 'id' => $registro_hoy['id']]);
+        }
+    } else {
+        // Si no existe registro de hoy, lo creamos
+        $sql_insert = "INSERT INTO estadisticas_historial (categoria, total_anterior, fecha_actualizacion) 
+                       VALUES (:columna, :valor, NOW())";
+        $stmt_ins = $connect->prepare($sql_insert);
+        $stmt_ins->execute(['columna' => $columna, 'valor' => $valorActual]);
+    }
+
+    // 4. Lógica de la flecha (comparamos con el valor de antes de hoy)
+    if ($valor_comparar === null) return "";
+
+    $dif = round((float)$valorActual - $valor_comparar, 2);
+    if ($dif == 0) return "";
+
+    // Lógica de colores (tus preferencias anteriores)
+    $columnas_negativas = ['total_caps_faltantes', 'caps_por_leer', 'faltantes_tachi', 'total_caps_tachi'];
+    $es_negativo_si_sube = in_array($columna, $columnas_negativas);
+
+    if ($dif > 0) {
+        $clase_badge = ($es_negativo_si_sube) ? 'bg-subida-mala' : 'bg-subida-buena';
+        $icono = 'fa-arrow-up';
+        $signo = '+';
+    } else {
+        $clase_badge = ($es_negativo_si_sube) ? 'bg-bajada-buena' : 'bg-bajada-mala';
+        $icono = 'fa-arrow-down';
+        $signo = '';
+    }
+
+    $valor_formateado = (float)$dif;
+
+    // Retornamos el HTML con el formato de Badge
+    return "<span class='tendencia-badge $clase_badge'>
+                <i class='fas $icono' style='font-size: 0.65rem; margin-right: 3px;'></i> $signo$valor_formateado
+            </span>";
 }
 
-$query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM manga WHERE Faltantes<=3;");
+// Registro automático de la "foto" del día
+
+
+
+
+$query = $conexion->query("SELECT SUM(CAST(Faltantes AS DECIMAL(10,1))) AS conteo FROM manga;");
 while ($valores = mysqli_fetch_array($query)) {
-    $sinact6 = $valores['conteo'];
+    $totalcaps_faltantes = (float)($valores['conteo'] ?? 0);
 }
 
-$query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM tachiyomi");
+$query = $conexion->query("SELECT SUM(CAST(Faltantes AS DECIMAL(10,1))) AS conteo FROM manga WHERE Faltantes<=3;");
 while ($valores = mysqli_fetch_array($query)) {
-    $sum_faltantes_tachi = $valores['conteo'];
+    $sinact6 = (float)($valores['conteo'] ?? 0);
 }
 
-$query = $conexion->query("SELECT SUM(Faltantes) AS conteo FROM webtoon");
+$query = $conexion->query("SELECT SUM(CAST(Faltantes AS DECIMAL(10,1))) AS conteo FROM tachiyomi");
 while ($valores = mysqli_fetch_array($query)) {
-    $sum_faltantes_webtoon = $valores['conteo'];
+    $sum_faltantes_tachi = (float)($valores['conteo'] ?? 0);
+}
+
+$query = $conexion->query("SELECT SUM(CAST(Faltantes AS DECIMAL(10,1))) AS conteo FROM webtoon");
+while ($valores = mysqli_fetch_array($query)) {
+    $sum_faltantes_webtoon = (float)($valores['conteo'] ?? 0);
 }
 
 if ($sinact6 == 0) {
@@ -317,6 +389,45 @@ while ($valores = mysqli_fetch_array($query)) {
             }
 
         }
+
+
+
+        /* Estilo para el badge de tendencia */
+        .tendencia-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        /* Colores suaves de fondo para que no cansen la vista */
+        .bg-subida-mala {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .bg-bajada-buena {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .bg-subida-buena {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .bg-bajada-mala {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
     </style>
 </head>
 
@@ -331,7 +442,9 @@ while ($valores = mysqli_fetch_array($query)) {
             <a href="../?busqueda=&buscar=&accion=Busqueda" class="stat-card blue">
                 <i class="fas fa-book stat-icon"></i>
                 <div class="stat-title">Total Mangas</div>
-                <div class="stat-value"><?= $totalMangas ?></div>
+                <div class="stat-value">
+                    <?= $totalMangas ?> <?= obtenerTendencia($connect, 'total_mangas', $totalMangas) ?>
+                </div>
             </a>
 
             <a href="../Tachiyomi/?busqueda_tachi=&buscar=" class="stat-card purple">
@@ -350,14 +463,17 @@ while ($valores = mysqli_fetch_array($query)) {
                 <a href="../" class="stat-card red">
                     <i class="fas fa-exclamation-circle stat-icon"></i>
                     <div class="stat-title">Faltantes</div>
-                    <div class="stat-value"><?= $totalFaltantes ?></div>
+                    <div class="stat-value"><?= $totalFaltantes ?><?= obtenerTendencia($connect, 'total_faltantes', $totalFaltantes) ?></div>
+
                 </a>
             <?php endif; ?>
 
             <a href="../Pendientes/" class="stat-card orange">
                 <i class="fas fa-clock stat-icon"></i>
                 <div class="stat-title">Pendientes</div>
-                <div class="stat-value"><?= $totalPendientes ?></div>
+                <div class="stat-value"><?= $totalPendientes ?>
+                    <?= obtenerTendencia($connect, 'total_pendientes', $totalPendientes) ?>
+                </div>
             </a>
 
             <a href="../Finalizados/" class="stat-card green">
@@ -515,7 +631,9 @@ while ($valores = mysqli_fetch_array($query)) {
             <a class="stat-card purple">
                 <i class="fas fa-check stat-icon"></i>
                 <div class="stat-title">Leidos Sin Faltantes</div>
-                <div class="stat-value"><?= $sin_faltantes ?></div>
+                <div class="stat-value"><?= $sin_faltantes ?>
+                    <?= obtenerTendencia($connect, 'leidos_sin_faltantes', $sin_faltantes) ?>
+                </div>
             </a>
 
 
@@ -523,7 +641,9 @@ while ($valores = mysqli_fetch_array($query)) {
                 <a href="../" class="stat-card red">
                     <i class="fas fa-times-circle stat-icon"></i>
                     <div class="stat-title">Total de Capitulos Faltantes</div>
-                    <div class="stat-value"><?= $totalcaps_faltantes ?></div>
+                    <div class="stat-value"><?= (float)$totalcaps_faltantes ?>
+                        <?= obtenerTendencia($connect, 'total_caps_faltantes', $totalcaps_faltantes) ?>
+                    </div>
                 </a>
             <?php endif; ?>
 
@@ -538,7 +658,9 @@ while ($valores = mysqli_fetch_array($query)) {
             <a href="../?busqueda_manga=&todos=&capitulos=1&estado=&buscar=" class="stat-card orange">
                 <i class="fas fa-book stat-icon"></i>
                 <div class="stat-title">Capitulos por Leer</div>
-                <div class="stat-value"><?= $sinact6 ?></div>
+                <div class="stat-value"><?= $sinact6 ?>
+                    <?= obtenerTendencia($connect, 'caps_por_leer', $sinact6) ?>
+                </div>
             </a>
 
         </div>
@@ -560,7 +682,9 @@ while ($valores = mysqli_fetch_array($query)) {
                     <a href="../Tachiyomi/" class="stat-card orange">
                         <i class="fas fa-exclamation-circle stat-icon"></i>
                         <div class="stat-title">Faltantes</div>
-                        <div class="stat-value"><?= $faltantes_tachiyomi ?></div>
+                        <div class="stat-value"><?= $faltantes_tachiyomi ?>
+                            <?= obtenerTendencia($connect, 'faltantes_tachi', $faltantes_tachiyomi) ?>
+                        </div>
                     </a>
                 <?php endif; ?>
 
@@ -568,7 +692,9 @@ while ($valores = mysqli_fetch_array($query)) {
                     <a href="../Tachiyomi/" class="stat-card gray">
                         <i class="fas fa-pause stat-icon"></i>
                         <div class="stat-title">Total Capitulos Faltantes</div>
-                        <div class="stat-value"><?= $sum_faltantes_tachi ?></div>
+                        <div class="stat-value"><?= $sum_faltantes_tachi ?>
+                            <?= obtenerTendencia($connect, 'total_caps_tachi', $sum_faltantes_tachi) ?>
+                        </div>
                     </a>
                 <?php endif; ?>
 
