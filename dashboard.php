@@ -157,7 +157,7 @@ $res_riesgo = $conexion->query($sql_riesgo);
 
                     <!-- DERECHA -->
                     <div>
-                        <a href="index.php" class="btn btn-outline-primary">
+                        <a href="/Manga/" class="btn btn-outline-primary">
                             <i class="fas fa-arrow-left me-1"></i> Volver
                         </a>
                     </div>
