@@ -48,7 +48,7 @@ echo "<br>";
         try {
             $conn = new PDO("mysql:host=$servidor;dbname=$basededatos", $usuario, $password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "UPDATE $tabla SET `$fila3` ='" . $caps . "'+'" . $vistos . "' WHERE $fila1='" . $nombre . "' AND '$fila3' > '$fila4';";
+            $sql = "UPDATE $tabla SET `$fila3` ='" . $caps . "'+'" . $vistos . "' WHERE $fila7='" . $idRegistros . "' AND '$fila3' > '$fila4';";
             $conn->exec($sql);
             echo $sql;
             echo "<br>";
