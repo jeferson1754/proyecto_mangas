@@ -148,6 +148,13 @@ $res_riesgo = $conexion->query($sql_riesgo);
                 <!-- DETALLES INFERIORES -->
                 <div class="d-flex justify-content-between align-items-center">
 
+                    <!-- DERECHA -->
+                    <div>
+                        <a href="/Manga/" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-1"></i> Volver
+                        </a>
+                    </div>
+
                     <!-- IZQUIERDA -->
                     <div>
                         <span class="badge bg-danger fs-6 px-3 py-2">
@@ -155,12 +162,7 @@ $res_riesgo = $conexion->query($sql_riesgo);
                         </span>
                     </div>
 
-                    <!-- DERECHA -->
-                    <div>
-                        <a href="/Manga/" class="btn btn-outline-primary">
-                            <i class="fas fa-arrow-left me-1"></i> Volver
-                        </a>
-                    </div>
+
 
                 </div>
 
@@ -194,12 +196,12 @@ $res_riesgo = $conexion->query($sql_riesgo);
                                 </span>
                             </td>
                             <td class="actions-cell text-center">
-                                <a href="ejemplo-barra.php?variable=<?php echo $m['ID']; ?>" class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                <a href="../ejemplo-barra.php?variable=<?php echo $m['ID']; ?>" class="btn btn-sm btn-outline-primary" title="Ver detalles">
                                     <i class="fas fa-chart-bar" style="transform: rotate(270deg);"></i>
 
 
                                 </a>
-                                <a href="./?busqueda_manga=<?php echo $m['Nombre']; ?>&todos=&capitulos=&estado=&buscar=" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                <a href="../index.php?busqueda_manga=<?php echo $m['Nombre']; ?>&todos=&capitulos=&estado=&buscar=" target="_blank" class="btn btn-sm btn-outline-secondary">
                                     <i class="fas fa-search-plus"></i>
                                 </a>
                             </td>
