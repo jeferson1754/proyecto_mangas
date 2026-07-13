@@ -298,14 +298,47 @@ $sizebtn = "sm";
 
                         while ($mostrar = mysqli_fetch_array($result)) {
 
+                            $cap_visto = $mostrar[$fila3]; // Asumiendo que $fila3 es 'Capitulos Vistos'
+                            $id_manga = $mostrar['ID'];
+
+                            $query_faltantes = mysqli_query($conexion, "SELECT COUNT(*) as total FROM $tabla7 WHERE $fila9 = '$id_manga' AND Numero_Capitulo > '$cap_visto'");
+
+                            $datos_faltantes = mysqli_fetch_assoc($query_faltantes);
+
+                            // 1. Obtenemos el conteo de registros (filas en diferencias)
+                            $conteo_registros = (float)$datos_faltantes['total'];
+
+                            // 2. Obtenemos el cálculo matemático de la tabla manga
+                            $resta_matematica = (float)$mostrar[$fila5];
+
+                            // 3. LOGICA: Se elige el valor más alto. 
+                            // Esto asegura que si falta el capítulo 191.5, el sistema cuente "1" registro o "0.5" según cuál sea mayor o más preciso.
+                            $faltantes_reales = ($conteo_registros >= $resta_matematica) ? $conteo_registros : $resta_matematica;
+
+                            // 3. FORMATEO DINÁMICO DE DECIMALES (Para que 26.00 sea 26 y 22.30 sea 22.30)
+                            $vista_vistos = (float)$mostrar[$fila3];
+                            $vista_totales = (float)$mostrar[$fila4];
+                            $vista_faltantes = (float)$faltantes_reales;
+
                             $verificado = ($mostrar['verificado'] == 'SI') ? 'green' : 'red';
                             $anime = ($mostrar['Anime'] == 'SI') ? 'orange' : 'white';
                         ?>
                             <tr>
                                 <td class="fw-500"><a href="<?php echo $mostrar[$fila2] ?>" title="<?php echo $mostrar[$fila13] ?>" target="_blanck" class="link" style="text-decoration: none;"><?php echo $mostrar[$fila1] ?></a></td>
-                                <td class="fw-500"><?php echo $mostrar[$fila3] ?></td>
-                                <td class="fw-500"><?php echo $mostrar[$fila4] ?></td>
-                                <td class="fw-500"><?php echo $mostrar[$fila5] ?></td>
+                                <td class="fw-500"><?php echo $vista_vistos ?></td>
+
+                                <td class="fw-500"><?php echo $vista_totales ?></td>
+
+                                <td class="text-center align-middle">
+                                    <span class="fw-500"><?php echo (float)$faltantes_reales; ?></span>
+                                    <?php if (floor($faltantes_reales) != $faltantes_reales): ?>
+                                        <i class="fas fa-puzzle-piece text-info ms-1"
+                                            style="font-size: 0.85rem;"
+                                            data-bs-toggle="tooltip"
+                                            title="Este manga tiene capítulos fraccionados"></i>
+                                    <?php endif; ?>
+                                </td>
+                                
                                 <td>
                                     <span class="status-badge 
                                     <?php
