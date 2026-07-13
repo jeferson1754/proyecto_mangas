@@ -79,27 +79,47 @@ echo "<br>";
 echo "$nombre existe en $tabla";
 echo "<br>";
 
-if ($fecha_antigua == $fecha_actual) {
-    echo "Las ultimas dos fechas son iguales";
+// Buscamos si este número de capítulo ya existe para este manga en el historial de diferencias
+$capitulo_repetido = false;
+try {
+    // $idRegistros es el ID del manga, $total es el número de capítulo actual
+    $sql_check_cap = "SELECT COUNT(*) as existe FROM $tabla7 
+                      WHERE `$fila9` = '$idRegistros' 
+                      AND `Numero_Capitulo` = '$total'";
+
+    $query_check_cap = mysqli_query($conexion, $sql_check_cap);
+    $res_check_cap = mysqli_fetch_assoc($query_check_cap);
+
+    if ($res_check_cap['existe'] > 0) {
+        $capitulo_repetido = true;
+    }
+} catch (Exception $e) {
+    echo "Error al verificar duplicado de capítulo: " . $e->getMessage() . "<br>";
+}
+
+// NUEVA LÓGICA: Si es la misma fecha PERO el capítulo es diferente (no está repetido), SÍ lo deja pasar.
+if ($fecha_antigua == $fecha_actual && $capitulo_repetido) {
+    echo "Las últimas dos fechas son iguales Y este capítulo ya fue registrado hoy.";
+    echo "<br>";
 } else {
-    echo "Las ultimas dos fechas  no son iguales";
+    echo "Insertando en diferencias (Nueva fecha o nuevo capítulo decimal en el mismo día).";
     echo "<br>";
 
-
+    // Hace el ingreso de datos en diferencias (Tu código original intacto)
     try {
         $sql_historial = "INSERT INTO $tabla7 (`$fila9`, `$fila12`, `Numero_Capitulo`, `$titulo4`, `Dia`) 
                              VALUES ('$idRegistros', '$dias', '$total', '$nueva_fecha', '$nombreDiaEspañol')";
         mysqli_query($conexion, $sql_historial);
-        echo $sql . "<br>";
+        echo $sql_historial . "<br>";
     } catch (PDOException $e) {
         echo $e;
         echo "<br>";
         echo $sql_historial;
     }
 
+    // Sistema de validación de múltiplos de 5 (Tu código original intacto)
     if ($nueva_cantidad % 5 == 0) {
         echo "El número $nueva_cantidad es múltiplo de 5.<br>";
-
         try {
             $sql2 = "UPDATE $tabla SET $ver='NO' where $fila7='$idRegistros';";
             $resultado = mysqli_query($conexion, $sql2);
