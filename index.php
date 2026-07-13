@@ -69,6 +69,11 @@ $sizebtn = "sm";
                     <i class="fas fa-tv"></i> Tiene Anime
                 </button>
 
+                <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-danger vista-celu" type="submit" name="cantidad-tmo">
+                    <i class="fa-solid fa-fire"></i>
+                    <span class="d-none d-sm-inline">Cantidad + TMO</span>
+                </button>
+
 
                 <button class="btn btn-custom btn-<?php echo $sizebtn ?> btn-secondary" type="submit" name="borrar">
                     <i class="fas fa-eraser"></i>
@@ -143,6 +148,19 @@ $sizebtn = "sm";
                     ?>
                 </select>
 
+                <select class="form-select" style="max-width: 200px;" name="dominio">
+                    <option value="">Seleccione Dominio:</option>
+                    <?php
+                    $query = $conexion->query(" SELECT REPLACE(SUBSTRING_INDEX(SUBSTRING_INDEX(Link, '/', 3), '//', -1), 'www.', '') AS dominio, COUNT(*) AS total FROM $tabla GROUP BY dominio;");
+                    while ($valores = mysqli_fetch_array($query)) {
+                        $valor = htmlspecialchars($valores['dominio'], ENT_QUOTES);
+                        $selected = (isset($_GET['dominio']) && $_GET['dominio'] === $valor) ? 'selected' : '';
+                        echo "<option value=\"$valor\" $selected>$valor</option>";
+                    }
+                    ?>
+                </select>
+
+
                 <button class="btn btn-custom btn-outline-secondary" type="submit" name="buscar">
                     <b>Buscar</b>
                 </button>
@@ -151,7 +169,7 @@ $sizebtn = "sm";
 
         <?php
 
-        $order = "ORDER BY `manga`.`Faltantes`ASC,`manga`.`Hora_Cambio` DESC";
+        $order = "ORDER BY `$tabla`.`Faltantes`ASC,`$tabla`.`Hora_Cambio` DESC";
         // Limpiar parámetros GET y prevenir inyección SQL
         $columnas = "*";
 
@@ -159,11 +177,12 @@ $sizebtn = "sm";
         $listas = isset($_GET['todos']) ? mysqli_real_escape_string($conexion, $_GET['todos']) : '';
         $capitulos = isset($_GET['capitulos']) ? mysqli_real_escape_string($conexion, $_GET['capitulos']) : '';
         $estado = isset($_GET['estado']) ? mysqli_real_escape_string($conexion, $_GET['estado']) : '';
-
+        $dominio = isset($_GET['dominio']) ? mysqli_real_escape_string($conexion, $_GET['dominio']) : '';
+        
         if (isset($_GET['borrar'])) {
             $titulo = "Todos";
             $capi = "1";
-            $where = "WHERE Faltantes>0 ORDER BY `manga`.`Hora_Cambio` DESC limit 10";
+            $where = "WHERE Faltantes>0 ORDER BY `$tabla`.`Hora_Cambio` DESC limit 10";
             $link = "";
         } else if (isset($_GET['linkeado'])) {
             $where = "where $fila2 ='' OR $fila13='Erroneo/Inexistente' OR $fila13='Faltante' $order limit 10";
@@ -199,6 +218,10 @@ $sizebtn = "sm";
             $where = "WHERE Link NOT LIKE '%https://zonatmo.com/%' AND Link != '' AND Estado != 'Finalizado' ORDER BY manga.Fecha_Cambio1 DESC, manga.Hora_Cambio DESC limit 30";
             $capi = "1";
             $titulo = "Sin Link TMO";
+        } else if (isset($_GET['cantidad-tmo'])) {
+            $where = "WHERE Link LIKE '%https://zonatmo.com/%' AND Link != ''  ORDER BY manga.Cantidad DESC, manga.Fecha_Cambio1 DESC limit 30";
+            $capi = "1";
+            $titulo = "Cantidad + TMO";
         } else if (isset($_GET['tachiyomi'])) {
             $where = " LEFT JOIN `tachiyomi` ON manga.ID = tachiyomi.ID_Manga WHERE tachiyomi.ID_Manga IS NULL AND manga.Faltantes > 0 $order LIMIT 10;";
             $capi = "1";
@@ -234,6 +257,13 @@ $sizebtn = "sm";
             if (!empty($listas)) {
                 $conditions[] = " $fila6='$listas'";
                 $titulo = $listas;
+            }
+
+            if (!empty($dominio)) {
+                $conditions[] = " $fila2 LIKE '%$dominio%'";
+                $titulo = "Dominio - " . $dominio;
+            } else {
+                $dominio = "";
             }
 
             if (!empty($estado)) {
