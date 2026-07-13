@@ -288,7 +288,7 @@ $sizebtn = "sm";
 
 
 
-            $where = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) . " $order limit 50" : "$order limit 50";
+            $where = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) . " $order limit 100" : "$order limit 100";
         } else {
 
             $titulo = "Todos";
