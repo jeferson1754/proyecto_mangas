@@ -35,10 +35,17 @@ if (isset($_GET['borrar'])) {
    $lista = "Seleccione";
    $valor = "";
 } else if (isset($_GET['buscar'])) {
-   $link = "./?busqueda_manga=$busqueda&todos=$listas&capitulos=$capitulos&estado=$estado&buscar=";
-   echo "<input type='hidden' name='link' value='$link'>";
-   $lista = "Seleccione";
-   $valor = "";
+     // Nos aseguramos de que ninguna variable sea un array o contenga el texto "Array"
+   $busqueda_clean = (is_array($busqueda) || strtolower($busqueda) === 'array') ? '' : $busqueda;
+   $listas_clean = (is_array($listas) || strtolower($listas) === 'array') ? '' : $listas;
+   $capitulos_clean = (is_array($capitulos) || strtolower($capitulos) === 'array') ? '' : $capitulos;
+   $estado_clean = (is_array($estado) || strtolower($estado) === 'array') ? '' : $estado;
+
+   // Construimos el enlace codificando correctamente los parámetros
+   $link = "./?busqueda_manga=" . urlencode($busqueda_clean) . "&todos=" . urlencode($listas_clean) . "&capitulos=" . urlencode($capitulos_clean) . "&estado=" . urlencode($estado_clean) . "&buscar="; //
+   echo "<input type='hidden' name='link' value='$link'>"; //
+   $lista = "Seleccione"; //
+   $valor = ""; //
 } else if (isset($_GET['tmo'])) {
    $link = "./?tmo=";
    echo "<input type='hidden' name='link' value='$link'>";

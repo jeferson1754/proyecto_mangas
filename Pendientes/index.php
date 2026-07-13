@@ -159,11 +159,17 @@ $sizebtn = "sm";
         $columnas = "*";
 
 
-        $busqueda = isset($_GET['busqueda_manga']) ? mysqli_real_escape_string($conexion, $_GET['busqueda_manga']) : '';
-        $listas = isset($_GET['todos']) ? mysqli_real_escape_string($conexion, $_GET['todos']) : '';
-        $capitulos = isset($_GET['capitulos']) ? mysqli_real_escape_string($conexion, $_GET['capitulos']) : '';
-        $estado = isset($_GET['estado']) ? mysqli_real_escape_string($conexion, $_GET['estado']) : '';
-        $dominio = isset($_GET['dominio']) ? mysqli_real_escape_string($conexion, $_GET['dominio']) : '';
+        $busqueda = isset($_GET['busqueda_manga']) ? (is_array($_GET['busqueda_manga']) ? '' : mysqli_real_escape_string($conexion, $_GET['busqueda_manga'])) : '';
+        $listas = isset($_GET['todos']) ? (is_array($_GET['todos']) ? '' : mysqli_real_escape_string($conexion, $_GET['todos'])) : '';
+        $capitulos = isset($_GET['capitulos']) ? (is_array($_GET['capitulos']) ? '' : mysqli_real_escape_string($conexion, $_GET['capitulos'])) : '';
+        $dominio = isset($_GET['dominio']) ? (is_array($_GET['dominio']) ? '' : mysqli_real_escape_string($conexion, $_GET['dominio'])) : '';
+
+        // Tratamiento especial para 'estado' para evitar el bug del "Array"
+        $estado_raw = $_GET['estado'] ?? '';
+        if (is_array($estado_raw) || strtolower($estado_raw) === 'array') {
+            $estado_raw = ''; // Si es un array de PHP o el texto plano "Array", lo limpiamos a vacío
+        }
+        $estado = mysqli_real_escape_string($conexion, $estado_raw);
 
         if (isset($_GET['borrar'])) {
             $titulo = "Todos";
